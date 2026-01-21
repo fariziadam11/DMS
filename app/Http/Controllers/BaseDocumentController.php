@@ -58,6 +58,7 @@ abstract class BaseDocumentController extends Controller
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'divisions' => $this->getUserDivisions(),
+            'permissions' => $this->getPermissions(),
         ]);
     }
 
@@ -66,10 +67,13 @@ abstract class BaseDocumentController extends Controller
      */
     public function create()
     {
+        $this->checkFunctionAccess(2); // Create
+
         return view($this->viewPath . '.create', [
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'divisions' => $this->getUserDivisions(),
+            'permissions' => $this->getPermissions(),
         ]);
     }
 
@@ -78,6 +82,8 @@ abstract class BaseDocumentController extends Controller
      */
     public function store(Request $request)
     {
+        $this->checkFunctionAccess(2); // Create
+
         $validated = $this->validateRequest($request);
 
         // Handle file upload
@@ -119,6 +125,7 @@ abstract class BaseDocumentController extends Controller
             'item' => $record, // Alias for backward compatibility
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
+            'permissions' => $this->getPermissions(),
         ]);
     }
 
@@ -127,6 +134,8 @@ abstract class BaseDocumentController extends Controller
      */
     public function edit($id)
     {
+        $this->checkFunctionAccess(3); // Edit
+
         $record = $this->model::findOrFail($id);
         $this->authorizeAccess($record, 'write');
 
@@ -136,6 +145,7 @@ abstract class BaseDocumentController extends Controller
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'divisions' => $this->getUserDivisions(),
+            'permissions' => $this->getPermissions(),
         ]);
     }
 
@@ -144,6 +154,8 @@ abstract class BaseDocumentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->checkFunctionAccess(3); // Edit
+
         $record = $this->model::findOrFail($id);
         $this->authorizeAccess($record, 'write');
 
@@ -175,6 +187,8 @@ abstract class BaseDocumentController extends Controller
      */
     public function destroy($id)
     {
+        $this->checkFunctionAccess(4); // Delete
+
         $record = $this->model::findOrFail($id);
         $this->authorizeAccess($record, 'delete');
 
@@ -193,6 +207,8 @@ abstract class BaseDocumentController extends Controller
      */
     public function download($id)
     {
+        $this->checkFunctionAccess(5); // Download
+
         $record = $this->model::findOrFail($id);
         $this->authorizeAccess($record);
 
@@ -348,4 +364,84 @@ abstract class BaseDocumentController extends Controller
      * Validate request - override in child class
      */
     abstract protected function validateRequest(Request $request, $id = null);
+
+    /**
+     * Get permission flags for current menu
+     */
+    protected function getPermissions()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return ['create' => false, 'edit' => false, 'delete' => false, 'download' => false];
+        }
+
+        if ($user->isSuperAdmin()) {
+            return ['create' => true, 'edit' => true, 'delete' => true, 'download' => true];
+        }
+
+        $menu = \App\Models\BaseMenu::where('code_name', $this->routePrefix)->first();
+        if (!$menu) {
+            return ['create' => true, 'edit' => true, 'delete' => true, 'download' => true];
+        }
+
+        // Helper to check permission including inheritance
+        $check = function($funcId) use ($user, $menu) {
+            if ($user->hasMenuFunction($menu->id, $funcId)) return true;
+            if ($menu->parent_id && $user->hasMenuFunction($menu->parent_id, $funcId)) return true;
+            return false;
+        };
+
+        return [
+            'create' => $check(2),
+            'edit' => $check(3),
+            'delete' => $check(4),
+            'download' => $check(5),
+        ];
+    }
+
+    /**
+     * Check valid function access (Create, Edit, Delete, Download)
+     *
+     * @param int $functionId
+     * @return bool
+     */
+    protected function checkFunctionAccess($functionId)
+    {
+        $user = auth()->user();
+
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Find current menu based on route prefix
+        $menu = \App\Models\BaseMenu::where('code_name', $this->routePrefix)->first();
+
+        if (!$menu) {
+            // Fallback: If menu not found in DB, we rely on standard authorized logic only
+            return true;
+        }
+
+        // Check explicit menu access first
+        $hasAccess = $user->hasMenuFunction($menu->id, $functionId);
+
+        // If not found, check parent (inheritance)
+        if (!$hasAccess && $menu->parent_id) {
+            $hasAccess = $user->hasMenuFunction($menu->parent_id, $functionId);
+        }
+
+        if (!$hasAccess) {
+            $functionName = '';
+            switch ($functionId) {
+                case 2: $functionName = 'menambah data'; break;
+                case 3: $functionName = 'mengubah data'; break;
+                case 4: $functionName = 'menghapus data'; break;
+                case 5: $functionName = 'mengunduh file'; break;
+                default: $functionName = 'melakukan aksi ini';
+            }
+
+            abort(403, 'Anda tidak memiliki hak akses untuk ' . $functionName . ' pada menu ini.');
+        }
+
+        return true;
+    }
 }
