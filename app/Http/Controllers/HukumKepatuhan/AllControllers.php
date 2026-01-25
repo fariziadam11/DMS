@@ -33,7 +33,7 @@ class KajianHukumController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'keterangan' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -55,7 +55,7 @@ class LegalMemoController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'keterangan' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -79,7 +79,7 @@ class RegulasiInternalController extends BaseDocumentController
             'inisiator' => 'nullable|string|max:100',
             'status' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -102,7 +102,7 @@ class RegulasiExternalController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'status' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -130,7 +130,7 @@ class KontrakController extends BaseDocumentController
             'pemilik' => 'nullable|string|max:100',
             'status' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -155,7 +155,7 @@ class PutusanController extends BaseDocumentController
             'status' => 'nullable|string|max:100',
             'pihak' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -178,7 +178,7 @@ class ComplianceCheckController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'keterangan' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -199,7 +199,7 @@ class PenomoranController extends BaseDocumentController
             'perihal' => 'required|string',
             'keterangan' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -220,7 +220,7 @@ class LembarRekomendasiController extends BaseDocumentController
             'perihal' => 'required|string',
             'keterangan' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -241,7 +241,7 @@ class LembarKeputusanController extends BaseDocumentController
             'perihal' => 'required|string',
             'keterangan' => 'nullable|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -261,7 +261,7 @@ class ExecutiveSummaryController extends BaseDocumentController
             'id_divisi' => 'required|exists:master_divisi,id',
             'perihal' => 'required|string',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }

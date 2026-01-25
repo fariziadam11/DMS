@@ -22,7 +22,7 @@ class JurnalUmumController extends BaseDocumentController
             'bulan' => 'nullable|integer|min:1|max:12',
             'keterangan' => 'nullable|string',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }

@@ -35,6 +35,8 @@
                     <select name="classification" class="form-select form-select-lg">
                         <option value="">Semua</option>
                         <option value="Umum" {{ $selectedClassification == 'Umum' ? 'selected' : '' }}>Umum</option>
+                        <option value="Internal" {{ $selectedClassification == 'Internal' ? 'selected' : '' }}>Internal
+                        </option>
                         <option value="Rahasia" {{ $selectedClassification == 'Rahasia' ? 'selected' : '' }}>Rahasia
                         </option>
                     </select>
@@ -62,7 +64,7 @@
                             <thead>
                                 <tr>
                                     <th>Judul</th>
-                                    <th>Tipe</th>
+                                    <th>Modul</th>
                                     <th>Divisi</th>
                                     <th>Tanggal</th>
                                     <th>Klasifikasi</th>
@@ -76,6 +78,8 @@
                                             <div class="d-flex align-items-center">
                                                 @if ($result['is_secret'])
                                                     <i class="bi bi-lock text-danger me-2"></i>
+                                                @elseif ($result['classification'] == 'Internal')
+                                                    <i class="bi bi-building-lock text-warning me-2"></i>
                                                 @else
                                                     <i class="bi bi-file-earmark-text text-primary me-2"></i>
                                                 @endif
@@ -92,6 +96,9 @@
                                             @if ($result['classification'] == 'Rahasia')
                                                 <span class="badge badge-secret"><i
                                                         class="bi bi-lock me-1"></i>Rahasia</span>
+                                            @elseif ($result['classification'] == 'Internal')
+                                                <span class="badge bg-warning text-dark"><i
+                                                        class="bi bi-building-lock me-1"></i>Internal</span>
                                             @else
                                                 <span class="badge badge-public"><i
                                                         class="bi bi-unlock me-1"></i>Umum</span>

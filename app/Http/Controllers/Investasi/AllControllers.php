@@ -33,7 +33,7 @@ class SuratController extends BaseDocumentController
             'klasifikasi' => 'nullable|integer',
             'keterangan' => 'nullable|string',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -56,7 +56,7 @@ class PerencanaanTransaksiController extends BaseDocumentController
             'perihal' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -79,7 +79,7 @@ class PerencanaanSuratController extends BaseDocumentController
             'nomor' => 'nullable|string|max:50',
             'perihal' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
@@ -102,7 +102,7 @@ class PropensaTransaksiController extends BaseDocumentController
             'perihal' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -125,7 +125,7 @@ class PropensaSuratController extends BaseDocumentController
             'nomor' => 'nullable|string|max:50',
             'perihal' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:10240',
         ]);
     }

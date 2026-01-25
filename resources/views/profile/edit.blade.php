@@ -44,8 +44,8 @@
                         <div class="fw-bold">{{ $user->username }}</div>
                     </div>
                     <div class="mb-3">
-                        <label class="small mb-1">NIK</label>
-                        <div class="fw-bold">{{ $user->nik }}</div>
+                        <label class="small mb-1">NIP</label>
+                        <div class="fw-bold">{{ $user->nip }}</div>
                     </div>
                     <div class="mb-3">
                         <label class="small mb-1">Terdaftar Sejak</label>
@@ -174,8 +174,8 @@
                             <div class="tab-pane fade" id="employment">
                                 <div class="row gx-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="small mb-1">NIK (Karyawan)</label>
-                                        <input class="form-control" type="text" value="{{ $user->nik }}" readonly>
+                                        <label class="small mb-1">NIP (Karyawan)</label>
+                                        <input class="form-control" type="text" value="{{ $user->nip }}" readonly>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="small mb-1">Status Karyawan</label>

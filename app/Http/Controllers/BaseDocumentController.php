@@ -232,6 +232,8 @@ abstract class BaseDocumentController extends Controller
      */
     public function preview($id)
     {
+        $this->checkFunctionAccess(5); // Download permission required via preview button
+
         $record = $this->model::findOrFail($id);
         $this->authorizeAccess($record);
 
@@ -323,6 +325,20 @@ abstract class BaseDocumentController extends Controller
      */
     protected function authorizeAccess($record, $action = 'read')
     {
+        // For delete/edit actions, keep existing logic (usually implicitly handled by checkFunctionAccess and role checks)
+        // But for 'read' (view/download), we must enforce the new strict confidential logic
+
+        if ($action === 'read') {
+             if (!$record->userHasFileAccess(auth()->id())) {
+                 $message = $record->isSecret()
+                    ? 'Dokumen ini bersifat rahasia. Anda perlu meminta akses terlebih dahulu.'
+                    : 'Anda tidak memiliki akses ke dokumen ini.';
+                 abort(403, $message);
+             }
+             return true;
+        }
+
+        // Fallback for other actions (write/delete) uses standard checks + logic below
         $user = auth()->user();
 
         if ($user->isSuperAdmin()) {
@@ -343,18 +359,6 @@ abstract class BaseDocumentController extends Controller
 
         if (!$user->hasDivisionAccess($record->id_divisi)) {
             abort(403, 'Anda tidak memiliki akses ke dokumen ini.');
-        }
-
-        // Check if secret document requires special access
-        // Staff from the SAME division can view secret documents
-        // Staff from OTHER divisions need explicit access request or be Division Admin
-        if ($record->isSecret()) {
-            $isOwnDivision = $user->id_divisi == $record->id_divisi;
-
-            // If not from own division and not division admin, need approved request
-            if (!$isOwnDivision && !$user->isDivisionAdmin($record->id_divisi) && !$hasApprovedRequest) {
-                abort(403, 'Dokumen ini bersifat rahasia.');
-            }
         }
 
         return true;

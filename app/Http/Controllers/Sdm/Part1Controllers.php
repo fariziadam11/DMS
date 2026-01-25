@@ -21,7 +21,7 @@ class PksController extends BaseDocumentController
             'mulai' => 'nullable|date',
             'akhir' => 'nullable|date',
             'kategori' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -41,7 +41,7 @@ class RarusController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'perihal' => 'required|string',
             'kategori' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -62,7 +62,7 @@ class PeraturanController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'perihal' => 'required|string',
             'kategori' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -84,7 +84,7 @@ class RekrutMasukController extends BaseDocumentController
             'status' => 'nullable|string|max:100',
             'perihal' => 'nullable|string',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -105,7 +105,7 @@ class CapegPegrusController extends BaseDocumentController
             'nama' => 'required|string|max:100',
             'status' => 'nullable|string|max:100',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -126,7 +126,7 @@ class PromosiMutasiController extends BaseDocumentController
             'nama' => 'required|string|max:100',
             'status' => 'nullable|string|max:100',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -146,7 +146,7 @@ class NaikGajiController extends BaseDocumentController
             'nik' => 'nullable|string|max:50',
             'nama' => 'required|string|max:100',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }

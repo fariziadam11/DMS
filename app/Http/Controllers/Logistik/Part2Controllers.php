@@ -18,7 +18,7 @@ class UserSatisfactionController extends BaseDocumentController
             'id_divisi' => 'required|exists:master_divisi,id',
             'tahun' => 'nullable|integer',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -37,7 +37,7 @@ class VendorSatisfactionController extends BaseDocumentController
             'id_divisi' => 'required|exists:master_divisi,id',
             'tahun' => 'nullable|integer',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -57,7 +57,7 @@ class Smk3Controller extends BaseDocumentController
             'tahun' => 'nullable|integer',
             'bulan' => 'nullable|integer|min:1|max:12',
             'nama_kegiatan' => 'required|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -78,7 +78,7 @@ class PolisAsuransiController extends BaseDocumentController
             'berlaku_mulai' => 'nullable|date',
             'berlaku_akhir' => 'nullable|date',
             'nilai' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -99,7 +99,7 @@ class JaminanController extends BaseDocumentController
             'nomor_drp' => 'nullable|string|max:100',
             'nama_pengadaan' => 'required|string|max:255',
             'vendor' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }

@@ -13,7 +13,7 @@
     <form method="GET" class="row g-3">
         <div class="col-md-4"><input type="text" name="search" class="form-control" placeholder="Cari..." value="{{ request('search') }}"></div>
         <div class="col-md-3"><select name="id_divisi" class="form-select"><option value="">Semua Divisi</option>@foreach(\App\Models\MasterDivisi::all() as $d)<option value="{{ $d->id }}" {{ request('id_divisi') == $d->id ? 'selected' : '' }}>{{ $d->nama_divisi }}</option>@endforeach</select></div>
-        <div class="col-md-3"><select name="sifat_dokumen" class="form-select"><option value="">Semua</option><option value="Umum" {{ request('sifat_dokumen') == 'Umum' ? 'selected' : '' }}>Umum</option><option value="Rahasia" {{ request('sifat_dokumen') == 'Rahasia' ? 'selected' : '' }}>Rahasia</option></select></div>
+        <div class="col-md-3"><select name="sifat_dokumen" class="form-select"><option value="">Semua</option><option value="Umum" {{ request('sifat_dokumen') == 'Umum' ? 'selected' : '' }}>Umum</option><option value="Internal" {{ request('sifat_dokumen') == 'Internal' ? 'selected' : '' }}>Internal</option><option value="Rahasia" {{ request('sifat_dokumen') == 'Rahasia' ? 'selected' : '' }}>Rahasia</option></select></div>
         <div class="col-md-2"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i></button></div>
     </form>
 </div></div>

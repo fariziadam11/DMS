@@ -1,0 +1,367 @@
+[
+    {
+        "id": 1,
+        "menu_name": "Dashboard",
+        "code_name": "dashboard"
+    },
+    {
+        "id": 2,
+        "menu_name": "Akuntansi",
+        "code_name": "akuntansi"
+    },
+    {
+        "id": 3,
+        "menu_name": "Aturan Kebijakan",
+        "code_name": "akuntansi.aturan-kebijakan"
+    },
+    {
+        "id": 4,
+        "menu_name": "Jurnal Umum",
+        "code_name": "akuntansi.jurnal-umum"
+    },
+    {
+        "id": 5,
+        "menu_name": "Laporan Audit Investasi",
+        "code_name": "akuntansi.laporan-audit-investasi"
+    },
+    {
+        "id": 6,
+        "menu_name": "Laporan Audit Keuangan",
+        "code_name": "akuntansi.laporan-audit-keuangan"
+    },
+    {
+        "id": 7,
+        "menu_name": "Laporan Bulanan",
+        "code_name": "akuntansi.laporan-bulanan"
+    },
+    {
+        "id": 8,
+        "menu_name": "Anggaran",
+        "code_name": "anggaran"
+    },
+    {
+        "id": 9,
+        "menu_name": "Aturan Kebijakan",
+        "code_name": "anggaran.aturan-kebijakan"
+    },
+    {
+        "id": 10,
+        "menu_name": "Dokumen RRA",
+        "code_name": "anggaran.dokumen-rra"
+    },
+    {
+        "id": 11,
+        "menu_name": "Laporan PRBC",
+        "code_name": "anggaran.laporan-prbc"
+    },
+    {
+        "id": 12,
+        "menu_name": "Rencana Kerja Direktorat",
+        "code_name": "anggaran.rencana-kerja-direktorat"
+    },
+    {
+        "id": 13,
+        "menu_name": "Rencana Kerja Tahunan",
+        "code_name": "anggaran.rencana-kerja-tahunan"
+    },
+    {
+        "id": 14,
+        "menu_name": "Rencana Kerja Triwulan",
+        "code_name": "anggaran.rencana-kerja-triwulan"
+    },
+    {
+        "id": 15,
+        "menu_name": "Hukum Kepatuhan",
+        "code_name": "hukum-kepatuhan"
+    },
+    {
+        "id": 16,
+        "menu_name": "Kajian Hukum",
+        "code_name": "hukum-kepatuhan.kajian-hukum"
+    },
+    {
+        "id": 17,
+        "menu_name": "Legal Memo",
+        "code_name": "hukum-kepatuhan.legal-memo"
+    },
+    {
+        "id": 18,
+        "menu_name": "Regulasi Internal",
+        "code_name": "hukum-kepatuhan.regulasi-internal"
+    },
+    {
+        "id": 19,
+        "menu_name": "Regulasi External",
+        "code_name": "hukum-kepatuhan.regulasi-external"
+    },
+    {
+        "id": 20,
+        "menu_name": "Kontrak",
+        "code_name": "hukum-kepatuhan.kontrak"
+    },
+    {
+        "id": 21,
+        "menu_name": "Putusan",
+        "code_name": "hukum-kepatuhan.putusan"
+    },
+    {
+        "id": 22,
+        "menu_name": "Compliance Check",
+        "code_name": "hukum-kepatuhan.compliance-check"
+    },
+    {
+        "id": 23,
+        "menu_name": "Investasi",
+        "code_name": "investasi"
+    },
+    {
+        "id": 24,
+        "menu_name": "Transaksi",
+        "code_name": "investasi.transaksi"
+    },
+    {
+        "id": 25,
+        "menu_name": "Surat",
+        "code_name": "investasi.surat"
+    },
+    {
+        "id": 26,
+        "menu_name": "Perencanaan Transaksi",
+        "code_name": "investasi.perencanaan-transaksi"
+    },
+    {
+        "id": 27,
+        "menu_name": "Perencanaan Surat",
+        "code_name": "investasi.perencanaan-surat"
+    },
+    {
+        "id": 28,
+        "menu_name": "Propensa Transaksi",
+        "code_name": "investasi.propensa-transaksi"
+    },
+    {
+        "id": 29,
+        "menu_name": "Propensa Surat",
+        "code_name": "investasi.propensa-surat"
+    },
+    {
+        "id": 30,
+        "menu_name": "Keuangan",
+        "code_name": "keuangan"
+    },
+    {
+        "id": 31,
+        "menu_name": "Surat Bayar",
+        "code_name": "keuangan.surat-bayar"
+    },
+    {
+        "id": 32,
+        "menu_name": "SPB",
+        "code_name": "keuangan.spb"
+    },
+    {
+        "id": 33,
+        "menu_name": "SPPB",
+        "code_name": "keuangan.sppb"
+    },
+    {
+        "id": 34,
+        "menu_name": "Cashflow",
+        "code_name": "keuangan.cashflow"
+    },
+    {
+        "id": 35,
+        "menu_name": "Penempatan",
+        "code_name": "keuangan.penempatan"
+    },
+    {
+        "id": 36,
+        "menu_name": "Pemindahbukuan",
+        "code_name": "keuangan.pemindahbukuan"
+    },
+    {
+        "id": 37,
+        "menu_name": "Pajak",
+        "code_name": "keuangan.pajak"
+    },
+    {
+        "id": 38,
+        "menu_name": "SDM",
+        "code_name": "sdm"
+    },
+    {
+        "id": 39,
+        "menu_name": "PKS",
+        "code_name": "sdm.pks"
+    },
+    {
+        "id": 40,
+        "menu_name": "Rarus",
+        "code_name": "sdm.rarus"
+    },
+    {
+        "id": 41,
+        "menu_name": "Peraturan",
+        "code_name": "sdm.peraturan"
+    },
+    {
+        "id": 42,
+        "menu_name": "Rekrut Masuk",
+        "code_name": "sdm.rekrut-masuk"
+    },
+    {
+        "id": 43,
+        "menu_name": "Promosi Mutasi",
+        "code_name": "sdm.promosi-mutasi"
+    },
+    {
+        "id": 44,
+        "menu_name": "Naik Gaji",
+        "code_name": "sdm.naik-gaji"
+    },
+    {
+        "id": 45,
+        "menu_name": "Surat Masuk",
+        "code_name": "sdm.surat-masuk"
+    },
+    {
+        "id": 46,
+        "menu_name": "Surat Keluar",
+        "code_name": "sdm.surat-keluar"
+    },
+    {
+        "id": 47,
+        "menu_name": "Sekretariat",
+        "code_name": "sekretariat"
+    },
+    {
+        "id": 48,
+        "menu_name": "Risalah Rapat",
+        "code_name": "sekretariat.risalah-rapat"
+    },
+    {
+        "id": 49,
+        "menu_name": "Materi",
+        "code_name": "sekretariat.materi"
+    },
+    {
+        "id": 50,
+        "menu_name": "Laporan",
+        "code_name": "sekretariat.laporan"
+    },
+    {
+        "id": 51,
+        "menu_name": "Surat",
+        "code_name": "sekretariat.surat"
+    },
+    {
+        "id": 52,
+        "menu_name": "Pengadaan",
+        "code_name": "sekretariat.pengadaan"
+    },
+    {
+        "id": 53,
+        "menu_name": "Logistik Sarpen",
+        "code_name": "logistik"
+    },
+    {
+        "id": 54,
+        "menu_name": "Procurement",
+        "code_name": "logistik.procurement"
+    },
+    {
+        "id": 55,
+        "menu_name": "Cleaning Service",
+        "code_name": "logistik.cleaning-service"
+    },
+    {
+        "id": 56,
+        "menu_name": "Keamanan",
+        "code_name": "logistik.keamanan"
+    },
+    {
+        "id": 57,
+        "menu_name": "Kendaraan",
+        "code_name": "logistik.kendaraan"
+    },
+    {
+        "id": 58,
+        "menu_name": "Sarana Penunjang",
+        "code_name": "logistik.sarana-penunjang"
+    },
+    {
+        "id": 59,
+        "menu_name": "SMK3",
+        "code_name": "logistik.smk3"
+    },
+    {
+        "id": 60,
+        "menu_name": "Polis Asuransi",
+        "code_name": "logistik.polis-asuransi"
+    },
+    {
+        "id": 61,
+        "menu_name": "Jaminan",
+        "code_name": "logistik.jaminan"
+    },
+    {
+        "id": 62,
+        "menu_name": "Master Data",
+        "code_name": "master"
+    },
+    {
+        "id": 63,
+        "menu_name": "Divisi",
+        "code_name": "master.divisi"
+    },
+    {
+        "id": 64,
+        "menu_name": "Department",
+        "code_name": "master.department"
+    },
+    {
+        "id": 65,
+        "menu_name": "Jabatan",
+        "code_name": "master.jabatan"
+    },
+    {
+        "id": 66,
+        "menu_name": "System Admin",
+        "code_name": "admin"
+    },
+    {
+        "id": 67,
+        "menu_name": "Menu",
+        "code_name": "admin.menus"
+    },
+    {
+        "id": 68,
+        "menu_name": "Role",
+        "code_name": "admin.roles"
+    },
+    {
+        "id": 69,
+        "menu_name": "Akses Dokumen",
+        "code_name": "access"
+    },
+    {
+        "id": 70,
+        "menu_name": "User",
+        "code_name": "admin.users"
+    },
+    {
+        "id": 71,
+        "menu_name": "Document Assignment",
+        "code_name": "admin.document-assignment"
+    },
+    {
+        "id": 73,
+        "menu_name": "Dokumen Saya",
+        "code_name": "my-documents"
+    },
+    {
+        "id": 74,
+        "menu_name": "Permintaan Saya",
+        "code_name": "access.my-requests"
+    }
+]

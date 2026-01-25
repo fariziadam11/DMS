@@ -28,7 +28,7 @@ class AturanKebijakanController extends BaseDocumentController
             'nomor' => 'nullable|string|max:100',
             'judul' => 'required|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -51,7 +51,7 @@ class DokumenRraController extends BaseDocumentController
             'nomor_nota' => 'nullable|string|max:100',
             'nomor_sukka' => 'nullable|string|max:255',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -72,7 +72,7 @@ class LaporanPrbcController extends BaseDocumentController
             'tahun' => 'nullable|integer|min:2000|max:2100',
             'bulan' => 'nullable|integer|min:1|max:12',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -94,7 +94,7 @@ class RencanaKerjaDirektoratController extends BaseDocumentController
             'direktorat' => 'nullable|string|max:100',
             'judul' => 'required|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -115,7 +115,7 @@ class RencanaKerjaTahunanController extends BaseDocumentController
             'tahun' => 'nullable|integer|min:2000|max:2100',
             'judul' => 'required|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -136,7 +136,7 @@ class RencanaKerjaTriwulanController extends BaseDocumentController
             'tahun' => 'nullable|integer|min:2000|max:2100',
             'judul' => 'required|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }

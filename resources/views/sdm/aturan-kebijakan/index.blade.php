@@ -1,57 +1,94 @@
 @extends('layouts.app')
 @section('title', 'Aturan Kebijakan SDM')
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="#">Sdm</a></li>
-<li class="breadcrumb-item active">Aturan Kebijakan SDM</li>
+    <li class="breadcrumb-item">
+        <a href="#">Sdm</a>
+    </li>
+    <li class="breadcrumb-item active">Aturan Kebijakan SDM</li>
 @endsection
 @section('content')
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-    <h1 class="page-title">Aturan Kebijakan SDM</h1>
-    <a href="{{ route('sdm.aturan-kebijakan.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</a>
-</div>
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="GET" class="row g-3">
-            <div class="col-md-8"><input type="text" name="search" class="form-control" placeholder="Cari..." value="{{ request('search') }}"></div>
-            <div class="col-md-4"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Cari</button></div>
-        </form>
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title">Aturan Kebijakan SDM</h1>
+        <a href="{{ route('sdm.aturan-kebijakan.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>
+            Tambah</a>
     </div>
-</div>
-<div class="card">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th>#</th>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-8"><input type="text" name="search" class="form-control" placeholder="Cari..."
+                        value="{{ request('search') }}"></div>
+                <div class="col-md-4"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i>
+                        Cari</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
                         <th>Tanggal</th>
                         <th>Nomor</th>
                         <th>Judul</th>
                         <th>File</th>
                         <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($items as $i => $item)
-                <tr>
-                    <td>{{ $items->firstItem() + $i }}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($items as $i => $item)
+                        <tr>
+                            <td>{{ $items->firstItem() + $i }}</td>
                             <td>{{ $item->tanggal ? date('d/m/Y', strtotime($item->tanggal)) : '-' }}</td>
                             <td>{{ $item->nomor ?? '-' }}</td>
                             <td>{{ $item->judul ?? '-' }}</td>
-                            <td>@if($item->file_name)<div class="btn-group btn-group-sm"><button onclick="previewFile('{{ route('sdm.aturan-kebijakan.preview', $item->id) }}', '{{ $item->file_name }}')" class="btn btn-outline-primary" title="Preview"><i class="bi bi-eye"></i></button><a href="{{ route('sdm.aturan-kebijakan.download', $item->id) }}" class="btn btn-outline-success" title="Download"><i class="bi bi-download"></i></a></div>@else<span class="text-muted">-</span>@endif</td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ route('sdm.aturan-kebijakan.show', $item->id) }}" class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                            <a href="{{ route('sdm.aturan-kebijakan.edit', $item->id) }}" class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                            <form action="{{ route('sdm.aturan-kebijakan.destroy', $item->id) }}" method="POST" class="d-inline">@csrf @method('DELETE')<button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr><td colspan="6" class="text-center py-4 text-muted">Belum ada data</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+                            <td>
+                                @if ($item->file_name)
+                                    @if ($item->userHasFileAccess(auth()->id()))
+                                        <div class="btn-group btn-group-sm">
+                                            @if ($permissions['download'])
+                                                <button
+                                                    onclick="previewFile('{{ route('sdm.aturan-kebijakan.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                    class="btn btn-outline-primary" title="Preview"><i
+                                                        class="bi bi-eye"></i></button><a
+                                                    href="{{ route('sdm.aturan-kebijakan.download', $item->id) }}"
+                                                    class="btn btn-outline-success" title="Download"><i
+                                                        class="bi bi-download"></i></a>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                            data-bs-target="#requestModal" data-type="{{ $item->getTable() }}"
+                                            data-id="{{ $item->id }}"
+                                            data-title="{{ $item->judul ?? $item->file_name }}">
+                                            <i class="bi bi-key me-1"></i> Minta Akses
+                                        </button>
+                                    @endif
+                                @else<span class="text-muted">-</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ route('sdm.aturan-kebijakan.show', $item->id) }}"
+                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                    <a href="{{ route('sdm.aturan-kebijakan.edit', $item->id) }}"
+                                        class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                    <form action="{{ route('sdm.aturan-kebijakan.destroy', $item->id) }}" method="POST"
+                                        class="d-inline">@csrf @method('DELETE')<button class="btn btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button></form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">Belum ada data</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @if ($items->hasPages())
+            <div class="card-footer">{{ $items->withQueryString()->links() }}</div>
+        @endif
     </div>
-    @if($items->hasPages())<div class="card-footer">{{ $items->withQueryString()->links() }}</div>@endif
-</div>
 @endsection

@@ -22,7 +22,7 @@ class AturanKebijakanController extends BaseDocumentController
             'nomor' => 'nullable|string|max:100',
             'judul' => 'required|string|max:100',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }

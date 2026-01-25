@@ -20,7 +20,7 @@ class User extends Authenticatable
         'email',
         'password',
         'username',
-        'nik',
+        'nip',
         'id_divisi',
         'id_department',
         'id_jabatan',

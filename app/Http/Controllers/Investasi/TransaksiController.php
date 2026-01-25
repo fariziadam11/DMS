@@ -25,7 +25,7 @@ class TransaksiController extends BaseDocumentController
             'broker' => 'nullable|string|max:100',
             'keterangan' => 'nullable|string',
             'lokasi' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
@@ -57,6 +57,7 @@ class TransaksiController extends BaseDocumentController
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'divisions' => $this->getUserDivisions(),
+            'permissions' => $this->getPermissions(),
         ]);
     }
 }

@@ -130,6 +130,14 @@ trait HasDocumentFeatures
     }
 
     /**
+     * Check if document is classified as internal
+     */
+    public function isInternal()
+    {
+        return $this->sifat_dokumen === 'Internal';
+    }
+
+    /**
      * Scope by classification
      */
     public function scopeByClassification($query, $classification)
@@ -180,18 +188,23 @@ trait HasDocumentFeatures
         $accessibleDivisionIds = $user->getAccessibleDivisions()->pluck('id');
 
         return $query->where(function ($q) use ($accessibleDivisionIds, $userId) {
-            // User's accessible divisions
-            $q->whereIn('id_divisi', $accessibleDivisionIds)
-                // Or user created it
-                ->orWhere('created_by', $userId)
-                 // Or user has approved access request
-                ->orWhereExists(function ($subQ) use ($userId) {
+            // 1. Umum documents are visible to everyone
+            $q->where('sifat_dokumen', 'Umum')
+
+            // 2. Internal documents: visible if user in same division
+              ->orWhere(function($subQ) use ($accessibleDivisionIds) {
+                  $subQ->where('sifat_dokumen', 'Internal')
+                       ->whereIn('id_divisi', $accessibleDivisionIds);
+              })
+
+            // 3. Creator can always access
+              ->orWhere('created_by', $userId)
+
+            // 4. Approved Access Request logic
+              ->orWhereExists(function ($subQ) use ($userId) {
                     $subQ->select(\DB::raw(1))
                         ->from('file_access_requests')
                         ->whereColumn('file_access_requests.document_id', $this->getTable() . '.id')
-                        // Note: ideally we check document_type too, but getTable() usage here is tricky if polymorphic types don't match table names.
-                        // Assuming 1-to-1 mapping for simplicity or we need to pass class name.
-                        // Let's rely on standard logic: document_type = class names usually.
                         ->where('file_access_requests.document_type', static::class)
                         ->where('file_access_requests.id_user', $userId)
                         ->where('file_access_requests.status', 'approved');
@@ -227,6 +240,54 @@ trait HasDocumentFeatures
 
         // Return only fields that actually exist in the table
         return array_intersect($potentialFields, $tableColumns);
+    }
+
+    /**
+     * Check if user has access to file content (download/preview)
+     */
+    public function userHasFileAccess($userId)
+    {
+        $user = User::find($userId);
+        if (!$user) return false;
+
+        // Super Admin can access everything
+        if ($user->isSuperAdmin()) return true;
+
+        // Creator can always access
+        if ($this->created_by == $userId) return true;
+
+        // Check for specific approved access request
+        $hasApprovedRequest = \App\Models\FileAccessRequest::where('document_type', $this->getTable())
+            ->where('document_id', $this->id)
+            ->where('id_user', $userId)
+            ->where('status', 'approved')
+            ->exists();
+
+        if ($hasApprovedRequest) return true;
+
+        // Division Admin of the document's division can always access
+        if ($user->isDivisionAdmin($this->id_divisi)) return true;
+
+        // Logic based on Classification
+        if ($this->sifat_dokumen === 'Umum') {
+            // Umum is now Global (visible to all authenticated users)
+            return true;
+        }
+
+        if ($this->sifat_dokumen === 'Internal') {
+            // Internal: Only visible to division members (inherited via hasDivisionAccess)
+            return $user->hasDivisionAccess($this->id_divisi);
+        }
+
+        // For 'Rahasia' documents
+        if ($this->isSecret()) {
+            // STRICT: Even same division staff cannot access unless they are admin or have approved request
+            // So default is false here
+            return false;
+        }
+
+        // Default fallback (should be covered above, but safe to restrict)
+        return false;
     }
 
     /**

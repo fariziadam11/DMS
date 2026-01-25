@@ -26,17 +26,20 @@
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Tipe</th>
-                        <th>Tanggal</th>
-                        <th>Perihal</th>
-                        <th>Saham</th>
-                        <th>Broker</th>
-                        <th>File</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tipe</th>
+                            <th>Tanggal</th>
+                            <th>Perihal</th>
+                            <th>Saham</th>
+                            <th>Broker</th>
+                            @if ($permissions['download'])
+                                <th>File</th>
+                            @endif
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
                 <tbody>
                     @forelse($data as $i => $item)
                         <tr>
@@ -46,14 +49,31 @@
                             <td>{{ $item->perihal ?? '-' }}</td>
                             <td>{{ $item->saham ?? '-' }}</td>
                             <td>{{ $item->broker ?? '-' }}</td>
-                            <td>
-                                @if ($item->file_name)
-                                    <a href="{{ route('investasi.transaksi.download', $item->id) }}" class="text-primary"><i
-                                            class="bi bi-download"></i></a>
-                                @else
-                                    -
-                                @endif
-                            </td>
+                            @if ($permissions['download'])
+                                <td>
+                                    @if ($item->file_name)
+                                        @if ($item->userHasFileAccess(auth()->id()))
+                                            <div class="btn-group btn-group-sm">
+                                                <button
+                                                    onclick="previewFile('{{ route('investasi.transaksi.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                    class="btn btn-outline-primary" title="Preview"><i
+                                                        class="bi bi-eye"></i></button>
+                                                <a href="{{ route('investasi.transaksi.download', $item->id) }}"
+                                                    class="btn btn-outline-success" title="Download"><i
+                                                        class="bi bi-download"></i></a>
+                                            </div>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-outline-warning"
+                                                data-bs-toggle="modal" data-bs-target="#requestModal"
+                                                data-type="{{ $item->getTable() }}" data-id="{{ $item->id }}"
+                                                data-title="{{ $item->perihal ?? $item->file_name }}">
+                                                <i class="bi bi-key me-1"></i> Minta Akses
+                                            </button>
+                                        @endif
+                                    @else<span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                            @endif
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('investasi.transaksi.show', $item->id) }}"
@@ -68,7 +88,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center py-4 text-muted">Belum ada data</td>
+                            <td colspan="{{ $permissions['download'] ? 8 : 7 }}" class="text-center py-4 text-muted">Belum
+                                ada data</td>
                         </tr>
                     @endforelse
                 </tbody>

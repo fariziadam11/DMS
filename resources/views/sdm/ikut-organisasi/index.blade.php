@@ -56,13 +56,27 @@
                             <td>{{ $item->perihal ?? '-' }}</td>
                             <td>
                                 @if ($item->file_name)
-                                    <div class="btn-group btn-group-sm"><button
-                                            onclick="previewFile('{{ route('sdm.ikut-organisasi.preview', $item->id) }}', '{{ $item->file_name }}')"
-                                            class="btn btn-outline-primary" title="Preview"><i
-                                                class="bi bi-eye"></i></button><a
-                                            href="{{ route('sdm.ikut-organisasi.download', $item->id) }}"
-                                            class="btn btn-outline-success" title="Download"><i
-                                            class="bi bi-download"></i></a></div>@else<span class="text-muted">-</span>
+                                    @if ($item->userHasFileAccess(auth()->id()))
+                                        <div class="btn-group btn-group-sm">
+                                            @if ($permissions['download'])
+                                                <button
+                                                    onclick="previewFile('{{ route('sdm.ikut-organisasi.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                    class="btn btn-outline-primary" title="Preview"><i
+                                                        class="bi bi-eye"></i></button><a
+                                                    href="{{ route('sdm.ikut-organisasi.download', $item->id) }}"
+                                                    class="btn btn-outline-success" title="Download"><i
+                                                        class="bi bi-download"></i></a>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                            data-bs-target="#requestModal" data-type="{{ $item->getTable() }}"
+                                            data-id="{{ $item->id }}"
+                                            data-title="{{ $item->nama ?? $item->file_name }}">
+                                            <i class="bi bi-key me-1"></i> Minta Akses
+                                        </button>
+                                    @endif
+                                @else<span class="text-muted">-</span>
                                 @endif
                             </td>
                             <td>

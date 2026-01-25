@@ -68,23 +68,34 @@ class UserController extends Controller
         return response()->json($jabatans);
     }
 
+    public function getDefaultRole($jabatanId)
+    {
+        $jabatan = MasterJabatan::find($jabatanId);
+        if ($jabatan && $jabatan->id_role_default) {
+            return response()->json(['role_id' => $jabatan->id_role_default]);
+        }
+        return response()->json(['role_id' => null]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:125|unique:users,username',
-            'nik' => 'required|string|max:20|unique:users,nik',
+            'nip' => 'required|string|max:20|unique:users,nip',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
             'id_divisi' => 'nullable|exists:master_divisi,id',
             'id_department' => 'nullable|exists:master_department,id',
             'id_jabatan' => 'nullable|exists:master_jabatan,id',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:base_roles,id',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'username' => $validated['username'],
-            'nik' => $validated['nik'],
+            'nip' => $validated['nip'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'id_divisi' => $validated['id_divisi'] ?? null,
@@ -93,11 +104,16 @@ class UserController extends Controller
             'is_active' => 1,
         ]);
 
-        // Auto assign role from Jabatan
-        if (!empty($validated['id_jabatan'])) {
-            $jabatan = MasterJabatan::find($validated['id_jabatan']);
-            if ($jabatan && $jabatan->id_role_default) {
-                 $user->roles()->sync([$jabatan->id_role_default]);
+        // Sync Roles
+        if (isset($validated['roles'])) {
+            $user->roles()->sync($validated['roles']);
+        } else {
+             // Fallback if no roles sent but Jabatan was selected (though JS should handle this)
+            if (!empty($validated['id_jabatan'])) {
+                $jabatan = MasterJabatan::find($validated['id_jabatan']);
+                if ($jabatan && $jabatan->id_role_default) {
+                     $user->roles()->sync([$jabatan->id_role_default]);
+                }
             }
         }
 
@@ -114,7 +130,7 @@ class UserController extends Controller
 
         \App\Models\UsersProfile::create([
             'id_user' => $user->id,
-            'nik' => $validated['nik'],
+            'nip' => $validated['nip'],
             'first_name' => $firstName,
             'last_name' => $lastName,
             'divisi' => $divisiName,
@@ -135,6 +151,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $divisions = MasterDivisi::orderBy('nama_divisi')->get();
+        $roles = BaseRole::orderBy('roles_name')->get();
         // Load Depts and Jabatans based on current user selection for the view
         $departments = [];
         $jabatans = [];
@@ -151,7 +168,7 @@ class UserController extends Controller
 
         $user->load('roles');
 
-        return view('admin.users.edit', compact('user', 'divisions', 'departments', 'jabatans'));
+        return view('admin.users.edit', compact('user', 'divisions', 'roles', 'departments', 'jabatans'));
     }
 
     public function update(Request $request, User $user)
@@ -159,18 +176,20 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:125|unique:users,username,' . $user->id,
-            'nik' => 'required|string|max:20|unique:users,nik,' . $user->id,
+            'nip' => 'required|string|max:20|unique:users,nip,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|min:8|confirmed',
             'id_divisi' => 'nullable|exists:master_divisi,id',
             'id_department' => 'nullable|exists:master_department,id',
             'id_jabatan' => 'nullable|exists:master_jabatan,id',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:base_roles,id',
         ]);
 
         $user->update([
             'name' => $validated['name'],
             'username' => $validated['username'],
-            'nik' => $validated['nik'],
+            'nip' => $validated['nip'],
             'email' => $validated['email'],
             'id_divisi' => $validated['id_divisi'] ?? null,
             'id_department' => $validated['id_department'] ?? null,
@@ -181,18 +200,26 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($validated['password'])]);
         }
 
-        // Auto assign role from Jabatan if changed
-        if (!empty($validated['id_jabatan']) && $validated['id_jabatan'] != $user->getOriginal('id_jabatan')) {
-            $jabatan = MasterJabatan::find($validated['id_jabatan']);
-             if ($jabatan && $jabatan->id_role_default) {
-                 $user->roles()->sync([$jabatan->id_role_default]);
-            }
+        // Sync Roles
+        if (isset($validated['roles'])) {
+            $user->roles()->sync($validated['roles']);
+        } else {
+            // Check if we should auto-assign based on Jabatan ONLY if no roles were provided AND it's a fresh assignment?
+            // Or if the user explicitly deselected all roles?
+            // Safer to just sync empty array if 'roles' field is present but empty, but Request->validate won't pass 'roles' if it's missing from input.
+            // However, usually detailed UI sends 'roles' as empty array if cleared.
+            // Let's rely on manual selection. If user changes Jabatan, the UI should suggest the role.
+            $user->roles()->sync([]);
         }
+
+        // Note: The previous logic of "Auto assign role from Jabatan if changed" is now dangerous because it might overwrite manual roles.
+        // We will delegate the "suggestion" to the Frontend (JS) which will select the role in the Select2 dropdown.
+        // Backend simply saves what is submitted.
 
         // Update Profile
         if ($user->profile) {
             $user->profile->update([
-                'nik' => $validated['nik'],
+                'nip' => $validated['nip'],
             ]);
 
             if (!empty($validated['id_divisi'])) {
@@ -204,6 +231,9 @@ class UserController extends Controller
                 $user->profile->update(['department' => $dept ? $dept->nama_department : null]);
             }
         }
+
+        // Clear menu cache for the user so they see changes immediately
+        \App\Services\MenuService::clearCache($user->id);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate');
     }

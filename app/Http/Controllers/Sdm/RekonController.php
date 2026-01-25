@@ -21,7 +21,7 @@ class RekonController extends BaseDocumentController
             'hasil' => 'nullable|string|max:100',
             'kategori' => 'required|string|max:100',
             'file' => 'nullable|file|max:10240|mimes:pdf,doc,docx,xls,xlsx',
-            'sifat_dokumen' => 'nullable|in:Umum,Rahasia',
+            'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
 }

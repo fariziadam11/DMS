@@ -6,7 +6,7 @@ use App\Models\FileAccessRequest;
 use App\Models\FolderPermission;
 use Illuminate\Http\Request;
 
-class FileAccessController extends Controller
+class AccessController extends Controller
 {
     public function __construct()
     {
@@ -25,7 +25,15 @@ class FileAccessController extends Controller
         if (!$user->isSuperAdmin()) {
             $managedDivisions = $user->roles()
                 ->where('access_scope', 'division')
-                ->pluck('id_divisi');
+                ->pluck('id_divisi')
+                ->toArray();
+
+            // Also include user's own division (for View access)
+            if ($user->id_divisi) {
+                $managedDivisions[] = $user->id_divisi;
+            }
+
+            $managedDivisions = array_unique($managedDivisions);
 
             $query->whereIn('id_divisi', $managedDivisions);
         }
@@ -38,19 +46,6 @@ class FileAccessController extends Controller
         $requests = $query->orderBy('created_at', 'desc')->paginate(15);
 
         return view('access.index', compact('requests'));
-    }
-
-    /**
-     * My access requests
-     */
-    public function myRequests()
-    {
-        $requests = FileAccessRequest::with(['divisi', 'responder'])
-            ->where('id_user', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('access.my-requests', compact('requests'));
     }
 
     /**
@@ -126,17 +121,42 @@ class FileAccessController extends Controller
     {
         $user = auth()->user();
 
+        // 1. Prevent Self-Approval
+        if ($accessRequest->id_user === $user->id) {
+            abort(403, 'Anda tidak dapat menyetujui atau menolak permintaan Anda sendiri.');
+        }
+
         if ($user->isSuperAdmin()) {
             return true;
         }
 
+        // 2. Check specific "Approval" privilege
+        $menu = \App\Models\BaseMenu::where('code_name', 'access')->first();
+        $approvalFunc = \App\Models\BaseFunction::where('function_name', 'Approval')->first();
+
+        if ($menu && $approvalFunc) {
+            if (!$user->hasMenuFunction($menu->id, $approvalFunc->id)) {
+                abort(403, 'Anda tidak memiliki hak akses "Approval" untuk menu ini.');
+            }
+        }
+
+        // 3. Check Division Scope (Must handle requests within their managed scope)
         $canManage = $user->roles()
             ->where('id_divisi', $accessRequest->id_divisi)
             ->where('access_scope', 'division')
             ->exists();
 
+        // Also allow if user has global scope (though covered by isSuperAdmin usually,
+        // sometimes global roles aren't "Super Admin" named)
         if (!$canManage) {
-            abort(403, 'Anda tidak berhak mengelola permintaan ini.');
+            $hasGlobal = $user->roles()->where('access_scope', 'global')->exists();
+            if ($hasGlobal) {
+                $canManage = true;
+            }
+        }
+
+        if (!$canManage) {
+            abort(403, 'Anda tidak berhak mengelola permintaan ini (Bukan area divisi Anda).');
         }
 
         return true;

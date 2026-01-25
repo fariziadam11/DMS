@@ -35,7 +35,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>NIK</th>
+                        <th>NIP</th>
                         <th>Display Name</th>
                         <th>Login Username</th>
 
@@ -50,7 +50,7 @@
                     @forelse($users as $i => $user)
                         <tr>
                             <td>{{ $users->firstItem() + $i }}</td>
-                            <td><span class="badge bg-secondary">{{ $user->nik ?? '-' }}</span></td>
+                            <td><span class="badge bg-secondary">{{ $user->nip ?? '-' }}</span></td>
                             <td><strong>{{ $user->name }}</strong></td>
                             <td>{{ $user->username ?? '-' }}</td>
 

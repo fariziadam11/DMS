@@ -102,11 +102,19 @@ class RoleController extends Controller
             ->get()
             ->groupBy('id_menu');
 
+        // Get allowed functions per menu (if constrained)
+        $allowedFunctions = \App\Models\BaseMenuFunction::all()
+            ->groupBy('id_menu')
+            ->map(function ($items) {
+                return $items->pluck('id_function')->toArray();
+            });
+
         return view('admin.roles.privileges', [
             'role' => $role,
             'menus' => $menus,
             'functions' => $functions,
             'currentPrivileges' => $currentPrivileges,
+            'allowedFunctions' => $allowedFunctions,
         ]);
     }
 

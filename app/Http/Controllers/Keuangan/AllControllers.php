@@ -18,7 +18,7 @@ class SuratBayarController extends BaseDocumentController
             'id_divisi' => 'required|exists:master_divisi,id',
             'tanggal_surat_bayar' => 'nullable|date',
             'nomor_surat_bayar' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -40,7 +40,7 @@ class SpbController extends BaseDocumentController
             'nomor_spb' => 'nullable|string|max:100',
             'nominal' => 'nullable|numeric',
             'tujuan' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -62,7 +62,7 @@ class SppbController extends BaseDocumentController
             'tanggal_sppb' => 'nullable|date',
             'nomor_sppb' => 'nullable|string|max:100',
             'nominal' => 'nullable|numeric',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -82,7 +82,7 @@ class CashflowController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'nominal' => 'nullable|numeric',
             'uraian' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -102,7 +102,7 @@ class PenempatanController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'nominal' => 'nullable|numeric',
             'uraian' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -122,7 +122,7 @@ class PemindahbukuanController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'nominal' => 'nullable|numeric',
             'uraian' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -142,7 +142,7 @@ class PajakController extends BaseDocumentController
             'masa' => 'nullable|string|max:50',
             'tahun' => 'nullable|integer',
             'uraian' => 'nullable|string|max:255',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }

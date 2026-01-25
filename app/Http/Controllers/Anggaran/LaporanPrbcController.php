@@ -19,7 +19,7 @@ class LaporanPrbcController extends BaseDocumentController
             'tahun' => 'nullable|integer|min:2000|max:2100',
             'bulan' => 'nullable|integer|min:1|max:12',
             'file' => 'nullable|file|max:10240|mimes:pdf,doc,docx,xls,xlsx',
-            'sifat_dokumen' => 'nullable|in:Umum,Rahasia',
+            'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
             'lokasi' => 'nullable|string|max:255',
         ]);
     }

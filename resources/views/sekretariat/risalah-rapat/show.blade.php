@@ -51,19 +51,26 @@
                                 @endif
                             </td>
                         </tr>
-                        <tr>
-                            <th>File Dokumen</th>
-                            <td>
-                                @if ($item->file_name)
-                                    <div class="btn-group btn-group-sm">
-                                        <button onclick="previewFile('{{ route('sekretariat.risalah-rapat.preview', $item->id) }}', '{{ $item->file_name }}')" class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i> Preview</button>
-                                        <a href="{{ route('sekretariat.risalah-rapat.download', $item->id) }}" class="btn btn-success" title="Download"><i class="bi bi-download"></i> Download</a>
-                                    </div>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
-                        </tr>
+                        @if ($permissions['download'])
+                            <tr>
+                                <th>File Dokumen</th>
+                                <td>
+                                    @if ($item->file_name)
+                                        <div class="btn-group btn-group-sm">
+                                            <button
+                                                onclick="previewFile('{{ route('sekretariat.risalah-rapat.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i>
+                                                Preview</button>
+                                            <a href="{{ route('sekretariat.risalah-rapat.download', $item->id) }}"
+                                                class="btn btn-success" title="Download"><i class="bi bi-download"></i>
+                                                Download</a>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
                             <th>Lokasi Fisik</th>
                             <td>{{ $item->lokasi ?? '-' }}</td>
@@ -71,7 +78,8 @@
                     </table>
                 </div>
                 <div class="card-footer text-end">
-                    <a href="{{ route('sekretariat.risalah-rapat.edit', $item->id) }}" class="btn btn-warning"><i class="bi bi-pencil"></i> Edit</a>
+                    <a href="{{ route('sekretariat.risalah-rapat.edit', $item->id) }}" class="btn btn-warning"><i
+                            class="bi bi-pencil"></i> Edit</a>
                     <a href="{{ route('sekretariat.risalah-rapat.index') }}" class="btn btn-secondary">Kembali</a>
                 </div>
             </div>

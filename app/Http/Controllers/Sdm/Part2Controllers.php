@@ -19,7 +19,7 @@ class PenghargaanController extends BaseDocumentController
             'nik' => 'nullable|string|max:50',
             'nama' => 'required|string|max:100',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -39,7 +39,7 @@ class IkutOrganisasiController extends BaseDocumentController
             'nik' => 'nullable|string|max:50',
             'nama' => 'required|string|max:100',
             'tanggal' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -60,7 +60,7 @@ class SuratMasukController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'perihal' => 'required|string',
             'kategori' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -81,7 +81,7 @@ class SuratKeluarController extends BaseDocumentController
             'tanggal' => 'nullable|date',
             'perihal' => 'required|string',
             'kategori' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -103,7 +103,7 @@ class AspurjabController extends BaseDocumentController
             'nama' => 'required|string|max:100',
             'mulai' => 'nullable|date',
             'akhir' => 'nullable|date',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }
@@ -124,7 +124,7 @@ class RekonController extends BaseDocumentController
             'ba' => 'nullable|string|max:100',
             'hasil' => 'nullable|string|max:255',
             'kategori' => 'nullable|string|max:100',
-            'sifat_dokumen' => 'required|in:Rahasia,Umum',
+            'sifat_dokumen' => 'required|in:Rahasia,Internal,Umum',
             'file' => ($id ? 'nullable' : 'required') . '|file|max:10240',
         ]);
     }

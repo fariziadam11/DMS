@@ -9,15 +9,87 @@ use Illuminate\Support\Facades\DB;
 class GlobalSearchController extends Controller
 {
     protected $searchableModels = [
+        // Akuntansi
         'akuntansi_aturan_kebijakan' => \App\Models\Akuntansi\AturanKebijakan::class,
         'akuntansi_jurnal_umum' => \App\Models\Akuntansi\JurnalUmum::class,
         'akuntansi_laporan_audit_investasi' => \App\Models\Akuntansi\LaporanAuditInvestasi::class,
         'akuntansi_laporan_audit_keuangan' => \App\Models\Akuntansi\LaporanAuditKeuangan::class,
         'akuntansi_laporan_bulanan' => \App\Models\Akuntansi\LaporanBulanan::class,
+
+        // Anggaran
         'anggaran_aturan_kebijakan' => \App\Models\Anggaran\AturanKebijakan::class,
-        'transaksi' => \App\Models\Investasi\Transaksi::class,
-        'surat' => \App\Models\Investasi\Surat::class,
-        // Add more models as needed
+        'anggaran_dokumen_rra' => \App\Models\Anggaran\DokumenRra::class,
+        'anggaran_laporan_prbc' => \App\Models\Anggaran\LaporanPrbc::class,
+        'anggaran_rencana_kerja_direktorat' => \App\Models\Anggaran\RencanaKerjaDirektorat::class,
+        'anggaran_rencana_kerja_tahunan' => \App\Models\Anggaran\RencanaKerjaTahunan::class,
+        'anggaran_rencana_kerja_triwulan' => \App\Models\Anggaran\RencanaKerjaTriwulan::class,
+
+        // Hukum & Kepatuhan
+        'hukum_kepatuhan_compliance_check' => \App\Models\HukumKepatuhan\ComplianceCheck::class,
+        'hukum_kepatuhan_executive_summary' => \App\Models\HukumKepatuhan\ExecutiveSummary::class,
+        'hukum_kepatuhan_kajian_hukum' => \App\Models\HukumKepatuhan\KajianHukum::class,
+        'hukum_kepatuhan_kontrak' => \App\Models\HukumKepatuhan\Kontrak::class,
+        'hukum_kepatuhan_legal_memo' => \App\Models\HukumKepatuhan\LegalMemo::class,
+        'hukum_kepatuhan_lembar_keputusan' => \App\Models\HukumKepatuhan\LembarKeputusan::class,
+        'hukum_kepatuhan_lembar_rekomendasi' => \App\Models\HukumKepatuhan\LembarRekomendasi::class,
+        'hukum_kepatuhan_penomoran' => \App\Models\HukumKepatuhan\Penomoran::class,
+        'hukum_kepatuhan_putusan' => \App\Models\HukumKepatuhan\Putusan::class,
+        'hukum_kepatuhan_regulasi_external' => \App\Models\HukumKepatuhan\RegulasiExternal::class,
+        'hukum_kepatuhan_regulasi_internal' => \App\Models\HukumKepatuhan\RegulasiInternal::class,
+
+        // Investasi
+        'investasi_perencanaan_surat' => \App\Models\Investasi\PerencanaanSurat::class,
+        'investasi_perencanaan_transaksi' => \App\Models\Investasi\PerencanaanTransaksi::class,
+        'investasi_propensa_surat' => \App\Models\Investasi\PropensaSurat::class,
+        'investasi_propensa_transaksi' => \App\Models\Investasi\PropensaTransaksi::class,
+        'investasi_surat' => \App\Models\Investasi\Surat::class,
+        'investasi_transaksi' => \App\Models\Investasi\Transaksi::class,
+
+        // Keuangan
+        'keuangan_cashflow' => \App\Models\Keuangan\Cashflow::class,
+        'keuangan_pajak' => \App\Models\Keuangan\Pajak::class,
+        'keuangan_pemindahbukuan' => \App\Models\Keuangan\Pemindahbukuan::class,
+        'keuangan_penempatan' => \App\Models\Keuangan\Penempatan::class,
+        'keuangan_spb' => \App\Models\Keuangan\Spb::class,
+        'keuangan_sppb' => \App\Models\Keuangan\Sppb::class,
+        'keuangan_surat_bayar' => \App\Models\Keuangan\SuratBayar::class,
+
+        // Logistik
+        'logistik_cleaning_service' => \App\Models\Logistik\CleaningService::class,
+        'logistik_jaminan' => \App\Models\Logistik\Jaminan::class,
+        'logistik_keamanan' => \App\Models\Logistik\Keamanan::class,
+        'logistik_kendaraan' => \App\Models\Logistik\Kendaraan::class,
+        'logistik_pelaporan_prbc' => \App\Models\Logistik\PelaporanPrbc::class,
+        'logistik_polis_asuransi' => \App\Models\Logistik\PolisAsuransi::class,
+        'logistik_procurement' => \App\Models\Logistik\Procurement::class,
+        'logistik_sarana_penunjang' => \App\Models\Logistik\SaranaPenunjang::class,
+        'logistik_smk3' => \App\Models\Logistik\Smk3::class,
+        'logistik_user_satisfaction' => \App\Models\Logistik\UserSatisfaction::class,
+        'logistik_vendor_satisfaction' => \App\Models\Logistik\VendorSatisfaction::class,
+
+        // SDM
+        'sdm_aspurjab' => \App\Models\Sdm\Aspurjab::class,
+        'sdm_capeg_pegrus' => \App\Models\Sdm\CapegPegrus::class,
+        'sdm_ikut_organisasi' => \App\Models\Sdm\IkutOrganisasi::class,
+        'sdm_naik_gaji' => \App\Models\Sdm\NaikGaji::class,
+        'sdm_penghargaan' => \App\Models\Sdm\Penghargaan::class,
+        'sdm_peraturan' => \App\Models\Sdm\Peraturan::class,
+        'sdm_pks' => \App\Models\Sdm\Pks::class,
+        'sdm_promosi_mutasi' => \App\Models\Sdm\PromosiMutasi::class,
+        'sdm_rarus' => \App\Models\Sdm\Rarus::class,
+        'sdm_rekon' => \App\Models\Sdm\Rekon::class,
+        'sdm_rekrut_masuk' => \App\Models\Sdm\RekrutMasuk::class,
+        'sdm_surat_keluar' => \App\Models\Sdm\SuratKeluar::class,
+        'sdm_surat_masuk' => \App\Models\Sdm\SuratMasuk::class,
+
+        // Sekretariat
+        'sekretariat_laporan' => \App\Models\Sekretariat\Laporan::class,
+        'sekretariat_materi' => \App\Models\Sekretariat\Materi::class,
+        'sekretariat_pengadaan' => \App\Models\Sekretariat\Pengadaan::class,
+        'sekretariat_remunerasi_dokumen' => \App\Models\Sekretariat\RemunerasiDokumen::class,
+        'sekretariat_remunerasi_pedoman' => \App\Models\Sekretariat\RemunerasiPedoman::class,
+        'sekretariat_risalah_rapat' => \App\Models\Sekretariat\RisalahRapat::class,
+        'sekretariat_surat' => \App\Models\Sekretariat\Surat::class,
     ];
 
     public function __construct()
@@ -44,8 +116,17 @@ class GlobalSearchController extends Controller
 
                 $modelQuery = $modelClass::query();
 
-                // Apply global search
-                $modelQuery->globalSearch($query);
+                // Check if the module/table name matches the query
+                // e.g. "investasi" matches "investasi_surat"
+                $isModuleMatch = stripos($tableName, str_replace(' ', '_', $query)) !== false;
+
+                if ($isModuleMatch) {
+                    // If the module matches, we want to show everything (subject to other filters)
+                    // So we DON'T apply globalSearch($query) which filters by content
+                } else {
+                    // Apply global search content filter
+                    $modelQuery->globalSearch($query);
+                }
 
                 // Apply classification filter
                 if ($classificationFilter) {
@@ -57,6 +138,10 @@ class GlobalSearchController extends Controller
                     $modelQuery->byDivision($divisiFilter);
                 }
 
+                // Strictly exclude 'Rahasia' documents from Global Search
+                // Only 'Umum' documents should be searchable globally
+                $modelQuery->where('sifat_dokumen', '!=', 'Rahasia');
+
                 // Get results
                 $items = $modelQuery->with('divisi')
                     ->orderBy('created_at', 'desc')
@@ -65,6 +150,7 @@ class GlobalSearchController extends Controller
 
                 foreach ($items as $item) {
                     $hasAccess = $user->isSuperAdmin()
+                        || $item->sifat_dokumen === 'Umum'
                         || $user->hasDivisionAccess($item->id_divisi)
                         || $this->hasApprovedAccessRequest($user->id, $tableName, $item->id);
 
@@ -126,11 +212,87 @@ class GlobalSearchController extends Controller
     protected function getViewUrl($tableName, $id)
     {
         $routeMap = [
+            // Akuntansi
             'akuntansi_aturan_kebijakan' => 'akuntansi.aturan-kebijakan.show',
             'akuntansi_jurnal_umum' => 'akuntansi.jurnal-umum.show',
-            'transaksi' => 'investasi.transaksi.show',
-            'surat' => 'investasi.surat.show',
-            // Add more route mappings
+            'akuntansi_laporan_audit_investasi' => 'akuntansi.laporan-audit-investasi.show',
+            'akuntansi_laporan_audit_keuangan' => 'akuntansi.laporan-audit-keuangan.show',
+            'akuntansi_laporan_bulanan' => 'akuntansi.laporan-bulanan.show',
+
+            // Anggaran
+            'anggaran_aturan_kebijakan' => 'anggaran.aturan-kebijakan.show',
+            'anggaran_dokumen_rra' => 'anggaran.dokumen-rra.show',
+            'anggaran_laporan_prbc' => 'anggaran.laporan-prbc.show',
+            'anggaran_rencana_kerja_direktorat' => 'anggaran.rencana-kerja-direktorat.show',
+            'anggaran_rencana_kerja_tahunan' => 'anggaran.rencana-kerja-tahunan.show',
+            'anggaran_rencana_kerja_triwulan' => 'anggaran.rencana-kerja-triwulan.show',
+
+            // Hukum & Kepatuhan
+            'hukum_kepatuhan_compliance_check' => 'hukum-kepatuhan.compliance-check.show',
+            'hukum_kepatuhan_executive_summary' => 'hukum-kepatuhan.executive-summary.show',
+            'hukum_kepatuhan_kajian_hukum' => 'hukum-kepatuhan.kajian-hukum.show',
+            'hukum_kepatuhan_kontrak' => 'hukum-kepatuhan.kontrak.show',
+            'hukum_kepatuhan_legal_memo' => 'hukum-kepatuhan.legal-memo.show',
+            'hukum_kepatuhan_lembar_keputusan' => 'hukum-kepatuhan.lembar-keputusan.show',
+            'hukum_kepatuhan_lembar_rekomendasi' => 'hukum-kepatuhan.lembar-rekomendasi.show',
+            'hukum_kepatuhan_penomoran' => 'hukum-kepatuhan.penomoran.show',
+            'hukum_kepatuhan_putusan' => 'hukum-kepatuhan.putusan.show',
+            'hukum_kepatuhan_regulasi_external' => 'hukum-kepatuhan.regulasi-external.show',
+            'hukum_kepatuhan_regulasi_internal' => 'hukum-kepatuhan.regulasi-internal.show',
+
+            // Investasi
+            'investasi_perencanaan_surat' => 'investasi.perencanaan-surat.show',
+            'investasi_perencanaan_transaksi' => 'investasi.perencanaan-transaksi.show',
+            'investasi_propensa_surat' => 'investasi.propensa-surat.show',
+            'investasi_propensa_transaksi' => 'investasi.propensa-transaksi.show',
+            'investasi_surat' => 'investasi.surat.show',
+            'investasi_transaksi' => 'investasi.transaksi.show',
+
+            // Keuangan
+            'keuangan_cashflow' => 'keuangan.cashflow.show',
+            'keuangan_pajak' => 'keuangan.pajak.show',
+            'keuangan_pemindahbukuan' => 'keuangan.pemindahbukuan.show',
+            'keuangan_penempatan' => 'keuangan.penempatan.show',
+            'keuangan_spb' => 'keuangan.spb.show',
+            'keuangan_sppb' => 'keuangan.sppb.show',
+            'keuangan_surat_bayar' => 'keuangan.surat-bayar.show',
+
+            // Logistik
+            'logistik_cleaning_service' => 'logistik.cleaning-service.show',
+            'logistik_jaminan' => 'logistik.jaminan.show',
+            'logistik_keamanan' => 'logistik.keamanan.show',
+            'logistik_kendaraan' => 'logistik.kendaraan.show',
+            'logistik_pelaporan_prbc' => 'logistik.pelaporan-prbc.show',
+            'logistik_polis_asuransi' => 'logistik.polis-asuransi.show',
+            'logistik_procurement' => 'logistik.procurement.show',
+            'logistik_sarana_penunjang' => 'logistik.sarana-penunjang.show',
+            'logistik_smk3' => 'logistik.smk3.show',
+            'logistik_user_satisfaction' => 'logistik.user-satisfaction.show',
+            'logistik_vendor_satisfaction' => 'logistik.vendor-satisfaction.show',
+
+            // SDM
+            'sdm_aspurjab' => 'sdm.aspurjab.show',
+            'sdm_capeg_pegrus' => 'sdm.capeg-pegrus.show',
+            'sdm_ikut_organisasi' => 'sdm.ikut-organisasi.show',
+            'sdm_naik_gaji' => 'sdm.naik-gaji.show',
+            'sdm_penghargaan' => 'sdm.penghargaan.show',
+            'sdm_peraturan' => 'sdm.peraturan.show',
+            'sdm_pks' => 'sdm.pks.show',
+            'sdm_promosi_mutasi' => 'sdm.promosi-mutasi.show',
+            'sdm_rarus' => 'sdm.rarus.show',
+            'sdm_rekon' => 'sdm.rekon.show',
+            'sdm_rekrut_masuk' => 'sdm.rekrut-masuk.show',
+            'sdm_surat_keluar' => 'sdm.surat-keluar.show',
+            'sdm_surat_masuk' => 'sdm.surat-masuk.show',
+
+            // Sekretariat
+            'sekretariat_laporan' => 'sekretariat.laporan.show',
+            'sekretariat_materi' => 'sekretariat.materi.show',
+            'sekretariat_pengadaan' => 'sekretariat.pengadaan.show',
+            'sekretariat_remunerasi_dokumen' => 'sekretariat.remunerasi-dokumen.show',
+            'sekretariat_remunerasi_pedoman' => 'sekretariat.remunerasi-pedoman.show',
+            'sekretariat_risalah_rapat' => 'sekretariat.risalah-rapat.show',
+            'sekretariat_surat' => 'sekretariat.surat.show',
         ];
 
         $routeName = $routeMap[$tableName] ?? null;

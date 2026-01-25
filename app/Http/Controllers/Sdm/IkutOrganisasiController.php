@@ -22,7 +22,7 @@ class IkutOrganisasiController extends BaseDocumentController
             'perihal' => 'nullable|string|max:65535',
             'tanggal' => 'nullable|date',
             'file' => 'nullable|file|max:10240|mimes:pdf,doc,docx,xls,xlsx',
-            'sifat_dokumen' => 'nullable|in:Umum,Rahasia',
+            'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
 }

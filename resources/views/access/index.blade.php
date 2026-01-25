@@ -64,18 +64,50 @@
                             </td>
                             <td>{{ $req->created_at?->format('d M Y') }}</td>
                             <td>
+                                @php
+                                    $currentUser = auth()->user();
+                                    $menuAccess = \App\Models\BaseMenu::where('code_name', 'access')->first();
+                                    $funcApproval = \App\Models\BaseFunction::where(
+                                        'function_name',
+                                        'Approval',
+                                    )->first();
+
+                                    $userHasApproval = $currentUser->isSuperAdmin();
+                                    if (!$userHasApproval && $menuAccess && $funcApproval) {
+                                        $userHasApproval = $currentUser->hasMenuFunction(
+                                            $menuAccess->id,
+                                            $funcApproval->id,
+                                        );
+                                    }
+
+                                    // Check if user has division access to this request (simple check based on index logic)
+                                    // For now, we rely on controller filter, but strictly speaking checking approval privilege is key.
+
+                                @endphp
+
                                 @if ($req->status == 'pending')
-                                    <form action="{{ route('access.approve', $req->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success"
-                                            onclick="return confirm('Setujui permintaan ini?')">
-                                            <i class="bi bi-check"></i>
+                                    @if ($userHasApproval && $req->id_user != $currentUser->id)
+                                        <form action="{{ route('access.approve', $req->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success"
+                                                onclick="return confirm('Setujui permintaan ini?')">
+                                                <i class="bi bi-check"></i> Setujui
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#rejectModal{{ $req->id }}">
+                                            <i class="bi bi-x"></i> Tolak
                                         </button>
-                                    </form>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#rejectModal{{ $req->id }}">
-                                        <i class="bi bi-x"></i>
-                                    </button>
+                                    @else
+                                        @if ($req->id_user == $currentUser->id)
+                                            <span class="text-muted text-xs">Menunggu Persetujuan</span>
+                                        @else
+                                            <span class="text-muted text-xs">Akses View Only</span>
+                                        @endif
+                                    @endif
+
+                                    <!-- Reject Modal -->
 
                                     <!-- Reject Modal -->
                                     <div class="modal fade" id="rejectModal{{ $req->id }}" tabindex="-1">

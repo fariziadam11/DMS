@@ -29,7 +29,9 @@
                     <tr>
                         <th>#</th>
                         <th>Perihal</th>
-                        <th>File</th>
+                        @if ($permissions['download'])
+                            <th>File</th>
+                        @endif
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -38,17 +40,31 @@
                         <tr>
                             <td>{{ $items->firstItem() + $i }}</td>
                             <td>{{ Str::limit($item->perihal, 80) ?? '-' }}</td>
-                            <td>
-                                @if ($item->file_name)
-                                    <div class="btn-group btn-group-sm"><button
-                                            onclick="previewFile('{{ route('hukum-kepatuhan.executive-summary.preview', $item->id) }}', '{{ $item->file_name }}')"
-                                            class="btn btn-outline-primary" title="Preview"><i
-                                                class="bi bi-eye"></i></button><a
-                                            href="{{ route('hukum-kepatuhan.executive-summary.download', $item->id) }}"
-                                            class="btn btn-outline-success" title="Download"><i
-                                            class="bi bi-download"></i></a></div>@else<span class="text-muted">-</span>
-                                @endif
-                            </td>
+                            @if ($permissions['download'])
+                                <td>
+                                    @if ($item->file_name)
+                                        @if ($item->userHasFileAccess(auth()->id()))
+                                            <div class="btn-group btn-group-sm">
+                                                <button
+                                                    onclick="previewFile('{{ route('hukum-kepatuhan.executive-summary.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                    class="btn btn-outline-primary" title="Preview"><i
+                                                        class="bi bi-eye"></i></button>
+                                                <a href="{{ route('hukum-kepatuhan.executive-summary.download', $item->id) }}"
+                                                    class="btn btn-outline-success" title="Download"><i
+                                                        class="bi bi-download"></i></a>
+                                            </div>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-outline-warning"
+                                                data-bs-toggle="modal" data-bs-target="#requestModal"
+                                                data-type="{{ $item->getTable() }}" data-id="{{ $item->id }}"
+                                                data-title="{{ $item->perihal ?? $item->file_name }}">
+                                                <i class="bi bi-key me-1"></i> Minta Akses
+                                            </button>
+                                        @endif
+                                    @else<span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                            @endif
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('hukum-kepatuhan.executive-summary.show', $item->id) }}"
@@ -63,7 +79,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Belum ada data</td>
+                            <td colspan="{{ $permissions['download'] ? 4 : 3 }}" class="text-center py-4 text-muted">Belum
+                                ada data</td>
                         </tr>
                     @endforelse
                 </tbody>

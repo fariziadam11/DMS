@@ -409,6 +409,9 @@
     @include('components.file-preview-modal')
     <script src="{{ asset('assets/js/file-preview.js') }}"></script>
 
+    <!-- Request Access Modal -->
+    @include('partials.request-access-modal')
+
     @stack('scripts')
 </body>
 

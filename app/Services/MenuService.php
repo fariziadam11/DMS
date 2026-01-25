@@ -72,6 +72,15 @@ class MenuService
 
         foreach ($menus as $menu) {
             $route = $menu->code_name;
+
+            // Special case for access document to avoid matching overlapping routes like access.my-requests
+            if ($route === 'access') {
+                $route = 'access.index';
+            }
+            if ($route === 'my-request') {
+                $route = 'my-request.index';
+            }
+
             // Append .index for resource routes (heuristic: contains dot)
             if (strpos($route, '.') !== false && !str_ends_with($route, '.index')) {
                 $route .= '.index';
@@ -90,7 +99,7 @@ class MenuService
             if ($menu->children && $menu->children->count() > 0) {
                 foreach ($menu->children as $child) {
                      $childRoute = $child->code_name;
-                     if (strpos($childRoute, '.') !== false && !str_ends_with($childRoute, '.index')) {
+                     if (strpos($childRoute, '.') !== false && !str_ends_with($childRoute, '.index') && $childRoute !== 'access.my-requests') {
                         $childRoute .= '.index';
                     }
 
@@ -309,7 +318,7 @@ class MenuService
                 'section' => 'Manajemen',
                 'items' => [
                     ['name' => 'Akses Dokumen', 'icon' => 'bi-clipboard-check', 'route' => 'access.index', 'badge' => 'pending_access'],
-                    ['name' => 'Permintaan Saya', 'icon' => 'bi-file-earmark-lock', 'route' => 'access.my-requests'],
+                    ['name' => 'Permintaan Saya', 'icon' => 'bi-file-earmark-lock', 'route' => 'my-request.index'],
                 ]
             ],
         ];

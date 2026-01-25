@@ -100,6 +100,27 @@
                                         <small><strong>Functions:</strong></small>
                                     </div>
                                     @foreach ($functions as $func)
+                                        @php
+                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74)
+                                            if (in_array($menu->id, [1, 73, 74])) {
+                                                continue;
+                                            }
+                                            // 2. Hide Approval(7) for all except Access Documents(69)
+                                            if ($func->id == 7 && $menu->id != 69) {
+                                                continue;
+                                            }
+                                            // 3. Hide Download(5) for Master Data(62) and System Admin(66)
+                                            if (
+                                                $func->id == 5 &&
+                                                in_array($menu->id, [62, 63, 64, 65, 66, 67, 68, 70, 71])
+                                            ) {
+                                                continue;
+                                            }
+                                        @endphp
+
+                                        @if (isset($allowedFunctions[$menu->id]) && !in_array($func->id, $allowedFunctions[$menu->id]))
+                                            @continue
+                                        @endif
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox"
                                                 name="functions[{{ $menu->id }}][]" value="{{ $func->id }}"
@@ -136,6 +157,36 @@
                                                         <small><strong>Functions:</strong></small>
                                                     </div>
                                                     @foreach ($functions as $func)
+                                                        @php
+                                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74)
+                                                            if (in_array($child->id, [1, 73, 74])) {
+                                                                continue;
+                                                            }
+                                                            // 2. Hide Approval(7) for all except Access Documents(69)
+                                                            if ($func->id == 7 && $child->id != 69) {
+                                                                continue;
+                                                            }
+                                                            // 3. Hide Download(5) for specified menus (Master Data & Admin children)
+                                                            if (
+                                                                $func->id == 5 &&
+                                                                in_array($child->id, [
+                                                                    62,
+                                                                    63,
+                                                                    64,
+                                                                    65,
+                                                                    66,
+                                                                    67,
+                                                                    68,
+                                                                    70,
+                                                                    71,
+                                                                ])
+                                                            ) {
+                                                                continue;
+                                                            }
+                                                        @endphp
+                                                        @if (isset($allowedFunctions[$child->id]) && !in_array($func->id, $allowedFunctions[$child->id]))
+                                                            @continue
+                                                        @endif
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="checkbox"
                                                                 name="functions[{{ $child->id }}][]"

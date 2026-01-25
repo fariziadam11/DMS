@@ -20,7 +20,7 @@ class ProcurementController extends BaseDocumentController
             'nama_kegiatan' => 'nullable|string',
             'direktorat' => 'nullable|string|max:255',
             'file' => 'nullable|file|max:10240|mimes:pdf,doc,docx,xls,xlsx',
-            'sifat_dokumen' => 'nullable|in:Umum,Rahasia'
+            'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
 }

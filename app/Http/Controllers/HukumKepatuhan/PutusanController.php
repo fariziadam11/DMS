@@ -23,7 +23,7 @@ class PutusanController extends BaseDocumentController
             'status' => 'nullable|string|max:100',
             'pihak' => 'nullable|string|max:100',
             'file' => 'nullable|file|max:10240|mimes:pdf,doc,docx,xls,xlsx',
-            'sifat_dokumen' => 'nullable|in:Umum,Rahasia',
+            'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
             'lokasi' => 'nullable|string|max:255',
         ]);
     }

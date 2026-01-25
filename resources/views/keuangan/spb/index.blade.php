@@ -25,17 +25,20 @@
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Surat Bayar</th>
-                        <th>Tanggal</th>
-                        <th>Nomor</th>
-                        <th>Nominal</th>
-                        <th>Tujuan</th>
-                        <th>File</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Surat Bayar</th>
+                            <th>Tanggal</th>
+                            <th>Nomor</th>
+                            <th>Nominal</th>
+                            <th>Tujuan</th>
+                            @if ($permissions['download'])
+                                <th>File</th>
+                            @endif
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
                 <tbody>
                     @forelse($items as $i => $item)
                         <tr>
@@ -45,18 +48,35 @@
                             <td>{{ $item->nomor_spb ?? '-' }}</td>
                             <td>{{ number_format($item->nominal ?? 0, 0, ',', '.') }}</td>
                             <td>{{ $item->tujuan ?? '-' }}</td>
-                            <td>
-                                @if ($item->file_name)
-                                    <a href="{{ route('keuangan.spb.download', $item->id) }}" class="text-primary"><i
-                                            class="bi bi-download"></i></a>
-                                @else
-                                    -
-                                @endif
-                            </td>
+                            @if ($permissions['download'])
+                                <td>
+                                    @if ($item->file_name)
+                                        @if ($item->userHasFileAccess(auth()->id()))
+                                            <div class="btn-group btn-group-sm">
+                                                <button
+                                                    onclick="previewFile('{{ route('keuangan.spb.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                    class="btn btn-outline-primary" title="Preview"><i
+                                                        class="bi bi-eye"></i></button>
+                                                <a href="{{ route('keuangan.spb.download', $item->id) }}"
+                                                    class="btn btn-outline-success" title="Download"><i
+                                                        class="bi bi-download"></i></a>
+                                            </div>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-outline-warning"
+                                                data-bs-toggle="modal" data-bs-target="#requestModal"
+                                                data-type="{{ $item->getTable() }}" data-id="{{ $item->id }}"
+                                                data-title="{{ $item->nomor_spb ?? $item->file_name }}">
+                                                <i class="bi bi-key me-1"></i> Minta Akses
+                                            </button>
+                                        @endif
+                                    @else<span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                            @endif
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('keuangan.spb.show', $item->id) }}" class="btn btn-outline-primary"><i
-                                            class="bi bi-eye"></i></a>
+                                    <a href="{{ route('keuangan.spb.show', $item->id) }}"
+                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
                                     <a href="{{ route('keuangan.spb.edit', $item->id) }}"
                                         class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
                                     <form action="{{ route('keuangan.spb.destroy', $item->id) }}" method="POST"
@@ -67,7 +87,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">Belum ada data</td>
+                            <td colspan="{{ $permissions['download'] ? 8 : 7 }}" class="text-center py-4 text-muted">Belum
+                                ada data</td>
                         </tr>
                     @endforelse
                 </tbody>

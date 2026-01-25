@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\GlobalSearchController;
-use App\Http\Controllers\FileAccessController;
+use App\Http\Controllers\AccessController;
+use App\Http\Controllers\MyRequestController;
 use App\Http\Controllers\Master\DivisiController;
 use App\Http\Controllers\Master\DepartmentController;
 use App\Http\Controllers\Master\JabatanController;
@@ -38,14 +39,18 @@ Route::middleware(['auth'])->group(function () {
     // My Documents (Approved Access)
     Route::get('/my-documents', [\App\Http\Controllers\MyDocumentsController::class, 'index'])->name('my-documents.index');
 
-    // File Access Management
+    // Access Documents (Approval and Mgt)
     Route::prefix('access')->name('access.')->group(function () {
-        Route::get('/', [FileAccessController::class, 'index'])->name('index');
-        Route::get('/my-requests', [FileAccessController::class, 'myRequests'])->name('my-requests');
-        Route::post('/{id}/approve', [FileAccessController::class, 'approve'])->name('approve');
-        Route::post('/{id}/reject', [FileAccessController::class, 'reject'])->name('reject');
-        Route::post('/assign', [FileAccessController::class, 'assignAccess'])->name('assign');
-        Route::delete('/{id}', [FileAccessController::class, 'removeAccess'])->name('remove');
+        Route::get('/', [\App\Http\Controllers\AccessController::class, 'index'])->name('index');
+        Route::post('/{id}/approve', [\App\Http\Controllers\AccessController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [\App\Http\Controllers\AccessController::class, 'reject'])->name('reject');
+        Route::post('/assign', [\App\Http\Controllers\AccessController::class, 'assignAccess'])->name('assign');
+        Route::delete('/{id}', [\App\Http\Controllers\AccessController::class, 'removeAccess'])->name('remove');
+    });
+
+    // My Requests
+    Route::prefix('my-request')->name('my-request.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\MyRequestController::class, 'index'])->name('index');
     });
 
     // Master Data
@@ -309,6 +314,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::get('users/ajax/departments/{divisiId}', [\App\Http\Controllers\Admin\UserController::class, 'getDepartments'])->name('users.ajax.departments');
         Route::get('users/ajax/jabatans/{divisiId}', [\App\Http\Controllers\Admin\UserController::class, 'getJabatans'])->name('users.ajax.jabatans');
+        Route::get('api/jabatan/{jabatanId}/default-role', [\App\Http\Controllers\Admin\UserController::class, 'getDefaultRole'])->name('users.api.default-role');
         Route::resource('menus', \App\Http\Controllers\Admin\MenuController::class);
         Route::post('menus/reorder', [\App\Http\Controllers\Admin\MenuController::class, 'reorder'])->name('menus.reorder');
         Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);

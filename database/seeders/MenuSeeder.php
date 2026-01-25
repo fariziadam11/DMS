@@ -60,7 +60,7 @@ class MenuSeeder extends Seeder
         $this->createMenu('my-documents', 'Dokumen Saya', 'Dokumen Saya', $seq++, '/my-documents', 'bi-folder');
 
         // My Requests
-        $this->createMenu('access.my-requests', 'Permintaan Saya', 'Permintaan Saya', $seq++, '/access/my-requests', 'bi-file-earmark-lock');
+        $this->createMenu('my-requests', 'Permintaan Saya', 'Permintaan Saya', $seq++, '/my-requests', 'bi-file-earmark-lock');
 
         $this->command->info('✅ Menus seeded! Total: ' . BaseMenu::count());
     }

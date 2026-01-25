@@ -50,7 +50,7 @@ class UserProfileController extends Controller
             'first_name' => 'required|string|max:50',
             'last_name' => 'nullable|string|max:50',
             'phone' => 'nullable|string|max:25',
-            'nik' => 'nullable|string|max:20', // Should be read-only if synced from User?
+            'nip' => 'nullable|string|max:20', // Should be read-only if synced from User?
             'ktp' => 'nullable|string|max:20',
             'npwp' => 'nullable|string|max:30',
             'gender' => 'nullable|in:1,2', // 1: Male, 2: Female
