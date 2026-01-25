@@ -59,8 +59,8 @@
                             <td>{{ $item->divisi?->nama_divisi ?? '-' }}</td>
                             <td>{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : '-' }}</td>
                             <td>
-                                @if ($item->sifat_dokumen == 'Rahasia')
-                                <span class="badge badge-secret"><i class="bi bi-lock"></i></span>@else<span
+                                @if($item->sifat_dokumen == 'Rahasia')
+                                <span class="badge badge-secret"><i class="bi bi-lock"></i></span>@elseif($item->sifat_dokumen == 'Internal')<span class="badge bg-warning text-dark"><i class="bi bi-shield-lock"></i></span>@else<span
                                         class="badge badge-public"><i class="bi bi-unlock"></i></span>
                                 @endif
                             </td>

@@ -30,7 +30,6 @@
                         <th>Kode</th>
                         <th>Nama Divisi</th>
                         <th>Department</th>
-                        <th>Module</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -41,7 +40,6 @@
                             <td><span class="badge bg-primary">{{ $item->kode_divisi }}</span></td>
                             <td><strong>{{ $item->nama_divisi }}</strong></td>
                             <td>{{ $item->department->nama_department ?? '-' }}</td>
-                            <td>{{ $item->module->module_name ?? '-' }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('master.divisi.show', $item->id) }}"

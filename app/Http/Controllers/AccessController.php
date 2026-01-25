@@ -58,7 +58,13 @@ class AccessController extends Controller
         // Check if user can approve
         $this->authorizeManage($accessRequest);
 
-        $accessRequest->approve(auth()->id(), $request->get('reason'));
+        $permissions = $request->input('permissions', []);
+
+        // Ensure read is always present if approving? Or user choice.
+        // Let's rely on user input, but maybe force read if not empty?
+        // Actually, let's trust the input for flexibility.
+
+        $accessRequest->approve(auth()->id(), $request->get('reason'), $permissions);
 
         return back()->with('success', 'Permintaan akses disetujui.');
     }

@@ -50,7 +50,15 @@
                         <tr>
                             <td>{{ $requests->firstItem() + $i }}</td>
                             <td><strong>{{ $req->requester?->name ?? '-' }}</strong></td>
-                            <td>{{ $req->document_type }} #{{ $req->document_id }}</td>
+                            <td>
+                                @if ($req->document)
+                                    <strong>{{ $req->document->judul ?? ($req->document->perihal ?? ($req->document->nama ?? ($req->document->nomor ?? 'Dokumen #' . $req->document_id))) }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ $req->document_type }}</small>
+                                @else
+                                    {{ $req->document_type }} #{{ $req->document_id }}
+                                @endif
+                            </td>
                             <td>{{ $req->divisi?->nama_divisi ?? '-' }}</td>
                             <td>{{ Str::limit($req->request_reason, 50) }}</td>
                             <td>
@@ -87,18 +95,113 @@
 
                                 @if ($req->status == 'pending')
                                     @if ($userHasApproval && $req->id_user != $currentUser->id)
-                                        <form action="{{ route('access.approve', $req->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-success"
-                                                onclick="return confirm('Setujui permintaan ini?')">
-                                                <i class="bi bi-check"></i> Setujui
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                            data-bs-target="#approveModal{{ $req->id }}">
+                                            <i class="bi bi-check"></i> Setujui
+                                        </button>
                                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                             data-bs-target="#rejectModal{{ $req->id }}">
                                             <i class="bi bi-x"></i> Tolak
                                         </button>
+
+                                        <!-- Approve Modal -->
+                                        <div class="modal fade" id="approveModal{{ $req->id }}" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <form action="{{ route('access.approve', $req->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Setujui & Atur Hak Akses</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body text-start">
+                                                            <div class="alert alert-info py-2 mb-3">
+                                                                <small>Permintaan dari:
+                                                                    <strong>{{ $req->requester?->name }}</strong> untuk
+                                                                    dokumen <strong>{{ $req->document_type }}
+                                                                        #{{ $req->document_id }}</strong></small>
+                                                            </div>
+                                                            <p class="mb-2">Pilih izin yang diberikan:</p>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="permissions[]" value="read"
+                                                                    id="perm_read_{{ $req->id }}" checked
+                                                                    onclick="return false;">
+                                                                <label class="form-check-label"
+                                                                    for="perm_read_{{ $req->id }}">
+                                                                    View (Melihat Data) <span
+                                                                        class="text-muted text-xs ms-1">*Wajib</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="permissions[]" value="download"
+                                                                    id="perm_download_{{ $req->id }}" checked>
+                                                                <label class="form-check-label"
+                                                                    for="perm_download_{{ $req->id }}">
+                                                                    Download (Mengunduh File)
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="permissions[]" value="edit"
+                                                                    id="perm_edit_{{ $req->id }}">
+                                                                <label class="form-check-label"
+                                                                    for="perm_edit_{{ $req->id }}">
+                                                                    Edit (Mengubah Data)
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="permissions[]" value="delete"
+                                                                    id="perm_delete_{{ $req->id }}">
+                                                                <label class="form-check-label"
+                                                                    for="perm_delete_{{ $req->id }}">
+                                                                    Delete (Menghapus Data)
+                                                                </label>
+                                                            </div>
+                                                            <div class="mt-3">
+                                                                <label class="form-label">Catatan (Opsional)</label>
+                                                                <textarea name="reason" class="form-control" rows="2" placeholder="Catatan persetujuan..."></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-success">Setujui
+                                                                Akses</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <!-- Reject Modal -->
+                                        <div class="modal fade" id="rejectModal{{ $req->id }}" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <form action="{{ route('access.reject', $req->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Tolak Permintaan</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <label class="form-label">Alasan Penolakan <span
+                                                                    class="text-danger">*</span></label>
+                                                            <textarea name="reason" class="form-control" rows="3" required></textarea>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-danger">Tolak</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     @else
                                         @if ($req->id_user == $currentUser->id)
                                             <span class="text-muted text-xs">Menunggu Persetujuan</span>
@@ -106,34 +209,6 @@
                                             <span class="text-muted text-xs">Akses View Only</span>
                                         @endif
                                     @endif
-
-                                    <!-- Reject Modal -->
-
-                                    <!-- Reject Modal -->
-                                    <div class="modal fade" id="rejectModal{{ $req->id }}" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <form action="{{ route('access.reject', $req->id) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Tolak Permintaan</h5>
-                                                        <button type="button" class="btn-close"
-                                                            data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <label class="form-label">Alasan Penolakan <span
-                                                                class="text-danger">*</span></label>
-                                                        <textarea name="reason" class="form-control" rows="3" required></textarea>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-danger">Tolak</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif

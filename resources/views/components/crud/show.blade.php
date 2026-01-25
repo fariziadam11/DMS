@@ -53,9 +53,9 @@
                         <tr>
                             <th>Klasifikasi</th>
                             <td>
-                                @if ($record->sifat_dokumen == 'Rahasia')
+                                @if($record->sifat_dokumen == 'Rahasia')
                                     <span class="badge badge-secret"><i class="bi bi-lock me-1"></i>Rahasia</span>
-                                @else
+                                @elseif($record->sifat_dokumen == 'Internal')<span class="badge bg-warning text-dark"><i class="bi bi-shield-lock"></i></span>@else
                                     <span class="badge badge-public"><i class="bi bi-unlock me-1"></i>Umum</span>
                                 @endif
                             </td>

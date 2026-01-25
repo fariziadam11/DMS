@@ -36,8 +36,9 @@ class JabatanController extends Controller
         $divisions = MasterDivisi::orderBy('nama_divisi')->get();
         $routePrefix = 'master.jabatan';
         $moduleName = 'Master Jabatan';
+        $permissions = $this->getPermissions();
 
-        return view('master.jabatan.index', compact('data', 'divisions', 'routePrefix', 'moduleName'));
+        return view('master.jabatan.index', compact('data', 'divisions', 'routePrefix', 'moduleName', 'permissions'));
     }
 
     public function create()
@@ -119,7 +120,41 @@ class JabatanController extends Controller
         $record = MasterJabatan::with(['divisi', 'department', 'defaultRole'])->findOrFail($id);
         $routePrefix = 'master.jabatan';
         $moduleName = 'Master Jabatan';
-        return view('master.jabatan.show', compact('record', 'routePrefix', 'moduleName'));
+        $permissions = $this->getPermissions();
+        return view('master.jabatan.show', compact('record', 'routePrefix', 'moduleName', 'permissions'));
+    }
+
+    /**
+     * Get permission flags
+     */
+    protected function getPermissions()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return ['create' => false, 'edit' => false, 'delete' => false];
+        }
+
+        if ($user->isSuperAdmin()) {
+            return ['create' => true, 'edit' => true, 'delete' => true];
+        }
+
+        // Simple RBAC check based on routes
+        // This is simplified, ideally we check against menu ID like BaseDocumentController
+        // But for quick fix on Master data:
+        // Use a safe default for Division Admins on Master? Usually Master is IT/Admin only.
+
+        // Let's try to find menu by code
+        $menu = \App\Models\BaseMenu::where('code_name', 'master.jabatan')->first();
+        if (!$menu) {
+             // Fallback
+             return ['create' => true, 'edit' => true, 'delete' => true];
+        }
+
+        return [
+            'create' => $user->hasMenuFunction($menu->id, 2),
+            'edit' => $user->hasMenuFunction($menu->id, 3),
+            'delete' => $user->hasMenuFunction($menu->id, 4),
+        ];
     }
 
     /**

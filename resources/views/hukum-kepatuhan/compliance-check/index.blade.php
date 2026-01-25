@@ -32,9 +32,9 @@
                         <th>Nomor</th>
                         <th>Perihal</th>
                         <th>Keterangan</th>
-                        @if ($permissions['download'])
-                            <th>File</th>
-                        @endif
+                        <th>Sifat Dokumen</th>
+                        <th>Versi</th>
+                        <th>File</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -46,40 +46,53 @@
                             <td>{{ $item->nomor ?? '-' }}</td>
                             <td>{{ Str::limit($item->perihal, 50) ?? '-' }}</td>
                             <td>{{ $item->keterangan ?? '-' }}</td>
-                            @if ($permissions['download'])
-                                <td>
-                                    @if ($item->file_name)
-                                        @if ($item->userHasFileAccess(auth()->id()))
-                                            <div class="btn-group btn-group-sm">
-                                                <button
-                                                    onclick="previewFile('{{ route('hukum-kepatuhan.compliance-check.preview', $item->id) }}', '{{ $item->file_name }}')"
-                                                    class="btn btn-outline-primary" title="Preview"><i
-                                                        class="bi bi-eye"></i></button><a
-                                                    href="{{ route('hukum-kepatuhan.compliance-check.download', $item->id) }}"
-                                                    class="btn btn-outline-success" title="Download"><i
-                                                        class="bi bi-download"></i></a>
-                                            </div>
-                                        @else
-                                            <button type="button" class="btn btn-sm btn-outline-warning"
-                                                data-bs-toggle="modal" data-bs-target="#requestModal"
-                                                data-type="{{ $item->getTable() }}" data-id="{{ $item->id }}"
-                                                data-title="{{ $item->perihal ?? $item->file_name }}">
-                                                <i class="bi bi-key me-1"></i> Minta Akses
-                                            </button>
-                                        @endif
-                                    @else<span class="text-muted">-</span>
+                            <td>
+                                <span
+                                    class="badge bg-{{ ($item->sifat_dokumen ?? 'Umum') == 'Rahasia' ? 'danger' : 'success' }}">
+                                    {{ $item->sifat_dokumen ?? 'Umum' }}
+                                </span>
+                            </td>
+                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
+                            <td>
+                                @if ($item->file_name)
+                                    @if ($item->userHasFileAccess(auth()->id()))
+                                        <div class="btn-group btn-group-sm">
+                                            <button
+                                                onclick="previewFile('{{ route('hukum-kepatuhan.compliance-check.preview', $item->id) }}', '{{ $item->file_name }}')"
+                                                class="btn btn-outline-primary" title="Preview"><i
+                                                    class="bi bi-eye"></i></button><a
+                                                href="{{ route('hukum-kepatuhan.compliance-check.download', $item->id) }}"
+                                                class="btn btn-outline-success" title="Download"><i
+                                                    class="bi bi-download"></i></a>
+                                        </div>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                            data-bs-target="#requestModal" data-type="{{ $item->getTable() }}"
+                                            data-id="{{ $item->id }}"
+                                            data-title="{{ $item->perihal ?? $item->file_name }}">
+                                            <i class="bi bi-key me-1"></i> Minta Akses
+                                        </button>
                                     @endif
-                                </td>
-                            @endif
+                                @else<span class="text-muted">-</span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('hukum-kepatuhan.compliance-check.show', $item->id) }}"
-                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                    <a href="{{ route('hukum-kepatuhan.compliance-check.edit', $item->id) }}"
-                                        class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                                    <form action="{{ route('hukum-kepatuhan.compliance-check.destroy', $item->id) }}"
-                                        method="POST" class="d-inline">@csrf @method('DELETE')<button
-                                            class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                                    @if ($item->canPerformAction('read', auth()->id()))
+                                        @if ($item->canPerformAction('read', auth()->id()))
+                                            <a href="{{ route('hukum-kepatuhan.compliance-check.show', $item->id) }}"
+                                                class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                        @endif
+                                    @endif
+                                    @if ($permissions['edit'] && $item->canPerformAction('edit', auth()->id()))
+                                        <a href="{{ route('hukum-kepatuhan.compliance-check.edit', $item->id) }}"
+                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                    @endif
+                                    @if ($permissions['delete'] && $item->canPerformAction('delete', auth()->id()))
+                                        <form action="{{ route('hukum-kepatuhan.compliance-check.destroy', $item->id) }}"
+                                            method="POST" class="d-inline">@csrf @method('DELETE')<button
+                                                class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

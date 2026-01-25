@@ -25,7 +25,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Tanggal</label>
         <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
-            value="{{ old('tanggal', isset($record->tanggal) ? date('Y-m-d', strtotime($record->tanggal)) : '') }}">
+            value="{{ old('tanggal', ($record->tanggal ?? null) ? \Carbon\Carbon::parse($record->tanggal)->format('Y-m-d') : '') }}">
         @error('tanggal')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -41,7 +41,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Mulai</label>
         <input type="date" name="mulai" class="form-control @error('mulai') is-invalid @enderror"
-            value="{{ old('mulai', isset($record->mulai) ? date('Y-m-d', strtotime($record->mulai)) : '') }}">
+            value="{{ old('mulai', ($record->mulai ?? null) ? \Carbon\Carbon::parse($record->mulai)->format('Y-m-d') : '') }}">
         @error('mulai')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -49,7 +49,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Akhir</label>
         <input type="date" name="akhir" class="form-control @error('akhir') is-invalid @enderror"
-            value="{{ old('akhir', isset($record->akhir) ? date('Y-m-d', strtotime($record->akhir)) : '') }}">
+            value="{{ old('akhir', ($record->akhir ?? null) ? \Carbon\Carbon::parse($record->akhir)->format('Y-m-d') : '') }}">
         @error('akhir')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

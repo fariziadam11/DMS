@@ -134,7 +134,7 @@ class DocumentAssignmentController extends Controller
         $table = $this->getTableName($module);
 
         if (!$table) {
-            return collect();
+            return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
         }
 
         $query = DB::table($table)

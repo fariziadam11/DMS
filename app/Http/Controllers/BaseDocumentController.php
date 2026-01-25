@@ -51,7 +51,7 @@ abstract class BaseDocumentController extends Controller
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
 
-        $items = $query->with('divisi')->paginate(15);
+        $items = $query->with('divisi')->paginate(10);
 
         return view($this->viewPath . '.index', [
             'items' => $items,
@@ -207,10 +207,63 @@ abstract class BaseDocumentController extends Controller
      */
     public function download($id)
     {
-        $this->checkFunctionAccess(5); // Download
-
         $record = $this->model::findOrFail($id);
-        $this->authorizeAccess($record);
+
+        // Check strict granular permission first (Approved Request)
+        // We pass 'download' action to authorizeAccess.
+        // But authorizeAccess usually checks request OR division.
+        // We need to know if the PASS came from Request (which overrides RBAC) or Division (which requires RBAC).
+
+        // Let's modify logic:
+        // Try authorizeAccess with 'download'
+        // If it passes via Request, we are good.
+        // If it passes via Division, we MUST also check checkFunctionAccess(5).
+
+        // Easier approach:
+        // Check if user has explicit 'download' permission on this record via Request
+        $user = auth()->user();
+        $hasSpecificPermission = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
+            ->where('document_id', $record->id)
+            ->where('id_user', $user->id)
+            ->where('status', 'approved')
+            ->whereJsonContains('permissions', 'download')
+            ->exists();
+
+        if ($hasSpecificPermission) {
+            // Bypass RBAC, just allow
+            AuditLog::logDownload($record->getTable(), $record->id);
+
+            if (!$record->file || !Storage::exists($this->storagePath . '/' . $record->file)) {
+                abort(404, 'File tidak ditemukan');
+            }
+
+            return Storage::download($this->storagePath . '/' . $record->file, $record->file_name);
+        }
+
+        // Check General Access via Model Logic (Umum, Internal-Div, Creator, Division Admin)
+        if ($record->userHasFileAccess($user->id)) {
+             // If model says yes (e.g. Umum, or Internal+SameDiv), we allow.
+             // We do NOT check checkFunctionAccess(5) here because "Umum" implies public access
+             // and usually overrides module-level restriction for basic file viewing.
+
+             if (!$record->file) {
+                abort(404, 'File tidak ditemukan');
+            }
+
+            $path = $this->storagePath . '/' . $record->file;
+
+            if (!Storage::exists($path)) {
+                abort(404, 'File tidak ditemukan');
+            }
+
+            AuditLog::logDownload($record->getTable(), $record->id);
+
+            return Storage::download($path, $record->file_name);
+        }
+
+        // Fallback to strict RBAC + Division check (unlikely to pass if userHasFileAccess failed, but safe fallback)
+        $this->checkFunctionAccess(5); // Download permission
+        $this->authorizeAccess($record, 'download');
 
         if (!$record->file) {
             abort(404, 'File tidak ditemukan');
@@ -232,10 +285,56 @@ abstract class BaseDocumentController extends Controller
      */
     public function preview($id)
     {
-        $this->checkFunctionAccess(5); // Download permission required via preview button
-
         $record = $this->model::findOrFail($id);
-        $this->authorizeAccess($record);
+
+        // Same logic as download for permissions
+        $user = auth()->user();
+        $hasSpecificPermission = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
+            ->where('document_id', $record->id)
+            ->where('id_user', $user->id)
+            ->where('status', 'approved')
+            ->whereJsonContains('permissions', 'download') // Preview usually requires download rights or at least read?
+            // User asked for "download button missing", implying preview might work with just read?
+            // But preview usually serves the file content.
+            // If strictly "View" (Read), maybe preview is allowed but download not?
+            // "View" permission implies seeing metadata + previewing content usually.
+            // "Download" implies saving raw file.
+            // Let's assume Preview requires 'read' (View) OR 'download'.
+            // If user has 'read', allow preview?
+            // User Prompt said: "Anda tidak memiliki hak akses untuk mengunduh file pada menu ini." which is error from download button.
+            // Preview button usually uses `preview` route.
+            // Let's allow preview if 'read' permission exists.
+            ->exists();
+
+        // Check read permission specific
+        $hasReadPermission = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
+            ->where('document_id', $record->id)
+            ->where('id_user', $user->id)
+            ->where('status', 'approved')
+            ->whereJsonContains('permissions', 'read')
+            ->exists();
+
+        if ($hasSpecificPermission || $hasReadPermission) {
+             // Allow
+             // No RBAC check needed if specific permission exists
+        } elseif ($record->userHasFileAccess($user->id)) {
+             // Allow based on model policy (Umum, Internal+Div)
+             // We do NOT check checkFunctionAccess(5) here because "Umum" implies public access
+             // and usually overrides module-level restriction for basic file viewing.
+        } else {
+             // Fallback
+             // Previewing might be considered 'download' in terms of function access (5)?
+             // Or 'read' (1 - View Index/Show)?
+             // Usually previewing the PDF is part of 'View'.
+             // Let's check 'View' access (Show).
+             // But existing code called checkFunctionAccess(5) for preview.
+             // Let's keep it 5 for consistency UNLESS granular override.
+
+             // If RBAC check fails but we want to allow, we handle it.
+             // If no granular, we enforce RBAC.
+             $this->checkFunctionAccess(5);
+             $this->authorizeAccess($record, 'download');
+        }
 
         if (!$record->file) {
             abort(404, 'File tidak ditemukan');
@@ -325,43 +424,89 @@ abstract class BaseDocumentController extends Controller
      */
     protected function authorizeAccess($record, $action = 'read')
     {
-        // For delete/edit actions, keep existing logic (usually implicitly handled by checkFunctionAccess and role checks)
-        // But for 'read' (view/download), we must enforce the new strict confidential logic
-
-        if ($action === 'read') {
-             if (!$record->userHasFileAccess(auth()->id())) {
-                 $message = $record->isSecret()
-                    ? 'Dokumen ini bersifat rahasia. Anda perlu meminta akses terlebih dahulu.'
-                    : 'Anda tidak memiliki akses ke dokumen ini.';
-                 abort(403, $message);
-             }
-             return true;
-        }
-
-        // Fallback for other actions (write/delete) uses standard checks + logic below
         $user = auth()->user();
 
+        // Super Admin access
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Check if user has explicit approved request
-        // Use table name instead of class name for document_type
-        $hasApprovedRequest = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
-            ->where('document_id', $record->id)
-            ->where('id_user', $user->id)
-            ->where('status', 'approved')
-            ->exists();
-
-        if ($hasApprovedRequest) {
+        // Creator access
+        if ($record->created_by === $user->id) {
             return true;
         }
 
-        if (!$user->hasDivisionAccess($record->id_divisi)) {
-            abort(403, 'Anda tidak memiliki akses ke dokumen ini.');
+        // Division Admin/Member access (Internal)
+        // If user is part of the division, they usually have full access depending on role
+
+        // 1. Universal Access for 'Umum' usage (Public/General)
+        // Fixes: "Klasifikasi umum search permission (untuk file yang klasifikasinya umum, itu bisa langsung dilihat)"
+        if ($action === 'read' && $record->sifat_dokumen === 'Umum') {
+            return true;
         }
 
-        return true;
+        // 2. Division Admin (Manager) has full access to ALL documents in division (including Rahasia)
+        if ($user->isDivisionAdmin($record->id_divisi)) {
+            return true;
+        }
+
+        // 2. Division Member has access to Umum & Internal, but NOT Rahasia
+        if ($user->hasDivisionAccess($record->id_divisi)) {
+             // Exception: Rahasia documents still need strict check?
+             // Existing logic said: "Internal: Only visible to division members"
+             // "Rahasia: STRICT: Even same division staff cannot access unless they are admin or have approved request"
+             if ($record->isSecret()) {
+                // If checking for 'read' (Show Page), we ALLOW it so they can see metadata and request access
+                if ($action === 'read') {
+                    return true;
+                }
+                // For download/edit/delete, we continue to check for approved request below
+             } else {
+                 return true;
+             }
+        }
+
+        // Check for Approved Access Request with Specific Permission
+        $accessRequest = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
+            ->where('document_id', $record->id)
+            ->where('id_user', $user->id)
+            ->where('status', 'approved')
+            ->first();
+
+        if ($accessRequest) {
+            // Map controller actions to permission keys
+            $permissionMap = [
+                'read' => 'read',
+                'view' => 'read', // Alias
+                'download' => 'download',
+                'write' => 'edit',
+                'edit' => 'edit', // Alias
+                'delete' => 'delete',
+            ];
+
+            $requiredPermission = $permissionMap[$action] ?? $action;
+
+            if ($accessRequest->hasPermission($requiredPermission)) {
+                return true;
+            }
+
+            // Helpful error message for granular denial
+            if ($action !== 'read') { // Don't abort for read, let it fall through or generic 403
+                 abort(403, 'Anda tidak memiliki izin ' . strtoupper($requiredPermission) . ' untuk dokumen ini.');
+            }
+        }
+
+        // Final check based on action
+        if ($action === 'read') {
+             // User has no valid request or valid division access
+             $message = $record->isSecret()
+                ? 'Dokumen ini bersifat rahasia. Anda perlu meminta akses terlebih dahulu.'
+                : 'Anda tidak memiliki akses ke dokumen ini.';
+             abort(403, $message);
+        }
+
+        // For other actions, if we reached here, access is denied
+        abort(403, 'Anda tidak memiliki akses untuk melakukan aksi ini.');
     }
 
     /**

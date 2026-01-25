@@ -33,6 +33,8 @@
                         <th>Status</th>
                         <th>Tanggal</th>
                         <th>Perihal</th>
+                        <th>Sifat Dokumen</th>
+                        <th>Versi</th>
                         <th>File</th>
                         <th>Aksi</th>
                     </tr>
@@ -54,6 +56,13 @@
                             </td>
                             <td>{{ $item->tanggal ? date('d/m/Y', strtotime($item->tanggal)) : '-' }}</td>
                             <td>{{ $item->perihal ?? '-' }}</td>
+                            <td>
+                                <span
+                                    class="badge bg-{{ ($item->sifat_dokumen ?? 'Umum') == 'Rahasia' ? 'danger' : 'success' }}">
+                                    {{ $item->sifat_dokumen ?? 'Umum' }}
+                                </span>
+                            </td>
+                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
                             <td>
                                 @if ($item->file_name)
                                     @if ($item->userHasFileAccess(auth()->id()))
@@ -81,13 +90,21 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('sdm.ikut-organisasi.show', $item->id) }}"
-                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                    <a href="{{ route('sdm.ikut-organisasi.edit', $item->id) }}"
-                                        class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                                    <form action="{{ route('sdm.ikut-organisasi.destroy', $item->id) }}" method="POST"
-                                        class="d-inline">@csrf @method('DELETE')<button class="btn btn-outline-danger"><i
-                                                class="bi bi-trash"></i></button></form>
+                                    @if ($item->canPerformAction('read', auth()->id()))
+                                        @if ($item->canPerformAction('read', auth()->id()))
+                                            <a href="{{ route('sdm.ikut-organisasi.show', $item->id) }}"
+                                                class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                        @endif
+                                    @endif
+                                    @if ($permissions['edit'] && $item->canPerformAction('edit', auth()->id()))
+                                        <a href="{{ route('sdm.ikut-organisasi.edit', $item->id) }}"
+                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                    @endif
+                                    @if ($permissions['delete'] && $item->canPerformAction('delete', auth()->id()))
+                                        <form action="{{ route('sdm.ikut-organisasi.destroy', $item->id) }}" method="POST"
+                                            class="d-inline">@csrf @method('DELETE')<button
+                                                class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

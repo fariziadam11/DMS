@@ -48,6 +48,10 @@
                                             <span class="badge badge-secret">
                                                 <i class="bi bi-lock me-1"></i>Rahasia
                                             </span>
+                                        @elseif ($doc['classification'] == 'Internal')
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-building-lock me-1"></i>Internal
+                                            </span>
                                         @else
                                             <span class="badge badge-public">
                                                 <i class="bi bi-unlock me-1"></i>Umum
@@ -58,9 +62,17 @@
                                     <td>{{ $doc['approved_at']->format('d M Y H:i') }}</td>
                                     <td>
                                         @if ($doc['url'])
-                                            <a href="{{ $doc['url'] }}" class="btn btn-sm btn-primary">
-                                                <i class="bi bi-eye me-1"></i> Lihat
-                                            </a>
+                                            <div class="btn-group btn-group-sm">
+                                    <a href="{{ $doc['url'] }}" class="btn btn-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                @if (!empty($doc['has_download_permission']) && !empty($doc['download_url']))
+                                                    <a href="{{ $doc['download_url'] }}" class="btn btn-success"
+                                                        title="Download">
+                                                        <i class="bi bi-download"></i>
+                                                    </a>
+                                                @endif
+                                </div>
                                         @else
                                             <span class="badge bg-warning">URL tidak tersedia</span>
                                         @endif

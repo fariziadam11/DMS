@@ -29,6 +29,10 @@
                     <td>{{ $record->tujuan ?? '-' }}</td>
                 </tr>
                 <tr>
+                    <th width="200">Dibuat Oleh</th>
+                    <td>{{ $record->dibuat ?? '-' }}</td>
+                </tr>
+                <tr>
                     <th width="200">Divisi</th>
                     <td>{{ $record->divisi->nama_divisi ?? '-' }}</td>
                 </tr>
@@ -67,11 +71,18 @@
             </table>
             <hr class="my-4">
             <div class="d-flex justify-content-between">
-                <a href="{{ route('keuangan.sppb.index') }}" class="btn btn-outline-secondary"><i
-                        class="bi bi-arrow-left"></i> Kembali</a>
+                @if (request('source') == 'my-documents')
+                    <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
+                            class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
+                @else
+                    <a href="{{ route('keuangan.sppb.index') }}" class="btn btn-outline-secondary"><i
+                            class="bi bi-arrow-left"></i> Kembali</a>
+                @endif
                 <div>
-                    <a href="{{ route('keuangan.sppb.edit', $record->id) }}" class="btn btn-warning"><i
-                            class="bi bi-pencil"></i> Edit</a>
+                    @if ($permissions['edit'])
+                        <a href="{{ route('keuangan.sppb.edit', $record->id) }}" class="btn btn-warning"><i
+                                class="bi bi-pencil"></i> Edit</a>
+                    @endif
                     <form action="{{ route('keuangan.sppb.destroy', $record->id) }}" method="POST" class="d-inline">@csrf
                         @method('DELETE')<button class="btn btn-danger"><i class="bi bi-trash"></i> Hapus</button></form>
                 </div>

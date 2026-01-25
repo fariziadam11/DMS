@@ -39,6 +39,11 @@ Route::middleware(['auth'])->group(function () {
     // My Documents (Approved Access)
     Route::get('/my-documents', [\App\Http\Controllers\MyDocumentsController::class, 'index'])->name('my-documents.index');
 
+    // Document Version (Old Archives)
+    Route::get('/document-versions', [\App\Http\Controllers\DocumentVersionController::class, 'index'])->name('document-versions.index');
+    Route::get('/document-versions/{id}/download', [\App\Http\Controllers\DocumentVersionController::class, 'download'])->name('document-versions.download');
+
+
     // Access Documents (Approval and Mgt)
     Route::prefix('access')->name('access.')->group(function () {
         Route::get('/', [\App\Http\Controllers\AccessController::class, 'index'])->name('index');

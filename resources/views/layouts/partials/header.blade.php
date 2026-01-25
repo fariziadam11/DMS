@@ -33,7 +33,9 @@
                 </div>
                 <div class="d-none d-md-block text-start">
                     <div class="fw-medium" style="font-size: 0.875rem;">{{ auth()->user()->name ?? 'User' }}</div>
-                    <div class="text-muted" style="font-size: 0.75rem;">{{ auth()->user()->divisi ?? 'Division' }}</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">
+                        {{ auth()->user()->divisi->nama_divisi ?? (auth()->user()->divisi ?? 'Division') }}</div>
+
                 </div>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">

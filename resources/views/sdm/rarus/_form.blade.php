@@ -17,7 +17,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Tanggal</label>
         <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
-            value="{{ old('tanggal', isset($record->tanggal) ? date('Y-m-d', strtotime($record->tanggal)) : '') }}">
+            value="{{ old('tanggal', ($record->tanggal ?? null) ? \Carbon\Carbon::parse($record->tanggal)->format('Y-m-d') : '') }}">
         @error('tanggal')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

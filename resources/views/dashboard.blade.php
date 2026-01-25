@@ -22,47 +22,56 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h3 class="mb-0">{{ \App\Models\DocumentVersion::count() }}</h3>
+                            <h3 class="mb-0">
+                                @if (auth()->user()->isSuperAdmin())
+                                    {{ \App\Models\DocumentVersion::count() }}
+                                @else
+                                    {{ \App\Models\DocumentVersion::whereHas('uploader', fn($q) => $q->where('id_divisi', auth()->user()->id_divisi))->count() }}
+                                @endif
+                            </h3>
                             <small class="text-muted">Total Dokumen</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="bg-warning bg-opacity-10 rounded-3 p-3">
-                                <i class="bi bi-clock-history text-warning fs-4"></i>
+
+        @if (auth()->user()->isSuperAdmin() || auth()->user()->isDivisionAdmin())
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                                    <i class="bi bi-clock-history text-warning fs-4"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h3 class="mb-0">{{ \App\Models\FileAccessRequest::pending()->count() }}</h3>
-                            <small class="text-muted">Permintaan Akses</small>
+                            <div class="flex-grow-1 ms-3">
+                                <h3 class="mb-0">{{ \App\Models\FileAccessRequest::pending()->count() }}</h3>
+                                <small class="text-muted">Permintaan Akses</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="bg-info bg-opacity-10 rounded-3 p-3">
-                                <i class="bi bi-building text-info fs-4"></i>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="bg-info bg-opacity-10 rounded-3 p-3">
+                                    <i class="bi bi-building text-info fs-4"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h3 class="mb-0">{{ \App\Models\MasterDivisi::count() }}</h3>
-                            <small class="text-muted">Total Divisi</small>
+                            <div class="flex-grow-1 ms-3">
+                                <h3 class="mb-0">{{ \App\Models\MasterDivisi::count() }}</h3>
+                                <small class="text-muted">Total Divisi</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 
     <!-- Recent Documents & Activity -->

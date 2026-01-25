@@ -17,6 +17,7 @@ class FileAccessRequest extends Model
         'document_id',
         'id_divisi',
         'status',
+        'permissions',
         'request_reason',
         'response_reason',
         'responded_by',
@@ -25,7 +26,30 @@ class FileAccessRequest extends Model
 
     protected $casts = [
         'responded_at' => 'datetime',
+        'permissions' => 'array',
     ];
+
+    /**
+     * Check if request has specific permission
+     */
+    public function hasPermission($permission)
+    {
+        if (empty($this->permissions)) {
+            // Null/Empty permissions = Full Access (Backward Compatibility)
+            // Or strictly View Only? Plan said default to ['read'] or full for legacy.
+            // Let's assume view implies read.
+            // If checking 'read', always true if approved.
+            if ($permission === 'read') return true;
+
+            // For other permissions, if null, maybe allow download by default for legacy?
+            // Let's implement strict: if nul, default to read + download for legacy/backward compat
+            if ($permission === 'download') return true;
+
+            return false;
+        }
+
+        return in_array($permission, $this->permissions);
+    }
 
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
@@ -66,10 +90,14 @@ class FileAccessRequest extends Model
     /**
      * Approve request
      */
-    public function approve($userId, $reason = null)
+    /**
+     * Approve request
+     */
+    public function approve($userId, $reason = null, $permissions = [])
     {
         $this->update([
             'status' => self::STATUS_APPROVED,
+            'permissions' => $permissions,
             'responded_by' => $userId,
             'responded_at' => now(),
             'response_reason' => $reason,

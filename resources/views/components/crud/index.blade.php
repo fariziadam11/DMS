@@ -87,9 +87,9 @@
                                 <td>{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : ($item->created_at ? $item->created_at->format('d M Y') : '-') }}
                                 </td>
                                 <td>
-                                    @if ($item->sifat_dokumen == 'Rahasia')
+                                    @if($item->sifat_dokumen == 'Rahasia')
                                         <span class="badge badge-secret"><i class="bi bi-lock me-1"></i>Rahasia</span>
-                                    @else
+                                    @elseif($item->sifat_dokumen == 'Internal')<span class="badge bg-warning text-dark"><i class="bi bi-shield-lock"></i></span>@else
                                         <span class="badge badge-public"><i class="bi bi-unlock me-1"></i>Umum</span>
                                     @endif
                                 </td>

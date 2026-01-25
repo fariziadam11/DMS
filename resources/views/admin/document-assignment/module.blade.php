@@ -95,7 +95,8 @@
                                     <strong>{{ $doc->judul ?? ($doc->perihal ?? '-') }}</strong>
                                 </td>
                                 <td><code>{{ $doc->nomor ?? '-' }}</code></td>
-                                <td>{{ $doc->tanggal ? \Carbon\Carbon::parse($doc->tanggal)->format('d M Y') : '-' }}</td>
+                                <td>{{ isset($doc->tanggal) && $doc->tanggal ? \Carbon\Carbon::parse($doc->tanggal)->format('d M Y') : '-' }}
+                                </td>
                                 <td>
                                     @if ($doc->nama_divisi)
                                         <span class="badge bg-info">{{ $doc->nama_divisi }}</span>
@@ -104,11 +105,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($doc->sifat_dokumen == 'Rahasia')
-                                        <span class="badge badge-secret"><i class="bi bi-lock"></i></span>
-                                    @else
-                                        <span class="badge badge-public"><i class="bi bi-unlock"></i></span>
-                                    @endif
+                                    @if($doc->sifat_dokumen == 'Rahasia')<span class="badge badge-secret"><i class="bi bi-lock"></i></span>@elseif($doc->sifat_dokumen == 'Internal')<span class="badge bg-warning text-dark"><i class="bi bi-shield-lock"></i></span>@else<span class="badge badge-public"><i class="bi bi-unlock"></i></span>@endif
                                 </td>
                             </tr>
                         @empty

@@ -25,17 +25,17 @@ class GlobalSearchController extends Controller
         'anggaran_rencana_kerja_triwulan' => \App\Models\Anggaran\RencanaKerjaTriwulan::class,
 
         // Hukum & Kepatuhan
-        'hukum_kepatuhan_compliance_check' => \App\Models\HukumKepatuhan\ComplianceCheck::class,
-        'hukum_kepatuhan_executive_summary' => \App\Models\HukumKepatuhan\ExecutiveSummary::class,
-        'hukum_kepatuhan_kajian_hukum' => \App\Models\HukumKepatuhan\KajianHukum::class,
-        'hukum_kepatuhan_kontrak' => \App\Models\HukumKepatuhan\Kontrak::class,
-        'hukum_kepatuhan_legal_memo' => \App\Models\HukumKepatuhan\LegalMemo::class,
-        'hukum_kepatuhan_lembar_keputusan' => \App\Models\HukumKepatuhan\LembarKeputusan::class,
-        'hukum_kepatuhan_lembar_rekomendasi' => \App\Models\HukumKepatuhan\LembarRekomendasi::class,
-        'hukum_kepatuhan_penomoran' => \App\Models\HukumKepatuhan\Penomoran::class,
-        'hukum_kepatuhan_putusan' => \App\Models\HukumKepatuhan\Putusan::class,
-        'hukum_kepatuhan_regulasi_external' => \App\Models\HukumKepatuhan\RegulasiExternal::class,
-        'hukum_kepatuhan_regulasi_internal' => \App\Models\HukumKepatuhan\RegulasiInternal::class,
+        'hukumkepatuhan_compliance_check' => \App\Models\HukumKepatuhan\ComplianceCheck::class,
+        'hukumkepatuhan_executive_summary' => \App\Models\HukumKepatuhan\ExecutiveSummary::class,
+        'hukumkepatuhan_kajian_hukum' => \App\Models\HukumKepatuhan\KajianHukum::class,
+        'hukumkepatuhan_kontrak' => \App\Models\HukumKepatuhan\Kontrak::class,
+        'hukumkepatuhan_legal_memo' => \App\Models\HukumKepatuhan\LegalMemo::class,
+        'hukumkepatuhan_lembar_keputusan' => \App\Models\HukumKepatuhan\LembarKeputusan::class,
+        'hukumkepatuhan_lembar_rekomendasi' => \App\Models\HukumKepatuhan\LembarRekomendasi::class,
+        'hukumkepatuhan_penomoran' => \App\Models\HukumKepatuhan\Penomoran::class,
+        'hukumkepatuhan_putusan' => \App\Models\HukumKepatuhan\Putusan::class,
+        'hukumkepatuhan_regulasi_external' => \App\Models\HukumKepatuhan\RegulasiExternal::class,
+        'hukumkepatuhan_regulasi_internal' => \App\Models\HukumKepatuhan\RegulasiInternal::class,
 
         // Investasi
         'investasi_perencanaan_surat' => \App\Models\Investasi\PerencanaanSurat::class,
@@ -55,17 +55,17 @@ class GlobalSearchController extends Controller
         'keuangan_surat_bayar' => \App\Models\Keuangan\SuratBayar::class,
 
         // Logistik
-        'logistik_cleaning_service' => \App\Models\Logistik\CleaningService::class,
-        'logistik_jaminan' => \App\Models\Logistik\Jaminan::class,
-        'logistik_keamanan' => \App\Models\Logistik\Keamanan::class,
-        'logistik_kendaraan' => \App\Models\Logistik\Kendaraan::class,
-        'logistik_pelaporan_prbc' => \App\Models\Logistik\PelaporanPrbc::class,
-        'logistik_polis_asuransi' => \App\Models\Logistik\PolisAsuransi::class,
-        'logistik_procurement' => \App\Models\Logistik\Procurement::class,
-        'logistik_sarana_penunjang' => \App\Models\Logistik\SaranaPenunjang::class,
-        'logistik_smk3' => \App\Models\Logistik\Smk3::class,
-        'logistik_user_satisfaction' => \App\Models\Logistik\UserSatisfaction::class,
-        'logistik_vendor_satisfaction' => \App\Models\Logistik\VendorSatisfaction::class,
+        'logistiksarpen_cleaning_service' => \App\Models\Logistik\CleaningService::class,
+        'logistiksarpen_jaminan' => \App\Models\Logistik\Jaminan::class,
+        'logistiksarpen_keamanan' => \App\Models\Logistik\Keamanan::class,
+        'logistiksarpen_kendaraan' => \App\Models\Logistik\Kendaraan::class,
+        'logistiksarpen_pelaporan_prbc' => \App\Models\Logistik\PelaporanPrbc::class,
+        'logistiksarpen_polis_asuransi' => \App\Models\Logistik\PolisAsuransi::class,
+        'logistiksarpen_procurement' => \App\Models\Logistik\Procurement::class,
+        'logistiksarpen_sarana_penunjang' => \App\Models\Logistik\SaranaPenunjang::class,
+        'logistiksarpen_smk3' => \App\Models\Logistik\Smk3::class,
+        'logistiksarpen_user_satisfaction' => \App\Models\Logistik\UserSatisfaction::class,
+        'logistiksarpen_vendor_satisfaction' => \App\Models\Logistik\VendorSatisfaction::class,
 
         // SDM
         'sdm_aspurjab' => \App\Models\Sdm\Aspurjab::class,
@@ -110,6 +110,11 @@ class GlobalSearchController extends Controller
         $results = [];
         $user = auth()->user();
 
+        // Prepare accessible division IDs for filtering confidential documents
+        $accessibleDivisionIds = $user->isSuperAdmin()
+            ? \App\Models\MasterDivisi::pluck('id')->toArray()
+            : $user->getAccessibleDivisions()->pluck('id')->toArray();
+
         if (strlen($query) >= 2) {
             foreach ($this->searchableModels as $tableName => $modelClass) {
                 if (!class_exists($modelClass)) continue;
@@ -138,9 +143,16 @@ class GlobalSearchController extends Controller
                     $modelQuery->byDivision($divisiFilter);
                 }
 
-                // Strictly exclude 'Rahasia' documents from Global Search
-                // Only 'Umum' documents should be searchable globally
-                $modelQuery->where('sifat_dokumen', '!=', 'Rahasia');
+                // Modified logic:
+                // Include 'Rahasia' documents ONLY if the user belongs to that division
+                // Other documents (Umum, Internal) remain searchable globally (metadata visible)
+                $modelQuery->where(function ($q) use ($accessibleDivisionIds) {
+                    $q->where('sifat_dokumen', '!=', 'Rahasia')
+                      ->orWhere(function($subQ) use ($accessibleDivisionIds) {
+                          $subQ->where('sifat_dokumen', 'Rahasia')
+                               ->whereIn('id_divisi', $accessibleDivisionIds);
+                      });
+                });
 
                 // Get results
                 $items = $modelQuery->with('divisi')
@@ -149,10 +161,25 @@ class GlobalSearchController extends Controller
                     ->get();
 
                 foreach ($items as $item) {
-                    $hasAccess = $user->isSuperAdmin()
-                        || $item->sifat_dokumen === 'Umum'
-                        || $user->hasDivisionAccess($item->id_divisi)
-                        || $this->hasApprovedAccessRequest($user->id, $tableName, $item->id);
+                    // Use model's consolidated logic for access check
+                    // 'read' action implies being able to view the detail page
+                    // But for search results, we want to know if they can CLICK "View".
+                    // If it is Rahasia, they can 'read' (metadata) but NOT 'view' content or show page?
+                    // Wait, existing logic in BaseDocumentController:
+                    // show() -> authorizeAccess() -> 'read'.
+                    // authorizeAccess('read') for Rahasia returns TRUE (to see metadata).
+                    // BUT UI buttons 'Show', 'Edit', 'Delete' are hidden via canPerformAction.
+
+                    // So, if we want "Search Result" -> "Click View" to behave like "List Index" -> "Click Show",
+                    // We should check canPerformAction('read').
+                    // If true -> Show "View" button.
+                    // If false -> Show "Request Access" button.
+
+                    $hasAccess = $item->canPerformAction('read', $user->id);
+
+                    // Special case: if canPerformAction('read') is false (e.g. Rahasia sans permission),
+                    // we show "Request Access".
+                    // If true, we show "View".
 
                     $results[] = [
                         'id' => $item->id,
@@ -164,7 +191,7 @@ class GlobalSearchController extends Controller
                         'version' => $item->version,
                         'created_at' => $item->created_at->format('d M Y'),
                         'has_access' => $hasAccess,
-                        'is_secret' => $item->sifat_dokumen === 'Rahasia',
+                        'is_secret' => $item->isSecret(),
                         'url' => $hasAccess ? $this->getViewUrl($tableName, $item->id) : null,
                     ];
                 }
@@ -228,17 +255,17 @@ class GlobalSearchController extends Controller
             'anggaran_rencana_kerja_triwulan' => 'anggaran.rencana-kerja-triwulan.show',
 
             // Hukum & Kepatuhan
-            'hukum_kepatuhan_compliance_check' => 'hukum-kepatuhan.compliance-check.show',
-            'hukum_kepatuhan_executive_summary' => 'hukum-kepatuhan.executive-summary.show',
-            'hukum_kepatuhan_kajian_hukum' => 'hukum-kepatuhan.kajian-hukum.show',
-            'hukum_kepatuhan_kontrak' => 'hukum-kepatuhan.kontrak.show',
-            'hukum_kepatuhan_legal_memo' => 'hukum-kepatuhan.legal-memo.show',
-            'hukum_kepatuhan_lembar_keputusan' => 'hukum-kepatuhan.lembar-keputusan.show',
-            'hukum_kepatuhan_lembar_rekomendasi' => 'hukum-kepatuhan.lembar-rekomendasi.show',
-            'hukum_kepatuhan_penomoran' => 'hukum-kepatuhan.penomoran.show',
-            'hukum_kepatuhan_putusan' => 'hukum-kepatuhan.putusan.show',
-            'hukum_kepatuhan_regulasi_external' => 'hukum-kepatuhan.regulasi-external.show',
-            'hukum_kepatuhan_regulasi_internal' => 'hukum-kepatuhan.regulasi-internal.show',
+            'hukumkepatuhan_compliance_check' => 'hukum-kepatuhan.compliance-check.show',
+            'hukumkepatuhan_executive_summary' => 'hukum-kepatuhan.executive-summary.show',
+            'hukumkepatuhan_kajian_hukum' => 'hukum-kepatuhan.kajian-hukum.show',
+            'hukumkepatuhan_kontrak' => 'hukum-kepatuhan.kontrak.show',
+            'hukumkepatuhan_legal_memo' => 'hukum-kepatuhan.legal-memo.show',
+            'hukumkepatuhan_lembar_keputusan' => 'hukum-kepatuhan.lembar-keputusan.show',
+            'hukumkepatuhan_lembar_rekomendasi' => 'hukum-kepatuhan.lembar-rekomendasi.show',
+            'hukumkepatuhan_penomoran' => 'hukum-kepatuhan.penomoran.show',
+            'hukumkepatuhan_putusan' => 'hukum-kepatuhan.putusan.show',
+            'hukumkepatuhan_regulasi_external' => 'hukum-kepatuhan.regulasi-external.show',
+            'hukumkepatuhan_regulasi_internal' => 'hukum-kepatuhan.regulasi-internal.show',
 
             // Investasi
             'investasi_perencanaan_surat' => 'investasi.perencanaan-surat.show',
@@ -258,17 +285,17 @@ class GlobalSearchController extends Controller
             'keuangan_surat_bayar' => 'keuangan.surat-bayar.show',
 
             // Logistik
-            'logistik_cleaning_service' => 'logistik.cleaning-service.show',
-            'logistik_jaminan' => 'logistik.jaminan.show',
-            'logistik_keamanan' => 'logistik.keamanan.show',
-            'logistik_kendaraan' => 'logistik.kendaraan.show',
-            'logistik_pelaporan_prbc' => 'logistik.pelaporan-prbc.show',
-            'logistik_polis_asuransi' => 'logistik.polis-asuransi.show',
-            'logistik_procurement' => 'logistik.procurement.show',
-            'logistik_sarana_penunjang' => 'logistik.sarana-penunjang.show',
-            'logistik_smk3' => 'logistik.smk3.show',
-            'logistik_user_satisfaction' => 'logistik.user-satisfaction.show',
-            'logistik_vendor_satisfaction' => 'logistik.vendor-satisfaction.show',
+            'logistiksarpen_cleaning_service' => 'logistik.cleaning-service.show',
+            'logistiksarpen_jaminan' => 'logistik.jaminan.show',
+            'logistiksarpen_keamanan' => 'logistik.keamanan.show',
+            'logistiksarpen_kendaraan' => 'logistik.kendaraan.show',
+            'logistiksarpen_pelaporan_prbc' => 'logistik.pelaporan-prbc.show',
+            'logistiksarpen_polis_asuransi' => 'logistik.polis-asuransi.show',
+            'logistiksarpen_procurement' => 'logistik.procurement.show',
+            'logistiksarpen_sarana_penunjang' => 'logistik.sarana-penunjang.show',
+            'logistiksarpen_smk3' => 'logistik.smk3.show',
+            'logistiksarpen_user_satisfaction' => 'logistik.user-satisfaction.show',
+            'logistiksarpen_vendor_satisfaction' => 'logistik.vendor-satisfaction.show',
 
             // SDM
             'sdm_aspurjab' => 'sdm.aspurjab.show',

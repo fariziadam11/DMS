@@ -130,35 +130,56 @@ trait HasDocumentFeatures
     }
 
     /**
-     * Check if document is classified as internal
+     * Check if user has access to file content (download/preview)
+     * Refactored to use granular canPerformAction
      */
-    public function isInternal()
+    public function userHasFileAccess($userId)
     {
-        return $this->sifat_dokumen === 'Internal';
+        // 'download' permission implies access to file content
+        return $this->canPerformAction('download', $userId);
     }
 
     /**
-     * Scope by classification
+     * Check if user can perform specific action (view, edit, delete, download)
+     * Used for hiding UI buttons
      */
-    public function scopeByClassification($query, $classification)
+    public function canPerformAction($action, $userId)
     {
-        return $query->where('sifat_dokumen', $classification);
-    }
+        $user = User::find($userId);
+        if (!$user) return false;
 
-    /**
-     * Scope secret documents only
-     */
-    public function scopeSecret($query)
-    {
-        return $query->where('sifat_dokumen', 'Rahasia');
-    }
+        // 1. Super Admin, Creator, Division Admin -> Allow Everything
+        if ($user->isSuperAdmin()) return true;
+        if ($this->created_by == $userId) return true;
+        if ($user->isDivisionAdmin($this->id_divisi)) return true;
 
-    /**
-     * Scope public documents only
-     */
-    public function scopePublic($query)
-    {
-        return $query->where('sifat_dokumen', 'Umum');
+        // 2. Secret ('Rahasia') Documents -> Strict Granular Check
+        if ($this->isSecret()) {
+            // Check for Approved Request with specific permission
+            $request = \App\Models\FileAccessRequest::where('document_type', $this->getTable())
+                ->where('document_id', $this->id)
+                ->where('id_user', $userId)
+                ->where('status', 'approved')
+                ->first();
+
+            if ($request && $request->hasPermission($action)) {
+                return true;
+            }
+
+            return false; // Hidden by default if Secret and no permission
+        }
+
+        // 3. Non-Secret (Umum/Internal) -> Allow if user has Division Access (Internal) or Public (Umum)
+        // For non-secret, we assume if you can see it in the list (Scope restriction), you can at least 'View' it.
+        // For 'Edit'/'Delete', it depends on the Role Permissions which are checked in the View via $permissions array.
+        // But this method answers "Is the Document ITSELF restricting me?".
+        // For 'Internal', if I am valid division member, I am NOT restricted by the document.
+
+        if ($this->sifat_dokumen === 'Internal') {
+            if (!$user->hasDivisionAccess($this->id_divisi)) return false;
+        }
+
+        return true;
     }
 
     /**
@@ -191,9 +212,9 @@ trait HasDocumentFeatures
             // 1. Umum documents are visible to everyone
             $q->where('sifat_dokumen', 'Umum')
 
-            // 2. Internal documents: visible if user in same division
+            // 2. Internal & Rahasia documents: visible if user in same division
               ->orWhere(function($subQ) use ($accessibleDivisionIds) {
-                  $subQ->where('sifat_dokumen', 'Internal')
+                  $subQ->whereIn('sifat_dokumen', ['Internal', 'Rahasia'])
                        ->whereIn('id_divisi', $accessibleDivisionIds);
               })
 
@@ -240,54 +261,6 @@ trait HasDocumentFeatures
 
         // Return only fields that actually exist in the table
         return array_intersect($potentialFields, $tableColumns);
-    }
-
-    /**
-     * Check if user has access to file content (download/preview)
-     */
-    public function userHasFileAccess($userId)
-    {
-        $user = User::find($userId);
-        if (!$user) return false;
-
-        // Super Admin can access everything
-        if ($user->isSuperAdmin()) return true;
-
-        // Creator can always access
-        if ($this->created_by == $userId) return true;
-
-        // Check for specific approved access request
-        $hasApprovedRequest = \App\Models\FileAccessRequest::where('document_type', $this->getTable())
-            ->where('document_id', $this->id)
-            ->where('id_user', $userId)
-            ->where('status', 'approved')
-            ->exists();
-
-        if ($hasApprovedRequest) return true;
-
-        // Division Admin of the document's division can always access
-        if ($user->isDivisionAdmin($this->id_divisi)) return true;
-
-        // Logic based on Classification
-        if ($this->sifat_dokumen === 'Umum') {
-            // Umum is now Global (visible to all authenticated users)
-            return true;
-        }
-
-        if ($this->sifat_dokumen === 'Internal') {
-            // Internal: Only visible to division members (inherited via hasDivisionAccess)
-            return $user->hasDivisionAccess($this->id_divisi);
-        }
-
-        // For 'Rahasia' documents
-        if ($this->isSecret()) {
-            // STRICT: Even same division staff cannot access unless they are admin or have approved request
-            // So default is false here
-            return false;
-        }
-
-        // Default fallback (should be covered above, but safe to restrict)
-        return false;
     }
 
     /**

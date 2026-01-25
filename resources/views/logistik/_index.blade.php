@@ -27,7 +27,7 @@
                 <td><i class="bi bi-file-earmark-text text-primary me-2"></i><strong>{{ $item->judul ?? $item->perihal ?? $item->nama ?? '-' }}</strong></td>
                 <td>{{ $item->divisi?->nama_divisi ?? '-' }}</td>
                 <td>{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : '-' }}</td>
-                <td>@if($item->sifat_dokumen == 'Rahasia')<span class="badge badge-secret"><i class="bi bi-lock"></i></span>@else<span class="badge badge-public"><i class="bi bi-unlock"></i></span>@endif</td>
+                <td>@if($item->sifat_dokumen == 'Rahasia')<span class="badge badge-secret"><i class="bi bi-lock"></i></span>@elseif($item->sifat_dokumen == 'Internal')<span class="badge bg-warning text-dark"><i class="bi bi-shield-lock"></i></span>@else<span class="badge badge-public"><i class="bi bi-unlock"></i></span>@endif</td>
                 <td><span class="badge bg-secondary">v{{ $item->version ?? 1 }}</span></td>
                 <td>
                     <div class="btn-group btn-group-sm">

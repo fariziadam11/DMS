@@ -259,13 +259,45 @@ class User extends Authenticatable
 
     /**
      * Check if user is division admin
+     * Refactored to use Jabatan Level and Hierarchy
      */
     public function isDivisionAdmin($divisiId = null)
     {
-        $query = $this->roles()->where('roles_name', 'like', '%Admin%');
+        // 1. Super Admin is always consistent
+        if ($this->isSuperAdmin()) return true;
+
+        // 2. Check based on Jabatan Level
+        // Manager(3) and Director(4) are considered Division Admins
+        $minLevel = \App\Models\MasterJabatan::LEVEL_MANAGER; // 3
+
+        // Check Primary Jabatan
+        if ($this->jabatan && $this->jabatan->level_jabatan >= $minLevel) {
+            // If checking specific division, ensure jabatan belongs to it
+            if ($divisiId) {
+                if ($this->jabatan->id_divisi == $divisiId || $this->jabatan->id_divisi == null) {
+                   return true;
+                }
+            } else {
+                // If checking general "Is Admin anywhere?", yes.
+                return true;
+            }
+        }
+
+        // 3. Fallback to Role-based check (Legacy support or special roles)
+        $query = $this->roles()->where(function($q) {
+            $q->where('roles_name', 'like', '%Admin%')
+              ->orWhere('roles_name', 'like', '%Manager%') // Keep for roles without Jabatan link
+              ->orWhere('roles_name', 'like', '%Kepala Divisi%');
+        });
 
         if ($divisiId) {
-            $query->where('id_divisi', $divisiId);
+            $query->where(function($q) use ($divisiId) {
+                $q->where('id_divisi', $divisiId)
+                  ->orWhere(function($subQ) use ($divisiId) {
+                      $subQ->whereNull('id_divisi')
+                           ->whereRaw('? = ?', [$this->id_divisi, $divisiId]);
+                  });
+            });
         }
 
         return $query->exists();

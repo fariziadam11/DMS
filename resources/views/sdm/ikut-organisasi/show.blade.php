@@ -74,9 +74,17 @@
                     </table>
                 </div>
                 <div class="card-footer text-end">
-                    <a href="{{ route('sdm.ikut-organisasi.edit', $item->id) }}" class="btn btn-warning"><i
+                    @if ($permissions['edit'])
+                        <a href="{{ route('sdm.ikut-organisasi.edit', $item->id) }}" class="btn btn-warning"><i
                             class="bi bi-pencil"></i> Edit</a>
-                    <a href="{{ route('sdm.ikut-organisasi.index') }}" class="btn btn-secondary">Kembali</a>
+                    @endif
+                    @if (request('source') == 'my-documents')
+                    <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
+                            class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
+                @else
+                    <a href="{{ route('sdm.ikut-organisasi.index') }}" class="btn btn-outline-secondary"><i
+                            class="bi bi-arrow-left"></i> Kembali</a>
+                @endif
                 </div>
             </div>
         </div>
