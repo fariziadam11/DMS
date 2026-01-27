@@ -101,8 +101,8 @@
                                     </div>
                                     @foreach ($functions as $func)
                                         @php
-                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74)
-                                            if (in_array($menu->id, [1, 73, 74])) {
+                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
+                                            if (in_array($menu->id, [1, 73, 74, 76, 69])) {
                                                 continue;
                                             }
                                             // 2. Hide Approval(7) for all except Access Documents(69)
@@ -158,12 +158,12 @@
                                                     </div>
                                                     @foreach ($functions as $func)
                                                         @php
-                                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74)
-                                                            if (in_array($child->id, [1, 73, 74])) {
+                                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
+                                                            if (in_array($child->id, [1, 73, 74, 76, 69])) {
                                                                 continue;
                                                             }
-                                                            // 2. Hide Approval(7) for all except Access Documents(69)
-                                                            if ($func->id == 7 && $child->id != 69) {
+                                                            // 2. Hide Approval(7) for all except Permintaan Akses(75)
+                                                            if ($func->id == 7 && $child->id != 75) {
                                                                 continue;
                                                             }
                                                             // 3. Hide Download(5) for specified menus (Master Data & Admin children)

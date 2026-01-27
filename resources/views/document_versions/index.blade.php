@@ -40,7 +40,6 @@
                         <th>Ukuran</th>
                         <th>Diunggah Oleh</th>
                         <th>Tanggal</th>
-                        <th>Catatan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -62,6 +61,20 @@
                                     <span class="badge bg-secondary" style="font-size: 0.65rem;">
                                         {{ Str::title(str_replace('_', ' ', $ver->document_type)) }}
                                     </span>
+
+                                    <!-- Classification Badge -->
+                                    <div class="mt-1">
+                                        @if ($ver->document->sifat_dokumen == 'Rahasia')
+                                            <span class="badge badge-secret" style="font-size: 0.65rem;"><i
+                                                    class="bi bi-lock me-1"></i>Rahasia</span>
+                                        @elseif($ver->document->sifat_dokumen == 'Internal')
+                                            <span class="badge bg-warning text-dark" style="font-size: 0.65rem;"><i
+                                                    class="bi bi-shield-lock me-1"></i>Internal</span>
+                                        @else
+                                            <span class="badge badge-public" style="font-size: 0.65rem;"><i
+                                                    class="bi bi-unlock me-1"></i>Umum</span>
+                                        @endif
+                                    </div>
                                 @else
                                     <span class="text-muted text-xs">Dokumen Terhapus</span>
                                 @endif
@@ -70,19 +83,30 @@
                             <td>{{ $ver->formatted_file_size }}</td>
                             <td>{{ $ver->uploader->name ?? '-' }}</td>
                             <td>{{ $ver->upload_date->format('d M Y H:i') }}</td>
-                            <td>{{ Str::limit($ver->change_notes ?? '-', 30) }}</td>
                             <td>
-                                <!-- Download works via BaseDocumentController or we need a route -->
-                                <!-- Usually DocumentVersionController handles download, or BaseDocumentController -->
-                                <!-- BaseDocumentController has downloadVersion. But it needs Controller Instance. -->
-                                <!-- Easier to use direct storage link if public? No, secure. -->
-                                <!-- We need a download route for versions. -->
-                                <!-- I will assume there isn't one globally available easily without knowing parent controller. -->
-                                <!-- But I can make a download route in DocumentVersionController! -->
-                                <a href="{{ route('document-versions.download', $ver->id) }}"
-                                    class="btn btn-sm btn-primary">
-                                    <i class="bi bi-download"></i>
-                                </a>
+                                @php
+                                    $canDownload = false;
+                                    if (auth()->user()->isSuperAdmin() || $ver->uploaded_by == auth()->id()) {
+                                        $canDownload = true;
+                                    } elseif ($ver->document && method_exists($ver->document, 'userHasFileAccess')) {
+                                        $canDownload = $ver->document->userHasFileAccess(auth()->id());
+                                    }
+                                @endphp
+
+                                @if ($canDownload)
+                                    <a href="{{ route('document-versions.download', $ver->id) }}"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                @else
+                                    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                        data-bs-target="#requestModal" data-type="{{ $ver->document_type }}"
+                                        data-id="{{ $ver->document_id }}"
+                                        data-title="{{ $ver->document->judul ?? ($ver->document->perihal ?? ($ver->document->nama ?? ($ver->document->nomor ?? 'Dokumen #' . $ver->document_id))) }}"
+                                        title="Minta Akses Dokumen">
+                                        <i class="bi bi-key"></i>
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                     @empty

@@ -22,6 +22,8 @@
                             <td>
                                 @if (($item->sifat_dokumen ?? '') == 'Rahasia')
                                     <span class="badge bg-danger">Rahasia</span>
+                                @elseif (($item->sifat_dokumen ?? '') == 'Internal')
+                                    <span class="badge bg-warning text-dark">Internal</span>
                                 @else
                                     <span class="badge bg-success">Umum</span>
                                 @endif
@@ -47,24 +49,24 @@
                                 </td>
                             </tr>
                         @endif
-                        <tr>
-                            <th>Lokasi Fisik</th>
-                            <td>{{ $item->lokasi ?? '-' }}</td>
-                        </tr>
+
                     </table>
                 </div>
                 <div class="card-footer text-end">
                     @if ($permissions['edit'])
                         <a href="{{ route('sekretariat.remunerasi-dokumen.edit', $item->id) }}" class="btn btn-warning"><i
-                            class="bi bi-pencil"></i> Edit</a>
+                                class="bi bi-pencil"></i> Edit</a>
                     @endif
                     @if (request('source') == 'my-documents')
-                    <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
-                @else
-                    <a href="{{ route('sekretariat.remunerasi-dokumen.index') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali</a>
-                @endif
+                        <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
+                                class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
+                    @elseif (request('source') == 'search')
+                        <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                            Kembali ke Pencarian</a>
+                    @else
+                        <a href="{{ route('sekretariat.remunerasi-dokumen.index') }}" class="btn btn-outline-secondary"><i
+                                class="bi bi-arrow-left"></i> Kembali</a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -39,6 +39,10 @@
 <div class="mt-4">@if (request('source') == 'my-documents')
                     <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
+                @elseif (request('source') == 'search')
+                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
+                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
+
                 @else
                     $0
                 @endif</div>

@@ -2,11 +2,13 @@
 <div class="row">
     <div class="col-md-6 mb-3">
         <label class="form-label">Divisi</label>
-        @if(auth()->user()->isSuperAdmin())
+        @if (auth()->user()->isSuperAdmin())
             <select name="id_divisi" class="form-select">
                 <option value="">Pilih Divisi</option>
-                @foreach($divisions ?? [] as $divisi)
-                    <option value="{{ $divisi->id }}" {{ old('id_divisi', $record->id_divisi ?? '') == $divisi->id ? 'selected' : '' }}>{{ $divisi->nama_divisi }}</option>
+                @foreach ($divisions ?? [] as $divisi)
+                    <option value="{{ $divisi->id }}"
+                        {{ old('id_divisi', $record->id_divisi ?? '') == $divisi->id ? 'selected' : '' }}>
+                        {{ $divisi->nama_divisi }}</option>
                 @endforeach
             </select>
         @else
@@ -33,7 +35,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Mulai </label>
         <input type="date" name="mulai" class="form-control @error('mulai') is-invalid @enderror"
-            value="{{ old('mulai', $record->mulai ?? '') }}">
+            value="{{ old('mulai', isset($record->mulai) ? \Carbon\Carbon::parse($record->mulai)->format('Y-m-d') : '') }}">
         @error('mulai')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -41,7 +43,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Akhir </label>
         <input type="date" name="akhir" class="form-control @error('akhir') is-invalid @enderror"
-            value="{{ old('akhir', $record->akhir ?? '') }}">
+            value="{{ old('akhir', isset($record->akhir) ? \Carbon\Carbon::parse($record->akhir)->format('Y-m-d') : '') }}">
         @error('akhir')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -60,7 +62,9 @@
         <select name="sifat_dokumen" class="form-select">
             <option value="Umum"
                 {{ old('sifat_dokumen', $record->sifat_dokumen ?? 'Umum') == 'Umum' ? 'selected' : '' }}>Umum</option>
-            <option value="Internal" {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal</option>
+            <option value="Internal"
+                {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal
+            </option>
             <option value="Rahasia"
                 {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Rahasia' ? 'selected' : '' }}>Rahasia
             </option>

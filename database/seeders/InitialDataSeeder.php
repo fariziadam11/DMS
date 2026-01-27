@@ -79,6 +79,8 @@ class InitialDataSeeder extends Seeder
                     'name' => $userData['name'],
                     'username' => $userData['username'],
                     'password' => Hash::make('password'),
+                    'id_divisi' => $divisi ? $divisi->id : null,
+                    'id_department' => $divisi ? $divisi->id_department : null,
                     'is_active' => 1,
                     'email_verified_at' => now(),
                 ]

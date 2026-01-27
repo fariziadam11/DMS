@@ -54,9 +54,10 @@
                                 @if ($req->document)
                                     <strong>{{ $req->document->judul ?? ($req->document->perihal ?? ($req->document->nama ?? ($req->document->nomor ?? 'Dokumen #' . $req->document_id))) }}</strong>
                                     <br>
-                                    <small class="text-muted">{{ $req->document_type }}</small>
+                                    <small
+                                        class="text-muted">{{ Str::headline(str_replace('_', ' ', $req->document_type)) }}</small>
                                 @else
-                                    {{ $req->document_type }} #{{ $req->document_id }}
+                                    {{ Str::headline(str_replace('_', ' ', $req->document_type)) }} #{{ $req->document_id }}
                                 @endif
                             </td>
                             <td>{{ $req->divisi?->nama_divisi ?? '-' }}</td>
@@ -74,7 +75,7 @@
                             <td>
                                 @php
                                     $currentUser = auth()->user();
-                                    $menuAccess = \App\Models\BaseMenu::where('code_name', 'access')->first();
+                                    $menuAccess = \App\Models\BaseMenu::where('code_name', 'access.index')->first();
                                     $funcApproval = \App\Models\BaseFunction::where(
                                         'function_name',
                                         'Approval',
@@ -119,8 +120,8 @@
                                                             <div class="alert alert-info py-2 mb-3">
                                                                 <small>Permintaan dari:
                                                                     <strong>{{ $req->requester?->name }}</strong> untuk
-                                                                    dokumen <strong>{{ $req->document_type }}
-                                                                        #{{ $req->document_id }}</strong></small>
+                                                                    dokumen
+                                                                    <strong>{{ $req->document->judul ?? ($req->document->perihal ?? ($req->document->nama ?? ($req->document->nomor ?? Str::headline(str_replace('_', ' ', $req->document_type)) . ' #' . $req->document_id))) }}</strong></small>
                                                             </div>
                                                             <p class="mb-2">Pilih izin yang diberikan:</p>
                                                             <div class="form-check">
@@ -143,24 +144,7 @@
                                                                     Download (Mengunduh File)
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    name="permissions[]" value="edit"
-                                                                    id="perm_edit_{{ $req->id }}">
-                                                                <label class="form-check-label"
-                                                                    for="perm_edit_{{ $req->id }}">
-                                                                    Edit (Mengubah Data)
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    name="permissions[]" value="delete"
-                                                                    id="perm_delete_{{ $req->id }}">
-                                                                <label class="form-check-label"
-                                                                    for="perm_delete_{{ $req->id }}">
-                                                                    Delete (Menghapus Data)
-                                                                </label>
-                                                            </div>
+                                                            <!-- Edit/Delete permissions removed as per request -->
                                                             <div class="mt-3">
                                                                 <label class="form-label">Catatan (Opsional)</label>
                                                                 <textarea name="reason" class="form-control" rows="2" placeholder="Catatan persetujuan..."></textarea>
@@ -189,6 +173,12 @@
                                                                 data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body">
+                                                            <div class="alert alert-danger py-2 mb-3">
+                                                                <small>Menolak permintaan dari:
+                                                                    <strong>{{ $req->requester?->name }}</strong> untuk
+                                                                    dokumen
+                                                                    <strong>{{ $req->document->judul ?? ($req->document->perihal ?? ($req->document->nama ?? ($req->document->nomor ?? Str::headline(str_replace('_', ' ', $req->document_type)) . ' #' . $req->document_id))) }}</strong></small>
+                                                            </div>
                                                             <label class="form-label">Alasan Penolakan <span
                                                                     class="text-danger">*</span></label>
                                                             <textarea name="reason" class="form-control" rows="3" required></textarea>

@@ -176,7 +176,19 @@ trait HasDocumentFeatures
         // For 'Internal', if I am valid division member, I am NOT restricted by the document.
 
         if ($this->sifat_dokumen === 'Internal') {
-            if (!$user->hasDivisionAccess($this->id_divisi)) return false;
+            if (!$user->hasDivisionAccess($this->id_divisi)) {
+                 // Check if they have specific approved access request
+                 $request = \App\Models\FileAccessRequest::where('document_type', $this->getTable())
+                     ->where('document_id', $this->id)
+                     ->where('id_user', $userId)
+                     ->where('status', 'approved')
+                     ->first();
+
+                 if ($request && $request->hasPermission($action)) {
+                     return true;
+                 }
+                 return false;
+            }
         }
 
         return true;

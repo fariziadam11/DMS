@@ -84,6 +84,70 @@ abstract class BaseDocumentController extends Controller
     {
         $this->checkFunctionAccess(2); // Create
 
+        // 1. Check for File Collision for Auto-Versioning
+        if ($request->hasFile('file')) {
+            $uploadedFile = $request->file('file');
+            $originalName = $uploadedFile->getClientOriginalName();
+
+            // Find existing ACTIVE document with same filename
+            $existing = $this->model::where('file_name', $originalName)->first();
+
+            if ($existing) {
+                // COLLISION DETECTED -> Trigger Version Update
+
+                // Check Permission to Update THIS specific record
+                // (Using 'write' policy which handles Owner/SuperAdmin/DivAdmin)
+                $canUpdate = false;
+                try {
+                    // We assume authorizeAccess throws exception on failure, but it returns true on success.
+                    // Actually authorizeAccess aborts (throws HttpException).
+                    // So we catch it.
+                    // However, we want to know IF we can update.
+                    // Let's wrap in try-catch.
+                    // We need a helper or just try permission logic.
+                    // authorizeAccess returns true or aborts.
+                    $this->authorizeAccess($existing, 'write');
+                    $canUpdate = true;
+                } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+                    $canUpdate = false;
+                }
+
+                if ($canUpdate) {
+                    // Proceed to Update Logic
+
+                    // Validate Request (treating as Update with ID to ignore unique checks)
+                    $validated = $this->validateRequest($request, $existing->id);
+
+                    $oldValues = $existing->toArray();
+
+                    // Handle File Upload
+                    $validated['file'] = $this->handleFileUpload($uploadedFile);
+                    $validated['file_name'] = $originalName;
+                    $validated['version'] = ($existing->version ?? 1) + 1;
+
+                    // Detect Change Notes
+                    $notes = $request->get('change_notes', 'Pembaruan otomatis via upload ulang (Nama file sama)');
+
+                    // Create New Version
+                    $this->createDocumentVersion($existing, $uploadedFile, $notes);
+
+                    // Update Record
+                    $existing->update($validated);
+
+                    // Audit Log (Update)
+                    AuditLog::logUpdate($existing->getTable(), $existing->id, $oldValues, $validated);
+
+                    // Redirect
+                    return redirect()->route($this->routePrefix . '.index')
+                        ->with('success', 'Dokumen terdeteksi! Database diperbarui sebagai Versi ' . $validated['version']);
+                } else {
+                    // Collision found but no permission to update
+                    return back()->withInput()->with('error', 'Gagal: File dengan nama "' . $originalName . '" sudah ada (Divisi: ' . ($existing->divisi->nama_divisi ?? '-') . ') dan Anda tidak memiliki izin untuk memperbaruinya.');
+                }
+            }
+        }
+
+        // Standard Creation Logic (No Collision)
         $validated = $this->validateRequest($request);
 
         // Handle file upload
@@ -120,12 +184,18 @@ abstract class BaseDocumentController extends Controller
         // Log view
         AuditLog::logView($record->getTable(), $record->id);
 
+        // Check granular document permission to override RBAC if needed
+        $permissions = $this->getPermissions();
+        if ($record->userHasFileAccess(auth()->id())) {
+             $permissions['download'] = true;
+        }
+
         return view($this->viewPath . '.show', [
             'record' => $record,
             'item' => $record, // Alias for backward compatibility
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
-            'permissions' => $this->getPermissions(),
+            'permissions' => $permissions,
         ]);
     }
 

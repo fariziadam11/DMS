@@ -137,7 +137,7 @@ class AccessController extends Controller
         }
 
         // 2. Check specific "Approval" privilege
-        $menu = \App\Models\BaseMenu::where('code_name', 'access')->first();
+        $menu = \App\Models\BaseMenu::where('code_name', 'access.index')->first();
         $approvalFunc = \App\Models\BaseFunction::where('function_name', 'Approval')->first();
 
         if ($menu && $approvalFunc) {

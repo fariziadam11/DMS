@@ -29,7 +29,16 @@
                     @forelse($requests as $i => $req)
                         <tr>
                             <td>{{ $requests->firstItem() + $i }}</td>
-                            <td>{{ $req->document_type }} #{{ $req->document_id }}</td>
+                            <td>
+                                @if ($req->document)
+                                    <strong>{{ $req->document->judul ?? ($req->document->perihal ?? ($req->document->nama ?? ($req->document->nomor ?? 'Dokumen #' . $req->document_id))) }}</strong>
+                                    <br>
+                                    <small
+                                        class="text-muted">{{ Str::headline(str_replace('_', ' ', $req->document_type)) }}</small>
+                                @else
+                                    {{ Str::headline(str_replace('_', ' ', $req->document_type)) }} #{{ $req->document_id }}
+                                @endif
+                            </td>
                             <td>{{ $req->divisi?->nama_divisi ?? '-' }}</td>
                             <td>{{ Str::limit($req->request_reason, 50) }}</td>
                             <td>

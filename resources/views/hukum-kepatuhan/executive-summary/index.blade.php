@@ -42,11 +42,13 @@
                             <td>{{ Str::limit($item->perihal, 80) ?? '-' }}</td>
                             <td>
                                 <span
-                                    class="badge bg-{{ ($item->sifat_dokumen ?? 'Umum') == 'Rahasia' ? 'danger' : 'success' }}">
+                                    class="badge bg-{{ ($item->sifat_dokumen ?? 'Umum') == 'Rahasia' ? 'danger' : (($item->sifat_dokumen ?? 'Umum') == 'Internal' ? 'warning' : 'success') }}">
                                     {{ $item->sifat_dokumen ?? 'Umum' }}
                                 </span>
                             </td>
-                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
+                            <td><span
+                                    class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span>
+                            </td>
                             <td>
                                 @if ($item->file_name)
                                     @if ($item->userHasFileAccess(auth()->id()))

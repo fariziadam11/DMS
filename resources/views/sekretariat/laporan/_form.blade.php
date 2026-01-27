@@ -32,7 +32,7 @@
             <label for="tanggal" class="form-label">Tanggal</label>
             <input type="date" name="tanggal" id="tanggal"
                 class="form-control @error('tanggal') is-invalid @enderror"
-                value="{{ old('tanggal', $item->tanggal ?? '') }}">
+                value="{{ old('tanggal', isset($item->tanggal) ? $item->tanggal->format('Y-m-d') : '') }}">
             @error('tanggal')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -70,7 +70,7 @@
             <label for="dilaporkan" class="form-label">Tanggal Dilaporkan</label>
             <input type="date" name="dilaporkan" id="dilaporkan"
                 class="form-control @error('dilaporkan') is-invalid @enderror"
-                value="{{ old('dilaporkan', $item->dilaporkan ?? '') }}">
+                value="{{ old('dilaporkan', isset($item->dilaporkan) ? $item->dilaporkan->format('Y-m-d') : '') }}">
             @error('dilaporkan')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -104,7 +104,9 @@
                 <option value="Umum"
                     {{ old('sifat_dokumen', $item->sifat_dokumen ?? 'Umum') == 'Umum' ? 'selected' : '' }}>Umum
                 </option>
-            <option value="Internal" {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal</option>
+                <option value="Internal"
+                    {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal
+                </option>
                 <option value="Rahasia"
                     {{ old('sifat_dokumen', $item->sifat_dokumen ?? '') == 'Rahasia' ? 'selected' : '' }}>Rahasia
                 </option>

@@ -51,27 +51,42 @@ class DocumentVersionController extends Controller
 
     public function download($id)
     {
-        $version = DocumentVersion::findOrFail($id);
+        $version = DocumentVersion::with('document')->findOrFail($id);
 
-        // Division Check (Security)
-        $user = auth()->user();
-        if (!$user->isSuperAdmin()) {
-            // Check if uploader is in same division -> Approximation
-            if ($version->uploader && $version->uploader->id_divisi != $user->id_divisi) {
-                abort(403, 'Anda tidak memiliki akses ke dokumen dari divisi ini.');
-            }
-        }
-
+        // 1. Existence Check
         if (!$version->file) {
             abort(404, 'File tidak ditemukan');
+        }
+
+        // 2. Security Check (Delegated to Parent Document Logic)
+        // If parent document exists, use its robust permission check (handling Rahasia, Internal, Permissions)
+        if ($version->document) {
+            if (method_exists($version->document, 'userHasFileAccess')) {
+                if (!$version->document->userHasFileAccess(auth()->id())) {
+                     abort(403, 'Anda tidak memiliki izin untuk mengakses dokumen ini (Klasifikasi: ' . $version->document->sifat_dokumen . ').');
+                }
+            } else {
+                // Fallback for models without trait (shouldn't happen for main docs)
+                // Default to Division Check
+                $user = auth()->user();
+                if (!$user->isSuperAdmin() && $version->uploader && $version->uploader->id_divisi != $user->id_divisi) {
+                     abort(403, 'Akses ditolak (Divisi berbeda).');
+                }
+            }
+        } else {
+             // Parent deleted? Allow if SuperAdmin, else Deny?
+             // Or allow if user is uploader.
+             if (auth()->id() != $version->uploaded_by && !auth()->user()->isSuperAdmin()) {
+                 abort(403, 'Dokumen induk tidak ditemukan.');
+             }
         }
 
         // Path: 'versions/' . $version->file (Based on BaseDocumentController)
         $path = 'versions/' . $version->file;
 
         if (!\Illuminate\Support\Facades\Storage::exists($path)) {
-            // Try 'documents/' just in case? No, versions usually in versions/
-            abort(404, 'File fisik tidak ditemukan');
+            // Check fallback path (legacy maybe?)
+            abort(404, 'File fisik tidak ditemukan di storage');
         }
 
         return \Illuminate\Support\Facades\Storage::download($path, $version->file_name);

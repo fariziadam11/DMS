@@ -325,7 +325,7 @@ class GlobalSearchController extends Controller
         $routeName = $routeMap[$tableName] ?? null;
 
         if ($routeName && \Route::has($routeName)) {
-            return route($routeName, $id);
+            return route($routeName, $id) . '?source=search';
         }
 
         return null;

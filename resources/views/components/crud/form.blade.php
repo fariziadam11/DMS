@@ -91,15 +91,6 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="col-12">
-                            <label class="form-label">Lokasi Penyimpanan</label>
-                            <input type="text" name="lokasi" class="form-control @error('lokasi') is-invalid @enderror"
-                                value="{{ old('lokasi', $record->lokasi ?? '') }}" placeholder="Contoh: Lemari A, Rak 2">
-                            @error('lokasi')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                     @endif
 
                     <!-- File Upload -->

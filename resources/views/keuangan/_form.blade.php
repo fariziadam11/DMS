@@ -35,23 +35,41 @@
                             <option value="Umum"
                                 {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Umum' ? 'selected' : '' }}>Umum
                             </option>
-            <option value="Internal" {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal</option>
+                            <option value="Internal"
+                                {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>
+                                Internal</option>
                             <option value="Rahasia"
                                 {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Rahasia' ? 'selected' : '' }}>
                                 Rahasia</option>
                         </select></div>
                     <div class="col-md-6"><label class="form-label">Nomor</label><input type="text" name="nomor"
                             class="form-control" value="{{ old('nomor', $record->nomor ?? '') }}"></div>
-                    <div class="col-md-6"><label class="form-label">Tanggal</label><input type="date" name="tanggal"
-                            class="form-control"
-                            value="{{ old('tanggal', isset($record->tanggal) ? \Carbon\Carbon::parse($record->tanggal)->format('Y-m-d') : '') }}">
-                    </div>
+                    @if ($moduleName == 'Pajak')
+                        <div class="col-md-6"><label class="form-label">Masa</label>
+                            <select name="masa" class="form-select">
+                                <option value="">Pilih Masa</option>
+                                @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $m)
+                                    <option value="{{ $m }}"
+                                        {{ old('masa', $record->masa ?? '') == $m ? 'selected' : '' }}>{{ $m }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6"><label class="form-label">Tahun</label>
+                            <input type="number" name="tahun" class="form-control"
+                                value="{{ old('tahun', $record->tahun ?? date('Y')) }}">
+                        </div>
+                    @else
+                        <div class="col-md-6"><label class="form-label">Tanggal</label><input type="date" name="tanggal"
+                                class="form-control"
+                                value="{{ old('tanggal', isset($record) ? \Carbon\Carbon::parse($record->tanggal ?? ($record->tanggal_surat_bayar ?? now()))->format('Y-m-d') : '') }}">
+                        </div>
+                    @endif
                     <div class="col-12"><label class="form-label">Judul/Perihal <span
                                 class="text-danger">*</span></label><input type="text" name="judul"
                             class="form-control" value="{{ old('judul', $record->judul ?? ($record->perihal ?? '')) }}"
                             required></div>
-                    <div class="col-12"><label class="form-label">Lokasi Fisik</label><input type="text" name="lokasi"
-                            class="form-control" value="{{ old('lokasi', $record->lokasi ?? '') }}"></div>
+
                     <div class="col-12"><label class="form-label">File @if (!isset($record))
                                 <span class="text-danger">*</span>
                             @endif

@@ -32,7 +32,7 @@
                 <tr>
                     <th>Sifat Dokumen</th>
                     <td><span
-                            class="badge bg-{{ $record->sifat_dokumen == 'Rahasia' ? 'danger' : 'success' }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
+                            class="badge bg-{{ ($record->sifat_dokumen ) == 'Rahasia' ? 'danger' : (($record->sifat_dokumen ) == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
                 @if ($permissions['download'])
@@ -67,6 +67,10 @@
                 @if (request('source') == 'my-documents')
                     <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
+                @elseif (request('source') == 'search')
+                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
+                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
+
                 @else
                     <a href="{{ route('anggaran.rencana-kerja-direktorat.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali</a>

@@ -199,6 +199,14 @@ class User extends Authenticatable
             return true;
         }
 
+        // Department access role (Parent Hierarchy)
+        if ($this->roles()->where('access_scope', 'department')->exists() && $this->id_department) {
+            $targetDivision = MasterDivisi::find($divisiId);
+            if ($targetDivision && $targetDivision->id_department == $this->id_department) {
+                return true;
+            }
+        }
+
         // User's own division
         if ($this->id_divisi == $divisiId) {
             return true;
@@ -243,6 +251,14 @@ class User extends Authenticatable
                 $divisionIds,
                 $role->divisionAccess()->pluck('id_divisi')->toArray()
             );
+        }
+
+        // Department Scope Access (Include all divisions in user's department)
+        if ($this->roles()->where('access_scope', 'department')->exists() && $this->id_department) {
+            $departmentDivisionIds = MasterDivisi::where('id_department', $this->id_department)
+                ->pluck('id')
+                ->toArray();
+            $divisionIds = array_merge($divisionIds, $departmentDivisionIds);
         }
 
         return MasterDivisi::whereIn('id', array_unique($divisionIds))->get();
