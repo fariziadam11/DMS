@@ -320,6 +320,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::get('users/ajax/departments/{divisiId}', [\App\Http\Controllers\Admin\UserController::class, 'getDepartments'])->name('users.ajax.departments');
+        Route::get('users/ajax/divisions/{departmentId}', [\App\Http\Controllers\Admin\UserController::class, 'getDivisions'])->name('users.ajax.divisions');
         Route::get('users/ajax/jabatans/{divisiId}', [\App\Http\Controllers\Admin\UserController::class, 'getJabatans'])->name('users.ajax.jabatans');
         Route::get('api/jabatan/{jabatanId}/default-role', [\App\Http\Controllers\Admin\UserController::class, 'getDefaultRole'])->name('users.api.default-role');
         Route::resource('menus', \App\Http\Controllers\Admin\MenuController::class);

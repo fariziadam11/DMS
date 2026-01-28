@@ -56,7 +56,7 @@
 @endpush
 
 @section('content')
-    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
             <h1 class="page-title">Atur Privileges</h1>
             <p class="text-muted mb-0">Role: <strong>{{ $role->roles_name }}</strong></p>
@@ -94,30 +94,35 @@
                             </div>
 
                             {{-- FUNCTION CHECKBOXES FOR PARENT --}}
-                            @if ($functions->count() > 0)
+                            @php
+                                $visibleFunctions = $functions->filter(function ($func) use ($menu) {
+                                    // 1. Hide View(1) globally
+                                    if ($func->id == 1) {
+                                        return false;
+                                    }
+                                    // 2. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
+                                    if (in_array($menu->id, [1, 73, 74, 76, 69])) {
+                                        return false;
+                                    }
+                                    // 3. Hide Approval(7) for Parent Menus
+                                    if ($func->id == 7) {
+                                        return false;
+                                    }
+
+                                    // 4. Hide Download(5) for Master Data(62) and System Admin(66) and children
+                                    if ($func->id == 5 && in_array($menu->id, [62, 63, 64, 65, 66, 67, 68, 70, 71])) {
+                                        return false;
+                                    }
+                                    return true;
+                                });
+                            @endphp
+
+                            @if ($visibleFunctions->count() > 0)
                                 <div class="function-badges mb-2">
                                     <div class="text-primary mb-2">
                                         <small><strong>Functions:</strong></small>
                                     </div>
-                                    @foreach ($functions as $func)
-                                        @php
-                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
-                                            if (in_array($menu->id, [1, 73, 74, 76, 69])) {
-                                                continue;
-                                            }
-                                            // 2. Hide Approval(7) for all except Access Documents(69)
-                                            if ($func->id == 7 && $menu->id != 69) {
-                                                continue;
-                                            }
-                                            // 3. Hide Download(5) for Master Data(62) and System Admin(66)
-                                            if (
-                                                $func->id == 5 &&
-                                                in_array($menu->id, [62, 63, 64, 65, 66, 67, 68, 70, 71])
-                                            ) {
-                                                continue;
-                                            }
-                                        @endphp
-
+                                    @foreach ($visibleFunctions as $func)
                                         @if (isset($allowedFunctions[$menu->id]) && !in_array($func->id, $allowedFunctions[$menu->id]))
                                             @continue
                                         @endif
@@ -151,39 +156,39 @@
                                             </div>
 
                                             {{-- FUNCTION CHECKBOXES FOR CHILD --}}
-                                            @if ($functions->count() > 0)
+                                            @php
+                                                $visibleChildFunctions = $functions->filter(function ($func) use (
+                                                    $child,
+                                                ) {
+                                                    // 1. Hide View(1) globally
+                                                    if ($func->id == 1) {
+                                                        return false;
+                                                    }
+                                                    // 2. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
+                                                    if (in_array($child->id, [1, 73, 74, 76, 69])) {
+                                                        return false;
+                                                    }
+                                                    // 3. Hide Approval(7) for all except Permintaan Akses(75)
+                                                    if ($func->id == 7 && $child->id != 75) {
+                                                        return false;
+                                                    }
+                                                    // 4. Hide Download(5) for specified menus (Master Data & Admin children)
+                                                    if (
+                                                        $func->id == 5 &&
+                                                        in_array($child->id, [62, 63, 64, 65, 66, 67, 68, 70, 71])
+                                                    ) {
+                                                        return false;
+                                                    }
+                                                    return true;
+                                                });
+                                            @endphp
+
+                                            @if ($visibleChildFunctions->count() > 0)
                                                 <div class="function-badges mb-2">
                                                     <div class="text-primary mb-2">
                                                         <small><strong>Functions:</strong></small>
                                                     </div>
-                                                    @foreach ($functions as $func)
-                                                        @php
-                                                            // 1. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
-                                                            if (in_array($child->id, [1, 73, 74, 76, 69])) {
-                                                                continue;
-                                                            }
-                                                            // 2. Hide Approval(7) for all except Permintaan Akses(75)
-                                                            if ($func->id == 7 && $child->id != 75) {
-                                                                continue;
-                                                            }
-                                                            // 3. Hide Download(5) for specified menus (Master Data & Admin children)
-                                                            if (
-                                                                $func->id == 5 &&
-                                                                in_array($child->id, [
-                                                                    62,
-                                                                    63,
-                                                                    64,
-                                                                    65,
-                                                                    66,
-                                                                    67,
-                                                                    68,
-                                                                    70,
-                                                                    71,
-                                                                ])
-                                                            ) {
-                                                                continue;
-                                                            }
-                                                        @endphp
+                                                    @foreach ($visibleChildFunctions as $func)
                                                         @if (isset($allowedFunctions[$child->id]) && !in_array($func->id, $allowedFunctions[$child->id]))
                                                             @continue
                                                         @endif

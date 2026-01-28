@@ -15,6 +15,7 @@ abstract class BaseDocumentController extends Controller
     protected $routePrefix;
     protected $moduleName;
     protected $storagePath = 'documents';
+    protected $withRelations = ['divisi'];
 
     public function __construct()
     {
@@ -51,7 +52,7 @@ abstract class BaseDocumentController extends Controller
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
 
-        $items = $query->with('divisi')->paginate(10);
+        $items = $query->with($this->withRelations)->paginate(10);
 
         return view($this->viewPath . '.index', [
             'items' => $items,

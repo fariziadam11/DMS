@@ -60,12 +60,25 @@ class AppServiceProvider extends ServiceProvider
 
             // Keuangan
             'keuangan_cashflow' => \App\Models\Keuangan\Cashflow::class,
+            'keuangan_bendaharapajak_cashflow' => \App\Models\Keuangan\Cashflow::class,
+
             'keuangan_pajak' => \App\Models\Keuangan\Pajak::class,
+            'keuangan_bendaharapajak_pajak' => \App\Models\Keuangan\Pajak::class,
+
             'keuangan_pemindahbukuan' => \App\Models\Keuangan\Pemindahbukuan::class,
+            'keuangan_bendaharapajak_pemindahbukuan' => \App\Models\Keuangan\Pemindahbukuan::class,
+
             'keuangan_penempatan' => \App\Models\Keuangan\Penempatan::class,
+            'keuangan_bendaharapajak_penempatan' => \App\Models\Keuangan\Penempatan::class,
+
             'keuangan_spb' => \App\Models\Keuangan\Spb::class,
+            'keuangan_bendaharapajak_spb' => \App\Models\Keuangan\Spb::class,
+
             'keuangan_sppb' => \App\Models\Keuangan\Sppb::class,
+            'keuangan_bendaharapajak_sppb' => \App\Models\Keuangan\Sppb::class,
+
             'keuangan_surat_bayar' => \App\Models\Keuangan\SuratBayar::class,
+            'keuangan_bendaharapajak_surat' => \App\Models\Keuangan\SuratBayar::class,
 
             // Logistik
             'logistiksarpen_cleaning_service' => \App\Models\Logistik\CleaningService::class,

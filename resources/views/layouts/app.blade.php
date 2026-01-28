@@ -403,6 +403,29 @@
                 link.closest('.has-submenu').classList.add('open');
             }
         });
+
+        // Toggle Sidebar on Mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent immediate closing if we add outside click listener
+                sidebar.classList.toggle('show');
+            });
+
+            // Close sidebar when clicking outside of it on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth < 992 &&
+                    sidebar.classList.contains('show') &&
+                    !sidebar.contains(e.target) &&
+                    e.target !== sidebarToggle &&
+                    !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        }
     </script>
 
     <!-- File Preview Modal -->

@@ -36,10 +36,10 @@ class UserController extends Controller
 
     public function create()
     {
-        $divisions = MasterDivisi::orderBy('nama_divisi')->get();
+        $departments = MasterDepartment::orderBy('nama_department')->get();
         $roles = BaseRole::orderBy('roles_name')->get();
 
-        return view('admin.users.create', compact('divisions', 'roles'));
+        return view('admin.users.create', compact('departments', 'roles'));
     }
 
     public function getDepartments($divisiId)
@@ -58,6 +58,15 @@ class UserController extends Controller
         }
 
         return response()->json([]);
+    }
+
+    public function getDivisions($departmentId)
+    {
+        $divisions = MasterDivisi::where('id_department', $departmentId)
+            ->orderBy('nama_divisi')
+            ->get(['id', 'nama_divisi']);
+
+        return response()->json($divisions);
     }
 
     public function getJabatans($divisiId)
@@ -156,25 +165,26 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $divisions = MasterDivisi::orderBy('nama_divisi')->get();
+        $departments = MasterDepartment::orderBy('nama_department')->get();
         $roles = BaseRole::orderBy('roles_name')->get();
-        // Load Depts and Jabatans based on current user selection for the view
-        $departments = [];
+
+        // Load Divisions and Jabatans based on current user selection for the view
+        $divisions = [];
         $jabatans = [];
 
+        if ($user->id_department) {
+             // Get divisions in department
+             $divisions = MasterDivisi::where('id_department', $user->id_department)->orderBy('nama_divisi')->get();
+        }
+
         if ($user->id_divisi) {
-             // Get parent department
-             $divisi = MasterDivisi::with('department')->find($user->id_divisi);
-             if ($divisi && $divisi->department) {
-                 $departments = [$divisi->department];
-             }
              // Get jabatans in division
              $jabatans = MasterJabatan::where('id_divisi', $user->id_divisi)->orderBy('nama_jabatan')->get();
         }
 
         $user->load('roles');
 
-        return view('admin.users.edit', compact('user', 'divisions', 'roles', 'departments', 'jabatans'));
+        return view('admin.users.edit', compact('user', 'departments', 'divisions', 'roles', 'jabatans'));
     }
 
     public function update(Request $request, User $user)

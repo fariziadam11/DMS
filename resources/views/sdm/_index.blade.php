@@ -37,57 +37,64 @@
     </div>
     <div class="card">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Judul</th>
-                        <th>Divisi</th>
-                        <th>Tanggal</th>
-                        <th>Klasifikasi</th>
-                        <th>Versi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($items as $i => $item)
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
                         <tr>
-                            <td>{{ $items->firstItem() + $i }}</td>
-                            <td><i
-                                    class="bi bi-file-earmark-text text-primary me-2"></i><strong>{{ $item->judul ?? ($item->perihal ?? ($item->nama ?? '-')) }}</strong>
-                            </td>
-                            <td>{{ $item->divisi?->nama_divisi ?? '-' }}</td>
-                            <td>{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : '-' }}</td>
-                            <td>
-                                @if($item->sifat_dokumen == 'Rahasia')
-                                <span class="badge badge-secret"><i class="bi bi-lock"></i></span>@elseif($item->sifat_dokumen == 'Internal')<span class="badge bg-warning text-dark"><i class="bi bi-shield-lock"></i></span>@else<span
-                                        class="badge badge-public"><i class="bi bi-unlock"></i></span>
-                                @endif
-                            </td>
-                            <td><span class="badge bg-secondary">v{{ $item->version ?? 1 }}</span></td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ route($routePrefix . '.show', $item->id) }}"
-                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                    <a href="{{ route($routePrefix . '.edit', $item->id) }}"
-                                        class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                                    @if ($item->file)
-                                        <a href="{{ route($routePrefix . '.download', $item->id) }}"
-                                            class="btn btn-outline-success"><i class="bi bi-download"></i></a>
+                            <th>#</th>
+                            <th>Judul</th>
+                            <th>Divisi</th>
+                            <th>Tanggal</th>
+                            <th>Klasifikasi</th>
+                            <th>Versi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($items as $i => $item)
+                            <tr>
+                                <td>{{ $items->firstItem() + $i }}</td>
+                                <td><i
+                                        class="bi bi-file-earmark-text text-primary me-2"></i><strong>{{ $item->judul ?? ($item->perihal ?? ($item->nama ?? '-')) }}</strong>
+                                </td>
+                                <td>{{ $item->divisi?->nama_divisi ?? '-' }}</td>
+                                <td>{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : '-' }}
+                                </td>
+                                <td>
+                                    @if ($item->sifat_dokumen == 'Rahasia')
+                                        <span class="badge badge-secret"><i class="bi bi-lock"></i></span>
+                                    @elseif($item->sifat_dokumen == 'Internal')
+                                        <span class="badge bg-warning text-dark"><i
+                                            class="bi bi-shield-lock"></i></span>@else<span
+                                            class="badge badge-public"><i class="bi bi-unlock"></i></span>
                                     @endif
-                                    <form action="{{ route($routePrefix . '.destroy', $item->id) }}" method="POST"
-                                        class="d-inline" onsubmit="return confirm('Yakin?')">@csrf @method('DELETE')<button
-                                            class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">Belum ada data</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                </td>
+                                <td><span class="badge bg-secondary">v{{ $item->version ?? 1 }}</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ route($routePrefix . '.show', $item->id) }}"
+                                            class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                        <a href="{{ route($routePrefix . '.edit', $item->id) }}"
+                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                        @if ($item->file)
+                                            <a href="{{ route($routePrefix . '.download', $item->id) }}"
+                                                class="btn btn-outline-success"><i class="bi bi-download"></i></a>
+                                        @endif
+                                        <form action="{{ route($routePrefix . '.destroy', $item->id) }}" method="POST"
+                                            class="d-inline" onsubmit="return confirm('Yakin?')">@csrf
+                                            @method('DELETE')<button class="btn btn-outline-danger"><i
+                                                    class="bi bi-trash"></i></button></form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">Belum ada data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         @if ($items->hasPages())
             <div class="card-footer">{{ $items->withQueryString()->links() }}</div>

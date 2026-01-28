@@ -23,62 +23,65 @@
     </div>
     <div class="card">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Kode</th>
-                        <th>Nama Jabatan</th>
-                        <th>Divisi</th>
-                        <th>Department</th>
-                        <th>Level</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($data as $i => $item)
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
                         <tr>
-                            <td>{{ $data->firstItem() + $i }}</td>
-                            <td><span class="badge bg-success">{{ $item->kode_jabatan }}</span></td>
-                            <td><strong>{{ $item->nama_jabatan }}</strong></td>
-                            <td>{{ $item->divisi->nama_divisi ?? '-' }}</td>
-                            <td>{{ $item->department->nama_department ?? '-' }}</td>
-                            <td>
-                                @if ($item->level_jabatan == 1)
-                                    <span class="badge bg-secondary">Staff</span>
-                                @elseif($item->level_jabatan == 2)
-                                    <span class="badge bg-info">Supervisor</span>
-                                @elseif($item->level_jabatan == 3)
-                                    <span class="badge bg-warning">Manager</span>
-                                @elseif($item->level_jabatan == 4)
-                                    <span class="badge bg-danger">Director</span>
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('master.jabatan.show', $item->id) }}"
-                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                    @if ($permissions['edit'])
-                                        <a href="{{ route('master.jabatan.edit', $item->id) }}"
-                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                                    @endif
-                                    @if ($permissions['delete'])
-                                        <form action="{{ route('master.jabatan.destroy', $item->id) }}" method="POST"
-                                            class="d-inline">@csrf @method('DELETE')<button
-                                                class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
-                                    @endif
-                                </div>
-                            </td>
+                            <th>#</th>
+                            <th>Kode</th>
+                            <th>Nama Jabatan</th>
+                            <th>Divisi</th>
+                            <th>Department</th>
+                            <th>Level</th>
+                            <th>Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">Belum ada data</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($data as $i => $item)
+                            <tr>
+                                <td>{{ $data->firstItem() + $i }}</td>
+                                <td><span class="badge bg-success">{{ $item->kode_jabatan }}</span></td>
+                                <td><strong>{{ $item->nama_jabatan }}</strong></td>
+                                <td>{{ $item->divisi->nama_divisi ?? '-' }}</td>
+                                <td>{{ $item->department->nama_department ?? '-' }}</td>
+                                <td>
+                                    @if ($item->level_jabatan == 1)
+                                        <span class="badge bg-secondary">Staff</span>
+                                    @elseif($item->level_jabatan == 2)
+                                        <span class="badge bg-info">Supervisor</span>
+                                    @elseif($item->level_jabatan == 3)
+                                        <span class="badge bg-warning">Manager</span>
+                                    @elseif($item->level_jabatan == 4)
+                                        <span class="badge bg-danger">Director</span>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ route('master.jabatan.show', $item->id) }}"
+                                            class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                        @if ($permissions['edit'])
+                                            <a href="{{ route('master.jabatan.edit', $item->id) }}"
+                                                class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                        @endif
+                                        @if ($permissions['delete'])
+                                            <form action="{{ route('master.jabatan.destroy', $item->id) }}" method="POST"
+                                                class="d-inline">@csrf @method('DELETE')<button
+                                                    class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">Belum ada data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         @if ($data->hasPages())
             <div class="card-footer">{{ $data->withQueryString()->links() }}</div>

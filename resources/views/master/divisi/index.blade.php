@@ -23,42 +23,44 @@
     </div>
     <div class="card">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Kode</th>
-                        <th>Nama Divisi</th>
-                        <th>Department</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($data as $i => $item)
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
                         <tr>
-                            <td>{{ $data->firstItem() + $i }}</td>
-                            <td><span class="badge bg-primary">{{ $item->kode_divisi }}</span></td>
-                            <td><strong>{{ $item->nama_divisi }}</strong></td>
-                            <td>{{ $item->department->nama_department ?? '-' }}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('master.divisi.show', $item->id) }}"
-                                        class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                    <a href="{{ route('master.divisi.edit', $item->id) }}"
-                                        class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                                    <form action="{{ route('master.divisi.destroy', $item->id) }}" method="POST"
-                                        class="d-inline">@csrf @method('DELETE')<button class="btn btn-outline-danger"><i
-                                                class="bi bi-trash"></i></button></form>
-                                </div>
-                            </td>
+                            <th>#</th>
+                            <th>Kode</th>
+                            <th>Nama Divisi</th>
+                            <th>Department</th>
+                            <th>Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">Belum ada data</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($data as $i => $item)
+                            <tr>
+                                <td>{{ $data->firstItem() + $i }}</td>
+                                <td><span class="badge bg-primary">{{ $item->kode_divisi }}</span></td>
+                                <td><strong>{{ $item->nama_divisi }}</strong></td>
+                                <td>{{ $item->department->nama_department ?? '-' }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ route('master.divisi.show', $item->id) }}"
+                                            class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                        <a href="{{ route('master.divisi.edit', $item->id) }}"
+                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                        <form action="{{ route('master.divisi.destroy', $item->id) }}" method="POST"
+                                            class="d-inline">@csrf @method('DELETE')<button
+                                                class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Belum ada data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
         @if ($data->hasPages())
             <div class="card-footer">{{ $data->withQueryString()->links() }}</div>

@@ -85,30 +85,31 @@
                         @enderror
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Divisi</label>
-                        <select name="id_divisi" class="form-select">
-                            <option value="">Pilih Divisi</option>
-                            @foreach ($divisions as $d)
-                                <option value="{{ $d->id }}" {{ old('id_divisi') == $d->id ? 'selected' : '' }}>
-                                    {{ $d->nama_divisi }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-6">
                         <label class="form-label">Department</label>
                         <select name="id_department" id="id_department"
-                            class="form-select @error('id_department') is-invalid @enderror" disabled>
-                            <option value="">Pilih Divisi Terlebih Dahulu</option>
+                            class="form-select @error('id_department') is-invalid @enderror">
+                            <option value="">Pilih Department</option>
+                            @foreach ($departments as $dept)
+                                <option value="{{ $dept->id }}"
+                                    {{ old('id_department') == $dept->id ? 'selected' : '' }}>
+                                    {{ $dept->nama_department }}</option>
+                            @endforeach
                         </select>
                         @error('id_department')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">Divisi</label>
+                        <select name="id_divisi" id="id_divisi" class="form-select" disabled>
+                            <option value="">Pilih Department Terlebih Dahulu</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">Jabatan</label>
                         <select name="id_jabatan" id="id_jabatan"
                             class="form-select @error('id_jabatan') is-invalid @enderror" disabled>
-                            <option value="">Pilih Department Terlebih Dahulu</option>
+                            <option value="">Pilih Divisi Terlebih Dahulu</option>
                         </select>
                         <small class="text-muted">Role akan otomatis ditentukan berdasarkan jabatan yang dipilih.</small>
                         @error('id_jabatan')
@@ -157,8 +158,8 @@
                 placeholder: 'Pilih Roles'
             });
 
-            const divSelect = $('select[name="id_divisi"]');
             const deptSelect = $('#id_department');
+            const divSelect = $('#id_divisi');
             const jabSelect = $('#id_jabatan');
             const rolesSelect = $('#roles');
             const validTillInput = $('#valid_till');
@@ -179,22 +180,33 @@
             // Ideally we need an endpoint to get the default role for a Jabatan.
             // Let's assume we can fetch it when Jabatan is selected.
 
+            deptSelect.change(function() {
+                const deptId = $(this).val();
+                divSelect.html('<option value="">Loading...</option>').prop('disabled', true);
+                jabSelect.html('<option value="">Pilih Divisi Terlebih Dahulu</option>').prop('disabled',
+                    true);
+
+                if (deptId) {
+                    // Fetch Divisions (Children of Department)
+                    $.get(`/admin/users/ajax/divisions/${deptId}`, function(data) {
+                        let options = '<option value="">Pilih Divisi</option>';
+                        data.forEach(function(item) {
+                            options +=
+                                `<option value="${item.id}">${item.nama_divisi}</option>`;
+                        });
+                        divSelect.html(options).prop('disabled', false);
+                    });
+                } else {
+                    divSelect.html('<option value="">Pilih Department Terlebih Dahulu</option>');
+                    jabSelect.html('<option value="">Pilih Department Terlebih Dahulu</option>');
+                }
+            });
+
             divSelect.change(function() {
                 const divId = $(this).val();
-                deptSelect.html('<option value="">Loading...</option>').prop('disabled', true);
                 jabSelect.html('<option value="">Loading...</option>').prop('disabled', true);
 
                 if (divId) {
-                    // Fetch Department (Parent)
-                    $.get(`/admin/users/ajax/departments/${divId}`, function(data) {
-                        let options = '<option value="">Pilih Department</option>';
-                        data.forEach(function(item) {
-                            options +=
-                                `<option value="${item.id}" selected>${item.nama_department}</option>`;
-                        });
-                        deptSelect.html(options).prop('disabled', false);
-                    });
-
                     // Fetch Jabatans (Children of Divisi)
                     $.get(`/admin/users/ajax/jabatans/${divId}`, function(data) {
                         let options = '<option value="">Pilih Jabatan</option>';
@@ -204,9 +216,7 @@
                         });
                         jabSelect.html(options).prop('disabled', false);
                     });
-
                 } else {
-                    deptSelect.html('<option value="">Pilih Divisi Terlebih Dahulu</option>');
                     jabSelect.html('<option value="">Pilih Divisi Terlebih Dahulu</option>');
                 }
             });
