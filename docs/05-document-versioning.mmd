@@ -1,0 +1,26 @@
+flowchart TD
+    A[User Upload/Edit Dokumen] --> B{Ada File Baru?}
+    B -->|Tidak| C[Update Metadata Only]
+    B -->|Ya| D{File dengan Nama Sama Exists?}
+
+    D -->|Ya| E[Create New Version]
+    E --> F[Version Number + 1]
+    F --> G[Store File dengan Hash Baru]
+    G --> H[Link ke Parent Document]
+
+    D -->|Tidak| I[Create Version 1]
+    I --> J[Store File]
+    J --> K[Link ke Document]
+
+    H --> L[Update Document Current Version]
+    K --> L
+
+    L --> M[Record Audit Log]
+    M --> N[Document Updated Successfully]
+
+    subgraph VersionHistory["Version History"]
+        O[v1.0 - Initial Upload]
+        P[v2.0 - First Edit]
+        Q[v3.0 - Latest]
+        O --> P --> Q
+    end

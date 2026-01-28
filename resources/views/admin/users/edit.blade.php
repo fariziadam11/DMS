@@ -60,6 +60,33 @@
                         <input type="password" name="password_confirmation" class="form-control">
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">Valid From <span class="text-danger">*</span></label>
+                        <input type="date" name="valid_from"
+                            class="form-control @error('valid_from') is-invalid @enderror"
+                            value="{{ old('valid_from', $user->valid_from ? $user->valid_from->format('Y-m-d') : '') }}"
+                            required>
+                        @error('valid_from')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Valid Till</label>
+                        <div class="input-group">
+                            <input type="date" name="valid_till" id="valid_till"
+                                class="form-control @error('valid_till') is-invalid @enderror"
+                                value="{{ old('valid_till', $user->valid_till ? $user->valid_till->format('Y-m-d') : '') }}">
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0 me-2" type="checkbox" name="is_permanent"
+                                    id="is_permanent" value="1"
+                                    {{ old('is_permanent', is_null($user->valid_till)) ? 'checked' : '' }}>
+                                <label class="form-check-label mb-0" for="is_permanent">Permanent</label>
+                            </div>
+                        </div>
+                        @error('valid_till')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">Divisi</label>
                         <select name="id_divisi" class="form-select">
                             <option value="">Pilih Divisi</option>
@@ -93,7 +120,8 @@
                             {{ $user->id_department ? '' : 'disabled' }}>
                             <option value="">Pilih Jabatan</option>
                             @foreach ($jabatans as $jab)
-                                <option value="{{ $jab->id }}" {{ $user->id_jabatan == $jab->id ? 'selected' : '' }}>
+                                <option value="{{ $jab->id }}"
+                                    {{ $user->id_jabatan == $jab->id ? 'selected' : '' }}>
                                     {{ $jab->nama_jabatan }}</option>
                             @endforeach
                         </select>
@@ -147,6 +175,19 @@
             const deptSelect = $('#id_department');
             const jabSelect = $('#id_jabatan');
             const rolesSelect = $('#roles');
+            const validTillInput = $('#valid_till');
+            const permanentCheckbox = $('#is_permanent');
+
+            // Handle Permanent Checkbox
+            function toggleValidTill() {
+                if (permanentCheckbox.is(':checked')) {
+                    validTillInput.val('').prop('disabled', true);
+                } else {
+                    validTillInput.prop('disabled', false);
+                }
+            }
+            permanentCheckbox.change(toggleValidTill);
+            toggleValidTill(); // Run on load
 
             divSelect.change(function() {
                 const divId = $(this).val();

@@ -43,6 +43,7 @@
                         <th>Department</th>
                         <th>Jabatan</th>
                         <th>Role</th>
+                        <th>Valid Till</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -79,6 +80,13 @@
                                 @foreach ($user->roles as $role)
                                     <span class="badge bg-primary">{{ $role->roles_name }}</span>
                                 @endforeach
+                            </td>
+                            <td>
+                                @if ($user->valid_till)
+                                    <span class="badge bg-warning">{{ $user->valid_till->format('d M Y') }}</span>
+                                @else
+                                    <span class="badge bg-success">Permanent</span>
+                                @endif
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">

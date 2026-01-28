@@ -1,0 +1,111 @@
+flowchart TD
+    Start[🎯 Super Admin Ingin Membuat User Baru] --> Check{Apakah Master Data Sudah Lengkap?}
+
+    Check -->|Belum| PrepareData[📋 PERSIAPAN MASTER DATA]
+    Check -->|Sudah| CreateUser[➕ Mulai Buat User]
+
+    %% Preparation Phase
+    PrepareData --> Step1[STEP 1: Buat Department]
+    Step1 --> Dept1[Menu: Master Data > Department]
+    Dept1 --> Dept2[Form Input Department:<br/>- Nama Department<br/>- Deskripsi]
+    Dept2 --> Dept3[💾 Simpan Department]
+
+    Dept3 --> Step2[STEP 2: Buat Divisi]
+    Step2 --> Div1[Menu: Master Data > Divisi]
+    Div1 --> Div2[Form Input Divisi:<br/>- Kode Divisi<br/>- Nama Divisi<br/>- ID Department: Pilih dari Step 1<br/>- Deskripsi]
+    Div2 --> Div3[💾 Simpan Divisi]
+
+    Div3 --> Step3[STEP 3: Buat Role]
+    Step3 --> Role1[Menu: System Admin > Role]
+    Role1 --> Role2[Form Input Role:<br/>- Nama Role<br/>- Access Scope: Global/Division/Department<br/>- ID Divisi: Optional dari Step 2]
+    Role2 --> Role3[💾 Simpan Role]
+
+    Role3 --> Step4[STEP 4: Set Privileges untuk Role]
+    Step4 --> Priv1[Klik Manage Privileges pada Role]
+    Priv1 --> Priv2[✅ Pilih Menu yang Dapat Diakses]
+    Priv2 --> Priv3[✅ Pilih Functions per Menu:<br/>- View<br/>- Create<br/>- Edit<br/>- Delete<br/>- Download<br/>- Upload<br/>- Approval]
+    Priv3 --> Priv4[💾 Simpan Privileges]
+
+    Priv4 --> Step5[STEP 5: Buat Jabatan]
+    Step5 --> Jab1[Menu: Master Data > Jabatan]
+    Jab1 --> Jab2[Form Input Jabatan:<br/>- Nama Jabatan<br/>- ID Divisi: Pilih dari Step 2<br/>- Level: 1-5<br/>- Hierarchy: Top/Middle/Staff<br/>- Default Role: Pilih dari Step 3]
+    Jab2 --> Jab3[💾 Simpan Jabatan]
+
+    Jab3 --> CreateUser
+
+    %% User Creation Phase
+    CreateUser --> UC1[Menu: System Admin > User]
+    UC1 --> UC2[Klik Tambah User]
+    UC2 --> UC3[📝 Form Input User - Bagian 1: Data Pribadi]
+
+    UC3 --> UC4[Input Data Pribadi:<br/>- Nama Lengkap: Required<br/>- Username: Required, Unique<br/>- NIP: Required, Unique<br/>- Email: Required, Unique<br/>- Password: Required, Min 8 chars<br/>- Confirm Password: Required]
+
+    UC4 --> UC5[📝 Form Input User - Bagian 2: Organisasi]
+    UC5 --> UC6[Pilih Divisi]
+    UC6 --> UC7[🔄 Auto-Load Department]
+    UC7 --> UC8[Department Otomatis Terisi<br/>Berdasarkan Divisi yang Dipilih]
+
+    UC8 --> UC9[Pilih Jabatan]
+    UC9 --> UC10[🔄 Auto-Suggest Role]
+    UC10 --> UC11[Role Otomatis Terisi<br/>Berdasarkan Default Role Jabatan]
+
+    UC11 --> UC12[📝 Form Input User - Bagian 3: Role & Validity]
+    UC12 --> UC13[Konfirmasi/Ubah Role:<br/>Bisa pilih multiple roles]
+
+    UC13 --> UC14[Set Periode Aktif:<br/>- Valid From: Required<br/>- Valid Till: Optional<br/>- Checkbox: Permanent?]
+
+    UC14 --> UC15{Review Data User}
+    UC15 -->|Ada yang Salah| UC3
+    UC15 -->|Sudah Benar| UC16[💾 Submit Create User]
+
+    %% Backend Processing
+    UC16 --> Backend1[⚙️ BACKEND PROCESSING]
+    Backend1 --> Backend2[Validate Input Data]
+    Backend2 --> Backend3{Validation Pass?}
+
+    Backend3 -->|Gagal| Error1[❌ Tampilkan Error:<br/>- Username/Email/NIP Duplicate<br/>- Password tidak match<br/>- Field required kosong]
+    Error1 --> UC3
+
+    Backend3 -->|Berhasil| Backend4[Hash Password]
+    Backend4 --> Backend5[💾 INSERT ke Table: users]
+
+    Backend5 --> Backend6[Data Tersimpan:<br/>- id: Auto Increment<br/>- name<br/>- username<br/>- nip<br/>- email<br/>- password: Hashed<br/>- id_divisi<br/>- id_department<br/>- id_jabatan<br/>- valid_from<br/>- valid_till<br/>- is_active: 1<br/>- created_at<br/>- updated_at]
+
+    Backend6 --> Backend7[💾 INSERT ke Table: base_user_roles]
+    Backend7 --> Backend8[Sync Roles:<br/>- id_user<br/>- id_roles: Multiple rows jika multiple roles]
+
+    Backend8 --> Backend9[💾 INSERT ke Table: users_profile]
+    Backend9 --> Backend10[Create Profile:<br/>- id_user<br/>- nip<br/>- first_name: Split dari name<br/>- last_name: Split dari name<br/>- divisi: Nama divisi<br/>- department: Nama department<br/>- email]
+
+    Backend10 --> Success[✅ User Berhasil Dibuat]
+    Success --> Redirect[🔄 Redirect ke User List]
+
+    %% Database Relations Summary
+    Redirect --> Summary[📊 RELASI DATABASE YANG TERBENTUK]
+    Summary --> Rel1[users.id_divisi → master_divisi.id]
+    Rel1 --> Rel2[users.id_department → master_department.id]
+    Rel2 --> Rel3[users.id_jabatan → master_jabatan.id]
+    Rel3 --> Rel4[base_user_roles.id_user → users.id]
+    Rel4 --> Rel5[base_user_roles.id_roles → base_roles.id]
+    Rel5 --> Rel6[users_profile.id_user → users.id]
+    Rel6 --> Rel7[master_divisi.id_department → master_department.id]
+    Rel7 --> Rel8[master_jabatan.id_divisi → master_divisi.id]
+    Rel8 --> Rel9[master_jabatan.id_role_default → base_roles.id]
+    Rel9 --> Rel10[base_privileges.id_roles → base_roles.id]
+    Rel10 --> Rel11[base_privileges.id_menu → base_menus.id]
+    Rel11 --> Rel12[base_privileges.id_function → base_functions.id]
+
+    Rel12 --> End[🎉 SELESAI]
+
+    style Start fill:#e1f5ff
+    style PrepareData fill:#fff3e0
+    style Step1 fill:#e8f5e9
+    style Step2 fill:#e8f5e9
+    style Step3 fill:#f3e5f5
+    style Step4 fill:#f3e5f5
+    style Step5 fill:#e8f5e9
+    style CreateUser fill:#fff9c4
+    style Backend1 fill:#ffebee
+    style Success fill:#c8e6c9
+    style Summary fill:#e1f5ff
+    style End fill:#c8e6c9

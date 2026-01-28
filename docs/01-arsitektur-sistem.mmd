@@ -1,0 +1,102 @@
+flowchart TB
+    subgraph User["👤 User Layer"]
+        Login["Login / Auth"]
+        Dashboard["Dashboard"]
+        Profile["User Profile"]
+    end
+
+    subgraph RBAC["🔐 Role-Based Access Control"]
+        Roles["Base Roles"]
+        Privileges["Base Privileges"]
+        Functions["Functions (View, Create, Edit, Delete, Download, Upload)"]
+        MenuAccess["Menu Access"]
+    end
+
+    subgraph Modules["📁 Document Modules (8 Modul)"]
+        subgraph Akuntansi["Akuntansi"]
+            AK1["Aturan Kebijakan"]
+            AK2["Jurnal Umum"]
+            AK3["Laporan Audit Investasi"]
+            AK4["Laporan Audit Keuangan"]
+            AK5["Laporan Bulanan"]
+        end
+
+        subgraph Anggaran["Anggaran"]
+            AG1["Aturan Kebijakan"]
+            AG2["Dokumen RRA"]
+            AG3["Laporan PRBC"]
+            AG4["Rencana Kerja Direktorat"]
+            AG5["Rencana Kerja Tahunan"]
+            AG6["Rencana Kerja Triwulan"]
+        end
+
+        subgraph HukumKepatuhan["Hukum & Kepatuhan"]
+            HK1["Kajian Hukum"]
+            HK2["Legal Memo"]
+            HK3["Regulasi Internal/External"]
+            HK4["Kontrak"]
+            HK5["Compliance Check"]
+        end
+
+        subgraph Investasi["Investasi"]
+            IN1["Transaksi"]
+            IN2["Surat"]
+            IN3["Perencanaan"]
+            IN4["Propensa"]
+        end
+
+        subgraph Keuangan["Keuangan"]
+            KE1["Surat Bayar / SPB / SPPB"]
+            KE2["Cashflow"]
+            KE3["Penempatan / Pemindahbukuan"]
+            KE4["Pajak"]
+        end
+
+        subgraph SDM["SDM"]
+            SD1["PKS / Rarus / Peraturan"]
+            SD2["Rekrut Masuk"]
+            SD3["Promosi Mutasi / Naik Gaji"]
+            SD4["Surat Masuk/Keluar"]
+        end
+
+        subgraph Sekretariat["Sekretariat"]
+            SE1["Risalah Rapat"]
+            SE2["Materi / Laporan"]
+            SE3["Surat / Pengadaan"]
+        end
+
+        subgraph Logistik["Logistik Sarpen"]
+            LO1["Procurement"]
+            LO2["Cleaning Service / Keamanan"]
+            LO3["Kendaraan / Sarana Penunjang"]
+            LO4["SMK3 / Polis Asuransi / Jaminan"]
+        end
+    end
+
+    subgraph Core["⚙️ Core Features"]
+        BaseDoc["BaseDocumentController"]
+        DocVersion["Document Versioning"]
+        FileAccess["File Access Request"]
+        AuditLog["Audit Logging"]
+        GlobalSearch["Global Search"]
+    end
+
+    subgraph Admin["🛠️ System Admin"]
+        UserMgt["User Management"]
+        RoleMgt["Role Management"]
+        MenuMgt["Menu Management"]
+        DivisiMgt["Divisi/Department/Jabatan"]
+    end
+
+    Login --> Dashboard
+    Dashboard --> Modules
+    Dashboard --> Profile
+
+    RBAC --> Modules
+    RBAC --> Admin
+
+    Modules --> Core
+    Core --> BaseDoc
+    BaseDoc --> DocVersion
+    BaseDoc --> FileAccess
+    BaseDoc --> AuditLog

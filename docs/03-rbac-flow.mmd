@@ -1,0 +1,36 @@
+flowchart TD
+    subgraph UserAuth["User Authentication"]
+        A[User] --> B[Login]
+        B --> C[Load User Roles]
+    end
+
+    subgraph RoleSystem["Role System"]
+        C --> D[Base Role]
+        D --> E[Access Scope]
+        E --> F{Scope Type}
+        F -->|Global| G[All Divisions Access]
+        F -->|Division| H[Specific Division Access]
+    end
+
+    subgraph PrivilegeSystem["Privilege System"]
+        D --> I[Role Privileges]
+        I --> J[Menu Access]
+        J --> K[Function Permissions]
+        K --> L[View]
+        K --> M[Create]
+        K --> N[Edit]
+        K --> O[Delete]
+        K --> P[Download]
+        K --> Q[Upload]
+        K --> R[Approval]
+    end
+
+    subgraph AccessCheck["Access Check Flow"]
+        S[User Request] --> T{Check Menu Access}
+        T -->|No Access| U[403 Forbidden]
+        T -->|Has Access| V{Check Function}
+        V -->|No Permission| U
+        V -->|Has Permission| W{Check Division Scope}
+        W -->|Out of Scope| U
+        W -->|In Scope| X[✅ Allow Access]
+    end

@@ -103,6 +103,13 @@ class AppServiceProvider extends ServiceProvider
             'sekretariat_remunerasi_pedoman' => \App\Models\Sekretariat\RemunerasiPedoman::class,
             'sekretariat_risalah_rapat' => \App\Models\Sekretariat\RisalahRapat::class,
             'sekretariat_surat' => \App\Models\Sekretariat\Surat::class,
+            'sekretariat_surat' => \App\Models\Sekretariat\Surat::class,
         ]);
+
+        // View Composer for Header Notifications
+        \Illuminate\Support\Facades\View::composer(
+            'layouts.partials.header',
+            \App\Http\View\Composers\HeaderNotificationComposer::class
+        );
     }
 }

@@ -1,0 +1,108 @@
+graph TB
+    subgraph UserManagement["👥 User Management"]
+        U1[Create User] --> U2[Set User Details]
+        U2 --> U3[Assign to Divisi/Dept/Jabatan]
+        U3 --> U4[Assign Role]
+        U4 --> U5[Set Valid Period]
+
+        U6[Edit User] --> U7[Update Profile]
+        U7 --> U8[Change Role]
+        U8 --> U9[Update Jabatan History]
+
+        U10[Delete User] --> U11[Check Dependencies]
+        U11 --> U12[Soft Delete]
+    end
+
+    subgraph RoleManagement["🎭 Role & Privilege Management"]
+        R1[Create Role] --> R2[Set Role Name]
+        R2 --> R3[Set Access Scope]
+        R3 --> R4{Scope Type}
+        R4 -->|Global| R5[All Divisions]
+        R4 -->|Division| R6[Select Specific Divisi]
+        R4 -->|Department| R7[Select Department]
+
+        R8[Manage Privileges] --> R9[Select Menus]
+        R9 --> R10[Assign Functions per Menu]
+        R10 --> R11[View]
+        R10 --> R12[Create]
+        R10 --> R13[Edit]
+        R10 --> R14[Delete]
+        R10 --> R15[Download]
+        R10 --> R16[Upload]
+        R10 --> R17[Approval]
+    end
+
+    subgraph MenuManagement["📋 Menu Management"]
+        M1[Create Menu] --> M2[Set Menu Properties]
+        M2 --> M3[Menu Name & Code]
+        M3 --> M4[Parent Menu: Optional]
+        M4 --> M5[Module Assignment]
+        M5 --> M6[Route Path]
+        M6 --> M7[Icon & Sequence]
+
+        M8[Reorder Menus] --> M9[Drag & Drop Sequence]
+    end
+
+    subgraph MasterData["📚 Master Data Management"]
+        MD1[Divisi] --> MD2[CRUD Operations]
+        MD2 --> MD3[Kode & Nama Divisi]
+
+        MD4[Department] --> MD5[CRUD Operations]
+        MD5 --> MD6[Link to Divisi]
+
+        MD7[Jabatan] --> MD8[CRUD Operations]
+        MD8 --> MD9[Set Level: 1-5]
+        MD9 --> MD10[Set Hierarchy]
+        MD10 --> MD11[Default Role Assignment]
+    end
+
+    subgraph DocumentAssignment["📁 Document Assignment"]
+        DA1[View Statistics] --> DA2[Documents per Division]
+        DA2 --> DA3[Unassigned Documents]
+
+        DA4[Browse by Module] --> DA5[Select Module]
+        DA5 --> DA6[Filter by Division]
+        DA6 --> DA7[View Document List]
+
+        DA8[Bulk Reassign] --> DA9[Select Multiple Docs]
+        DA9 --> DA10[Choose Target Division]
+        DA10 --> DA11[Update id_divisi]
+    end
+
+    subgraph AccessManagement["🔓 Access Request Management"]
+        AC1[View Requests] --> AC2[Filter by Status]
+        AC2 --> AC3[Filter by Division]
+
+        AC4[Approve Request] --> AC5[Set Permissions]
+        AC5 --> AC6[Set Valid Till]
+        AC6 --> AC7[Set Download Limit]
+
+        AC8[Reject Request] --> AC9[Provide Reason]
+
+        AC10[Manual Assignment] --> AC11[Select User]
+        AC11 --> AC12[Select Document/Folder]
+        AC12 --> AC13[Set Permission Type]
+    end
+
+    subgraph DatabaseTables["🗄️ Database Tables Managed"]
+        DB1[users] --> DB2[User Accounts]
+        DB3[base_roles] --> DB4[Role Definitions]
+        DB5[base_privileges] --> DB6[Role-Menu-Function Mapping]
+        DB7[base_menus] --> DB8[Menu Structure]
+        DB9[base_functions] --> DB10[Available Functions]
+        DB11[master_divisi] --> DB12[Divisions]
+        DB13[master_department] --> DB14[Departments]
+        DB15[master_jabatan] --> DB16[Positions]
+        DB17[file_access_requests] --> DB18[Access Requests]
+        DB19[user_jabatan_history] --> DB20[Position History]
+        DB21[audit_logs] --> DB22[Activity Tracking]
+        DB23[All Document Tables] --> DB24[58 Document Tables]
+    end
+
+    style UserManagement fill:#e8f5e9
+    style RoleManagement fill:#f3e5f5
+    style MenuManagement fill:#fff9c4
+    style MasterData fill:#ffe0b2
+    style DocumentAssignment fill:#ffccbc
+    style AccessManagement fill:#b2ebf2
+    style DatabaseTables fill:#e1f5ff

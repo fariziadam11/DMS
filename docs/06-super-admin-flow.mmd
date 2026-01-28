@@ -1,0 +1,137 @@
+flowchart TD
+    Start[🔐 Super Admin Login] --> Dashboard[📊 Super Admin Dashboard]
+
+    Dashboard --> MainMenu{Pilih Menu Admin}
+
+    MainMenu --> UserMgt[👥 User Management]
+    MainMenu --> RoleMgt[🎭 Role Management]
+    MainMenu --> MenuMgt[📋 Menu Management]
+    MainMenu --> MasterData[📚 Master Data]
+    MainMenu --> DocAssignment[📁 Document Assignment]
+    MainMenu --> AccessMgt[🔓 Access Management]
+
+    %% User Management Flow
+    UserMgt --> UserActions{Aksi User}
+    UserActions --> UserList[📄 Lihat Daftar User]
+    UserActions --> UserCreate[➕ Tambah User Baru]
+    UserActions --> UserEdit[✏️ Edit User]
+    UserActions --> UserDelete[🗑️ Hapus User]
+
+    UserCreate --> UserForm1[Form Input User]
+    UserForm1 --> UserFormFields1[- Username<br/>- Email<br/>- Password<br/>- Nama Lengkap]
+    UserFormFields1 --> UserFormFields2[- Divisi<br/>- Department<br/>- Jabatan<br/>- Tanggal Mulai/Selesai]
+    UserFormFields2 --> AssignRole[Assign Role ke User]
+    AssignRole --> SaveUser[💾 Simpan User]
+
+    UserEdit --> UserForm2[Form Edit User]
+    UserForm2 --> UpdateRole[Update Role User]
+    UpdateRole --> UpdateJabatan[Update Jabatan History]
+    UpdateJabatan --> SaveUserUpdate[💾 Update User]
+
+    %% Role Management Flow
+    RoleMgt --> RoleActions{Aksi Role}
+    RoleActions --> RoleList[📄 Lihat Daftar Role]
+    RoleActions --> RoleCreate[➕ Tambah Role Baru]
+    RoleActions --> RoleEdit[✏️ Edit Role]
+    RoleActions --> RolePrivileges[🔑 Kelola Privileges]
+    RoleActions --> RoleDelete[🗑️ Hapus Role]
+
+    RoleCreate --> RoleForm[Form Input Role]
+    RoleForm --> RoleFields[- Nama Role<br/>- Access Scope: Global/Division/Department<br/>- Divisi: Optional]
+    RoleFields --> SaveRole[💾 Simpan Role]
+
+    RolePrivileges --> PrivilegeForm[Form Privilege Assignment]
+    PrivilegeForm --> SelectMenus[✅ Pilih Menu yang Dapat Diakses]
+    SelectMenus --> SelectFunctions[✅ Pilih Function per Menu]
+    SelectFunctions --> FunctionList[- View<br/>- Create<br/>- Edit<br/>- Delete<br/>- Download<br/>- Upload<br/>- Approval]
+    FunctionList --> SavePrivileges[💾 Simpan Privileges]
+
+    %% Menu Management Flow
+    MenuMgt --> MenuActions{Aksi Menu}
+    MenuActions --> MenuList[📄 Lihat Daftar Menu]
+    MenuActions --> MenuCreate[➕ Tambah Menu Baru]
+    MenuActions --> MenuEdit[✏️ Edit Menu]
+    MenuActions --> MenuReorder[🔄 Reorder Menu Sequence]
+    MenuActions --> MenuDelete[🗑️ Hapus Menu]
+
+    MenuCreate --> MenuForm[Form Input Menu]
+    MenuForm --> MenuFields[- Menu Name<br/>- Code Name<br/>- Parent Menu: Optional<br/>- Module<br/>- Path/Route<br/>- Icon<br/>- Sequence]
+    MenuFields --> SaveMenu[💾 Simpan Menu]
+
+    %% Master Data Flow
+    MasterData --> MasterActions{Pilih Master Data}
+    MasterActions --> DivisiMgt[🏢 Kelola Divisi]
+    MasterActions --> DeptMgt[🏬 Kelola Department]
+    MasterActions --> JabatanMgt[👔 Kelola Jabatan]
+
+    DivisiMgt --> DivisiCRUD[CRUD Divisi]
+    DivisiCRUD --> DivisiFields[- Kode Divisi<br/>- Nama Divisi<br/>- Deskripsi]
+
+    DeptMgt --> DeptCRUD[CRUD Department]
+    DeptCRUD --> DeptFields[- Nama Department<br/>- Divisi<br/>- Deskripsi]
+
+    JabatanMgt --> JabatanCRUD[CRUD Jabatan]
+    JabatanCRUD --> JabatanFields[- Nama Jabatan<br/>- Divisi<br/>- Level: 1-5<br/>- Hierarchy<br/>- Default Role]
+
+    %% Document Assignment Flow
+    DocAssignment --> DocAssignActions{Aksi Document Assignment}
+    DocAssignActions --> ViewStats[📊 Lihat Statistik Dokumen per Divisi]
+    DocAssignActions --> ViewByModule[📁 Lihat Dokumen per Modul]
+    DocAssignActions --> BulkReassign[🔄 Bulk Reassign Dokumen]
+
+    ViewStats --> StatsDisplay[Tampilkan:<br/>- Total Dokumen per Modul<br/>- Dokumen Unassigned<br/>- Breakdown per Divisi]
+
+    ViewByModule --> SelectModule[Pilih Modul:<br/>- Akuntansi<br/>- Anggaran<br/>- Hukum Kepatuhan<br/>- Investasi<br/>- Keuangan<br/>- SDM<br/>- Sekretariat<br/>- Logistik]
+    SelectModule --> FilterDivisi[Filter by Divisi: Optional]
+    FilterDivisi --> DocList[📄 Lihat Daftar Dokumen]
+
+    BulkReassign --> SelectDocs[✅ Pilih Dokumen Multiple]
+    SelectDocs --> SelectNewDivisi[Pilih Divisi Tujuan]
+    SelectNewDivisi --> ConfirmReassign{Konfirmasi Reassign?}
+    ConfirmReassign -->|Ya| ExecuteReassign[💾 Update id_divisi Dokumen]
+    ConfirmReassign -->|Tidak| DocList
+
+    %% Access Management Flow
+    AccessMgt --> AccessActions{Aksi Access Management}
+    AccessActions --> ViewRequests[📬 Lihat File Access Requests]
+    AccessActions --> ApproveReject[✅/❌ Approve/Reject Requests]
+    AccessActions --> ManualAssign[➕ Manual Assign Access]
+
+    ViewRequests --> RequestList[Daftar Request:<br/>- Status: Pending/Approved/Rejected<br/>- Filter by Divisi<br/>- Requester Info]
+
+    ApproveReject --> ReviewRequest[Review Request Details]
+    ReviewRequest --> Decision{Keputusan}
+    Decision -->|Approve| SetPermissions[Set Permissions:<br/>- View<br/>- Download<br/>- etc]
+    SetPermissions --> SetLimits[Set Limits: Optional<br/>- Valid Till: Tanggal Expiry<br/>- Download Limit: Jumlah]
+    SetLimits --> SaveApproval[💾 Approve Request]
+
+    Decision -->|Reject| RejectReason[Input Alasan Penolakan]
+    RejectReason --> SaveRejection[💾 Reject Request]
+
+    ManualAssign --> SelectUser[Pilih User]
+    SelectUser --> SelectDocument[Pilih Dokumen/Folder]
+    SelectDocument --> SetManualPermission[Set Permission Type:<br/>- Read<br/>- Write<br/>- Delete<br/>- Full]
+    SetManualPermission --> SaveManualAccess[💾 Assign Access]
+
+    %% All actions return to dashboard
+    SaveUser --> Dashboard
+    SaveUserUpdate --> Dashboard
+    SaveRole --> Dashboard
+    SavePrivileges --> Dashboard
+    SaveMenu --> Dashboard
+    DivisiFields --> Dashboard
+    DeptFields --> Dashboard
+    JabatanFields --> Dashboard
+    ExecuteReassign --> Dashboard
+    SaveApproval --> Dashboard
+    SaveRejection --> Dashboard
+    SaveManualAccess --> Dashboard
+
+    style Start fill:#e1f5ff
+    style Dashboard fill:#fff4e6
+    style UserMgt fill:#e8f5e9
+    style RoleMgt fill:#f3e5f5
+    style MenuMgt fill:#fff9c4
+    style MasterData fill:#ffe0b2
+    style DocAssignment fill:#ffccbc
+    style AccessMgt fill:#b2ebf2

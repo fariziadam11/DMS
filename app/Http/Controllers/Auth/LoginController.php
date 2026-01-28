@@ -37,4 +37,38 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
+    {
+        $now = now()->startOfDay();
+        $validFrom = $user->valid_from ? \Carbon\Carbon::parse($user->valid_from)->startOfDay() : null;
+        $validTill = $user->valid_till ? \Carbon\Carbon::parse($user->valid_till)->endOfDay() : null;
+
+        $isValid = true;
+
+        if ($validFrom && $now->lt($validFrom)) {
+            $isValid = false;
+        }
+
+        if ($validTill && $now->gt($validTill)) {
+            $isValid = false;
+        }
+
+        if (!$isValid) {
+            $this->guard()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                $this->username() => ['Akun Anda tidak aktif atau masa berlaku telah habis.'],
+            ]);
+        }
+    }
 }

@@ -60,6 +60,31 @@
                         <input type="password" name="password_confirmation" class="form-control" required>
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">Valid From <span class="text-danger">*</span></label>
+                        <input type="date" name="valid_from"
+                            class="form-control @error('valid_from') is-invalid @enderror"
+                            value="{{ old('valid_from', date('Y-m-d')) }}" required>
+                        @error('valid_from')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Valid Till</label>
+                        <div class="input-group">
+                            <input type="date" name="valid_till" id="valid_till"
+                                class="form-control @error('valid_till') is-invalid @enderror"
+                                value="{{ old('valid_till') }}">
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0 me-2" type="checkbox" name="is_permanent"
+                                    id="is_permanent" value="1" {{ old('is_permanent') ? 'checked' : '' }}>
+                                <label class="form-check-label mb-0" for="is_permanent">Permanent</label>
+                            </div>
+                        </div>
+                        @error('valid_till')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">Divisi</label>
                         <select name="id_divisi" class="form-select">
                             <option value="">Pilih Divisi</option>
@@ -99,7 +124,8 @@
                                     {{ $role->roles_name }}</option>
                             @endforeach
                         </select>
-                        <small class="text-muted">Jabatan akan otomatis memilih role default, namun Anda dapat menambah atau
+                        <small class="text-muted">Jabatan akan otomatis memilih role default, namun Anda dapat menambah
+                            atau
                             mengurangi role secara manual.</small>
                         @error('roles')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -135,6 +161,19 @@
             const deptSelect = $('#id_department');
             const jabSelect = $('#id_jabatan');
             const rolesSelect = $('#roles');
+            const validTillInput = $('#valid_till');
+            const permanentCheckbox = $('#is_permanent');
+
+            // Handle Permanent Checkbox
+            function toggleValidTill() {
+                if (permanentCheckbox.is(':checked')) {
+                    validTillInput.val('').prop('disabled', true);
+                } else {
+                    validTillInput.prop('disabled', false);
+                }
+            }
+            permanentCheckbox.change(toggleValidTill);
+            toggleValidTill(); // Run on load
 
             // Map of Jabatan ID to Role ID (would need to fetch this or simple heuristic)
             // Ideally we need an endpoint to get the default role for a Jabatan.

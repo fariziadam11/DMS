@@ -1,0 +1,51 @@
+graph LR
+    subgraph Preparation["🔧 PERSIAPAN MASTER DATA (Urutan Wajib)"]
+        direction TB
+        P1[1️⃣ Department] --> P2[2️⃣ Divisi]
+        P2 --> P3[3️⃣ Role]
+        P3 --> P4[4️⃣ Privileges]
+        P4 --> P5[5️⃣ Jabatan]
+
+        P1 -.->|Relasi| T1[master_department]
+        P2 -.->|Relasi| T2[master_divisi<br/>FK: id_department]
+        P3 -.->|Relasi| T3[base_roles<br/>FK: id_divisi optional]
+        P4 -.->|Relasi| T4[base_privileges<br/>FK: id_roles, id_menu, id_function]
+        P5 -.->|Relasi| T5[master_jabatan<br/>FK: id_divisi, id_role_default]
+    end
+
+    subgraph UserCreation["👤 PEMBUATAN USER"]
+        direction TB
+        U1[Input Data Pribadi] --> U2[Pilih Divisi]
+        U2 --> U3[Auto-Load Department]
+        U3 --> U4[Pilih Jabatan]
+        U4 --> U5[Auto-Suggest Role]
+        U5 --> U6[Set Validity Period]
+        U6 --> U7[Submit]
+    end
+
+    subgraph Backend["⚙️ BACKEND PROCESSING"]
+        direction TB
+        B1[Validate Input] --> B2[Hash Password]
+        B2 --> B3[INSERT users]
+        B3 --> B4[INSERT base_user_roles]
+        B4 --> B5[INSERT users_profile]
+    end
+
+    subgraph DatabaseTables["🗄️ DATABASE TABLES"]
+        direction TB
+        DB1[users<br/>Main user account]
+        DB2[base_user_roles<br/>User-Role mapping]
+        DB3[users_profile<br/>Extended profile]
+
+        DB1 --> DB2
+        DB1 --> DB3
+    end
+
+    Preparation --> UserCreation
+    UserCreation --> Backend
+    Backend --> DatabaseTables
+
+    style Preparation fill:#fff3e0
+    style UserCreation fill:#e8f5e9
+    style Backend fill:#ffebee
+    style DatabaseTables fill:#e1f5ff

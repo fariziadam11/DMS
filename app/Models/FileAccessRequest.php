@@ -18,6 +18,9 @@ class FileAccessRequest extends Model
         'id_divisi',
         'status',
         'permissions',
+        'valid_till',
+        'download_limit',
+        'download_count',
         'request_reason',
         'response_reason',
         'responded_by',
@@ -26,6 +29,7 @@ class FileAccessRequest extends Model
 
     protected $casts = [
         'responded_at' => 'datetime',
+        'valid_till' => 'datetime',
         'permissions' => 'array',
     ];
 
@@ -168,5 +172,36 @@ class FileAccessRequest extends Model
             self::STATUS_REJECTED => 'badge-danger',
         ];
         return $classes[$this->status] ?? 'badge-secondary';
+    }
+
+    /**
+     * Check if request is valid (Time and Count)
+     */
+    public function isValid()
+    {
+        if ($this->status !== self::STATUS_APPROVED) {
+            return false;
+        }
+
+        // Check Time Limit
+        if ($this->valid_till && now()->gt($this->valid_till)) {
+            return false;
+        }
+
+        // Check Download Limit
+        if ($this->download_limit && $this->download_count >= $this->download_limit) {
+            // Strict check: if count equals or exceeds limit, invalid.
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Increment download count
+     */
+    public function incrementDownload()
+    {
+        $this->increment('download_count');
     }
 }

@@ -362,7 +362,7 @@ class GlobalSearchController extends Controller
 
         $document = $modelClass::findOrFail($validated['document_id']);
 
-        \App\Models\FileAccessRequest::create([
+        $accessRequest = \App\Models\FileAccessRequest::create([
             'id_user' => auth()->id(),
             'document_type' => $validated['document_type'],
             'document_id' => $validated['document_id'],
@@ -370,6 +370,14 @@ class GlobalSearchController extends Controller
             'request_reason' => $validated['reason'],
             'status' => 'pending',
         ]);
+
+        \App\Models\AuditLog::log(
+            'request_access',
+            'file_access_requests',
+            $accessRequest->id,
+            null,
+            ['document' => $validated['document_type'] . ' #' . $validated['document_id']]
+        );
 
         return back()->with('success', 'Permintaan akses telah dikirim ke admin divisi.');
     }

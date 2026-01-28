@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Detail User')
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="#">Admin</a></li>
+    <li class="breadcrumb-item">
+        <a href="#">Admin</a>
+    </li>
     <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">User</a></li>
     <li class="breadcrumb-item active">Detail</li>
 @endsection
@@ -48,18 +50,33 @@
                     <th>Bergabung</th>
                     <td>{{ $user->created_at->format('d M Y H:i') }}</td>
                 </tr>
+                <tr>
+                    <th>Valid From</th>
+                    <td>{{ $user->valid_from ? $user->valid_from->format('d M Y') : '-' }}</td>
+                </tr>
+                <tr>
+                    <th>Valid Till</th>
+                    <td>
+                        @if ($user->valid_till)
+                            {{ $user->valid_till->format('d M Y') }}
+                        @else
+                            <span class="badge bg-success">Permanent</span>
+                        @endif
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
-    <div class="mt-4">@if (request('source') == 'my-documents')
-                    <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
-                @elseif (request('source') == 'search')
-                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
-
-                @else
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary"><i
-                class="bi bi-arrow-left"></i> Kembali</a>
-                @endif</div>
+    <div class="mt-4">
+        @if (request('source') == 'my-documents')
+            <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                Kembali ke Dokumen Saya</a>
+        @elseif (request('source') == 'search')
+            <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Kembali ke
+                Pencarian</a>
+        @else
+            <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                Kembali</a>
+        @endif
+    </div>
 @endsection

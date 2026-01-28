@@ -106,4 +106,19 @@ class UserProfileController extends Controller
 
         return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui.');
     }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|current_password',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = auth()->user();
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+        ]);
+
+        return redirect()->route('profile.edit')->with('success', 'Kata sandi berhasil diperbarui.');
+    }
 }

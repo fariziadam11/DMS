@@ -1,0 +1,49 @@
+flowchart TD
+    A[👤 User Login] --> B{Autentikasi Berhasil?}
+    B -->|Tidak| C[❌ Login Gagal]
+    B -->|Ya| D[📊 Dashboard]
+
+    D --> E{Pilih Aksi}
+
+    E --> F[📁 Akses Modul Dokumen]
+    E --> G[👤 Kelola Profil]
+    E --> H[🔍 Global Search]
+    E --> I[🛠️ System Admin]
+
+    F --> J{Cek Hak Akses Menu}
+    J -->|Tidak Ada Akses| K[⛔ Access Denied]
+    J -->|Ada Akses| L[📄 Lihat Daftar Dokumen]
+
+    L --> M{Pilih Aksi Dokumen}
+
+    M --> N[👁️ View Document]
+    M --> O[➕ Create Document]
+    M --> P[✏️ Edit Document]
+    M --> Q[🗑️ Delete Document]
+    M --> R[⬇️ Download/Preview]
+
+    N --> S{Dokumen Rahasia?}
+    S -->|Ya| T{User Punya File Access?}
+    T -->|Tidak| U[📝 Request File Access]
+    T -->|Ya| V[✅ Tampilkan Dokumen]
+    S -->|Tidak| V
+
+    U --> W[📬 Request Dikirim ke Admin Divisi]
+    W --> X{Admin Review}
+    X -->|Approve| Y[✅ Akses Diberikan]
+    X -->|Reject| Z[❌ Akses Ditolak]
+
+    R --> AA{Cek Download Permission}
+    AA -->|Ada| AB{Cek Limit Download}
+    AB -->|Belum Limit| AC[⬇️ Download File]
+    AB -->|Sudah Limit| AD[⚠️ Limit Tercapai]
+    AA -->|Tidak Ada| AE[⛔ No Download Permission]
+
+    O --> AF[📝 Form Input Dokumen]
+    AF --> AG[💾 Save + Version Created]
+    AG --> AH[📋 Audit Log Recorded]
+
+    P --> AI[📝 Form Edit Dokumen]
+    AI --> AJ{File Berubah?}
+    AJ -->|Ya| AK[📚 New Version Created]
+    AJ -->|Tidak| AL[💾 Update Metadata Only]

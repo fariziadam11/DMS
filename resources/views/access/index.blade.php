@@ -144,7 +144,22 @@
                                                                     Download (Mengunduh File)
                                                                 </label>
                                                             </div>
-                                                            <!-- Edit/Delete permissions removed as per request -->
+                                                            <div class="row mt-3">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Berlaku Hingga
+                                                                        (Opsional)</label>
+                                                                    <input type="date" name="valid_till"
+                                                                        class="form-control"
+                                                                        title="Kosongkan jika berlaku selamanya">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Batas Download
+                                                                        (Opsional)</label>
+                                                                    <input type="number" name="download_limit"
+                                                                        class="form-control" min="1"
+                                                                        title="Kosongkan jika tanpa batas">
+                                                                </div>
+                                                            </div>
                                                             <div class="mt-3">
                                                                 <label class="form-label">Catatan (Opsional)</label>
                                                                 <textarea name="reason" class="form-control" rows="2" placeholder="Catatan persetujuan..."></textarea>

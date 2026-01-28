@@ -90,7 +90,11 @@ class UserController extends Controller
             'id_jabatan' => 'nullable|exists:master_jabatan,id',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:base_roles,id',
+            'valid_from' => 'required|date',
+            'valid_till' => 'nullable|date|after_or_equal:valid_from',
         ]);
+
+        $validTill = $request->has('is_permanent') ? null : $validated['valid_till'];
 
         $user = User::create([
             'name' => $validated['name'],
@@ -101,6 +105,8 @@ class UserController extends Controller
             'id_divisi' => $validated['id_divisi'] ?? null,
             'id_department' => $validated['id_department'] ?? null,
             'id_jabatan' => $validated['id_jabatan'] ?? null,
+            'valid_from' => $validated['valid_from'],
+            'valid_till' => $validTill,
             'is_active' => 1,
         ]);
 
@@ -184,7 +190,11 @@ class UserController extends Controller
             'id_jabatan' => 'nullable|exists:master_jabatan,id',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:base_roles,id',
+            'valid_from' => 'required|date',
+            'valid_till' => 'nullable|date|after_or_equal:valid_from',
         ]);
+
+        $validTill = $request->has('is_permanent') ? null : $validated['valid_till'];
 
         $user->update([
             'name' => $validated['name'],
@@ -194,6 +204,8 @@ class UserController extends Controller
             'id_divisi' => $validated['id_divisi'] ?? null,
             'id_department' => $validated['id_department'] ?? null,
             'id_jabatan' => $validated['id_jabatan'] ?? null,
+            'valid_from' => $validated['valid_from'],
+            'valid_till' => $validTill,
         ]);
 
         if (!empty($validated['password'])) {

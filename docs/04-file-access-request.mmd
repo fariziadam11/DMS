@@ -1,0 +1,36 @@
+flowchart TD
+    A[User Mencoba Akses File Rahasia] --> B{User Punya Akses?}
+    B -->|Ya| C[✅ Akses Diberikan]
+    B -->|Tidak| D[📝 Tampilkan Tombol Request Access]
+
+    D --> E[User Klik Request Access]
+    E --> F[Form Request dengan Alasan]
+    F --> G[Submit Request]
+
+    G --> H[Request Disimpan: Status PENDING]
+    H --> I[Admin Divisi Menerima Notifikasi]
+
+    I --> J{Admin Review}
+    J --> K{Keputusan}
+
+    K -->|Approve| L[Set Status: APPROVED]
+    L --> M[Set Permissions: View/Download/etc]
+    L --> N[Set Valid Till: Optional Expiry]
+    L --> O[Set Download Limit: Optional]
+
+    K -->|Reject| P[Set Status: REJECTED]
+    P --> Q[Provide Rejection Reason]
+
+    M --> R[User Dapat Akses File]
+    R --> S{Download File}
+    S --> T{Cek Download Limit}
+    T -->|Ada Limit| U{Count < Limit?}
+    U -->|Ya| V[Download + Increment Count]
+    U -->|Tidak| W[❌ Limit Exceeded]
+    T -->|Tidak Ada Limit| V
+
+    S --> X{Cek Valid Till}
+    X -->|Ada Expiry| Y{Still Valid?}
+    Y -->|Ya| V
+    Y -->|Tidak| Z[❌ Access Expired]
+    X -->|Tidak Ada Expiry| V

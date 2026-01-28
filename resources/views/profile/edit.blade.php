@@ -68,6 +68,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#contact" data-bs-toggle="tab">Kontak & Alamat</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#security" data-bs-toggle="tab">Keamanan</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
@@ -292,6 +295,32 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Security/Password Tab -->
+                            <div class="tab-pane fade" id="security">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-shield-lock me-2"></i> Ganti kata sandi akun Anda secara berkala untuk
+                                    keamanan.
+                                </div>
+                                <form action="{{ route('profile.password') }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-3">
+                                        <label class="small mb-1">Kata Sandi Saat Ini</label>
+                                        <input class="form-control" name="current_password" type="password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1">Kata Sandi Baru</label>
+                                        <input class="form-control" name="password" type="password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1">Konfirmasi Kata Sandi Baru</label>
+                                        <input class="form-control" name="password_confirmation" type="password"
+                                            required>
+                                    </div>
+                                    <button class="btn btn-danger" type="submit">Ganti Password</button>
+                                </form>
                             </div>
                         </div>
 

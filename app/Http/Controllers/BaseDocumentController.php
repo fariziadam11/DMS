@@ -291,16 +291,23 @@ abstract class BaseDocumentController extends Controller
 
         // Easier approach:
         // Check if user has explicit 'download' permission on this record via Request
+        // Check if user has explicit 'download' permission on this record via Request
         $user = auth()->user();
-        $hasSpecificPermission = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
+        $accessRequest = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
             ->where('document_id', $record->id)
             ->where('id_user', $user->id)
             ->where('status', 'approved')
             ->whereJsonContains('permissions', 'download')
-            ->exists();
+            ->first();
 
-        if ($hasSpecificPermission) {
+        if ($accessRequest && $accessRequest->isValid()) {
             // Bypass RBAC, just allow
+
+            // Increment Download Count if limit is set (AND it's not the owner/superadmin - but fetching logic implies this is a request)
+            if ($accessRequest->download_limit) {
+                $accessRequest->incrementDownload();
+            }
+
             AuditLog::logDownload($record->getTable(), $record->id);
 
             if (!$record->file || !Storage::exists($this->storagePath . '/' . $record->file)) {
@@ -308,6 +315,8 @@ abstract class BaseDocumentController extends Controller
             }
 
             return Storage::download($this->storagePath . '/' . $record->file, $record->file_name);
+        } elseif ($accessRequest && !$accessRequest->isValid()) {
+             abort(403, 'Akses unduhan Anda telah kadaluarsa atau mencapai batas jumlah.');
         }
 
         // Check General Access via Model Logic (Umum, Internal-Div, Creator, Division Admin)
@@ -544,25 +553,33 @@ abstract class BaseDocumentController extends Controller
             ->first();
 
         if ($accessRequest) {
-            // Map controller actions to permission keys
-            $permissionMap = [
-                'read' => 'read',
-                'view' => 'read', // Alias
-                'download' => 'download',
-                'write' => 'edit',
-                'edit' => 'edit', // Alias
-                'delete' => 'delete',
-            ];
+            // Check limits (Time & Download Count)
+            if (!$accessRequest->isValid()) {
+                 // If expired/limit reached, this specific request is no longer valid.
+                 // We simply stop checking this request and let it fall through to denial.
+                 // Optionally we could abort specific message here if we know this was the only way they had access.
+                 // But for now, let it fall through.
+            } else {
+                // Map controller actions to permission keys
+                $permissionMap = [
+                    'read' => 'read',
+                    'view' => 'read', // Alias
+                    'download' => 'download',
+                    'write' => 'edit',
+                    'edit' => 'edit', // Alias
+                    'delete' => 'delete',
+                ];
 
-            $requiredPermission = $permissionMap[$action] ?? $action;
+                $requiredPermission = $permissionMap[$action] ?? $action;
 
-            if ($accessRequest->hasPermission($requiredPermission)) {
-                return true;
-            }
+                if ($accessRequest->hasPermission($requiredPermission)) {
+                    return true;
+                }
 
-            // Helpful error message for granular denial
-            if ($action !== 'read') { // Don't abort for read, let it fall through or generic 403
-                 abort(403, 'Anda tidak memiliki izin ' . strtoupper($requiredPermission) . ' untuk dokumen ini.');
+                // Helpful error message for granular denial
+                if ($action !== 'read') { // Don't abort for read, let it fall through or generic 403
+                     abort(403, 'Anda tidak memiliki izin ' . strtoupper($requiredPermission) . ' untuk dokumen ini.');
+                }
             }
         }
 

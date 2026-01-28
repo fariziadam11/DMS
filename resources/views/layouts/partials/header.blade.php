@@ -21,10 +21,83 @@
             </form>
         </div>
 
-        <button class="notification-btn">
-            <i class="bi bi-bell"></i>
-            <span class="badge bg-danger rounded-pill">3</span>
-        </button>
+        <div class="dropdown notification-dropdown">
+            <button class="notification-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-bell"></i>
+                @if (isset($recentActivities) && $recentActivities->count() > 0)
+                    <span class="badge bg-danger rounded-pill">{{ $recentActivities->count() }}</span>
+                @endif
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end p-0 shadow"
+                style="width: 320px; max-height: 400px; overflow-y: auto;">
+                <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                    <h6 class="mb-0 fw-bold">Aktivitas Terbaru</h6>
+                    <small class="text-muted">Tracking</small>
+                </li>
+                @if (isset($recentActivities) && $recentActivities->count() > 0)
+                    @foreach ($recentActivities as $activity)
+                        <li>
+                            <a class="dropdown-item p-3 border-bottom position-relative" href="#">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="avatar avatar-sm bg-light text-primary rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width: 32px; height: 32px;">
+                                            @if ($activity->action == 'create')
+                                                <i class="bi bi-plus-lg"></i>
+                                            @elseif($activity->action == 'update')
+                                                <i class="bi bi-pencil"></i>
+                                            @elseif($activity->action == 'delete')
+                                                <i class="bi bi-trash"></i>
+                                            @elseif($activity->action == 'download')
+                                                <i class="bi bi-download"></i>
+                                            @elseif($activity->action == 'view')
+                                                <i class="bi bi-eye"></i>
+                                            @elseif($activity->action == 'login')
+                                                <i class="bi bi-person-circle"></i>
+                                            @elseif($activity->action == 'logout')
+                                                <i class="bi bi-box-arrow-right"></i>
+                                            @elseif($activity->action == 'request_access')
+                                                <i class="bi bi-key"></i>
+                                            @elseif($activity->action == 'approve')
+                                                <i class="bi bi-check-lg text-success"></i>
+                                            @elseif($activity->action == 'reject')
+                                                <i class="bi bi-x-lg text-danger"></i>
+                                            @else
+                                                <i class="bi bi-circle"></i>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 small fw-bold">
+                                            {{ $activity->user_id == auth()->id() ? 'Anda' : $activity->user->name ?? 'System' }}
+                                        </h6>
+                                        <p class="mb-1 small text-muted text-wrap">
+                                            {{ ucfirst($activity->action) }}
+                                            <span
+                                                class="fw-medium text-dark">{{ str_replace('_', ' ', $activity->table_name) }}</span>
+                                        </p>
+                                        <small class="text-xs text-muted">
+                                            <i class="bi bi-clock me-1"></i>
+                                            {{ $activity->created_at->diffForHumans() }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    @endforeach
+                @else
+                    <li class="p-4 text-center text-muted">
+                        <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
+                        Belum ada aktivitas
+                    </li>
+                @endif
+                <li>
+                    <a class="dropdown-item text-center small p-2 fw-medium text-primary bg-light" href="#">
+                        Lihat Semua Aktivitas
+                    </a>
+                </li>
+            </ul>
+        </div>
 
         <div class="dropdown user-dropdown">
             <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -41,7 +114,6 @@
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i
                             class="bi bi-person me-2"></i>Profil</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Pengaturan</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>

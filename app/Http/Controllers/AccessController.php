@@ -59,12 +59,27 @@ class AccessController extends Controller
         $this->authorizeManage($accessRequest);
 
         $permissions = $request->input('permissions', []);
+        $validTill = $request->input('valid_till');
+        $downloadLimit = $request->input('download_limit');
 
-        // Ensure read is always present if approving? Or user choice.
-        // Let's rely on user input, but maybe force read if not empty?
-        // Actually, let's trust the input for flexibility.
+        $accessRequest->update([
+            'status' => FileAccessRequest::STATUS_APPROVED,
+            'permissions' => $permissions,
+            'responded_by' => auth()->id(),
+            'responded_at' => now(),
+            'response_reason' => $request->get('reason'),
+            'valid_till' => $validTill ?: null,
+            'download_limit' => $downloadLimit ?: null,
+            'download_count' => 0,
+        ]);
 
-        $accessRequest->approve(auth()->id(), $request->get('reason'), $permissions);
+        \App\Models\AuditLog::log(
+            'approve',
+            'file_access_requests',
+            $accessRequest->id,
+            null,
+            ['status' => 'approved', 'permissions' => $permissions]
+        );
 
         return back()->with('success', 'Permintaan akses disetujui.');
     }
@@ -84,6 +99,14 @@ class AccessController extends Controller
         $this->authorizeManage($accessRequest);
 
         $accessRequest->reject(auth()->id(), $validated['reason']);
+
+        \App\Models\AuditLog::log(
+            'reject',
+            'file_access_requests',
+            $accessRequest->id,
+            null,
+            ['status' => 'rejected', 'reason' => $validated['reason']]
+        );
 
         return back()->with('success', 'Permintaan akses ditolak.');
     }
