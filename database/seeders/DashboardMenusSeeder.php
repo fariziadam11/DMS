@@ -17,145 +17,66 @@ class DashboardMenusSeeder extends Seeder
 
         // Get parent menu IDs by code_name
         $parentMenus = [
-            'akuntansi' => DB::table('base_menus')->where('code_name', 'akuntansi')->value('id'),
-            'anggaran' => DB::table('base_menus')->where('code_name', 'anggaran')->value('id'),
+            'akuntansi'       => DB::table('base_menus')->where('code_name', 'akuntansi')->value('id'),
+            'anggaran'        => DB::table('base_menus')->where('code_name', 'anggaran')->value('id'),
             'hukum-kepatuhan' => DB::table('base_menus')->where('code_name', 'hukum-kepatuhan')->value('id'),
-            'investasi' => DB::table('base_menus')->where('code_name', 'investasi')->value('id'),
-            'keuangan' => DB::table('base_menus')->where('code_name', 'keuangan')->value('id'),
-            'sdm' => DB::table('base_menus')->where('code_name', 'sdm')->value('id'),
-            'sekretariat' => DB::table('base_menus')->where('code_name', 'sekretariat')->value('id'),
-            'logistik' => DB::table('base_menus')->where('code_name', 'logistik')->value('id'),
+            'investasi'       => DB::table('base_menus')->where('code_name', 'investasi')->value('id'),
+            'keuangan'        => DB::table('base_menus')->where('code_name', 'keuangan')->value('id'),
+            'sdm'             => DB::table('base_menus')->where('code_name', 'sdm')->value('id'),
+            'sekretariat'     => DB::table('base_menus')->where('code_name', 'sekretariat')->value('id'),
+            'logistik'        => DB::table('base_menus')->where('code_name', 'logistik')->value('id'),
         ];
 
         // Dashboard menus to insert
+        // Set sequence to 0 so it appears first in the submenu list
         $dashboardMenus = [
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['akuntansi'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.akuntansi',
                 'menu_name' => 'Dashboard Akuntansi',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'akuntansi',
                 'path' => '/dashboard/akuntansi',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['anggaran'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.anggaran',
                 'menu_name' => 'Dashboard Anggaran',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'anggaran',
                 'path' => '/dashboard/anggaran',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['hukum-kepatuhan'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.hukum-kepatuhan',
                 'menu_name' => 'Dashboard Hukum & Kepatuhan',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'hukum-kepatuhan',
                 'path' => '/dashboard/hukum-kepatuhan',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['investasi'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.investasi',
                 'menu_name' => 'Dashboard Investasi',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'investasi',
                 'path' => '/dashboard/investasi',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['keuangan'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.keuangan',
                 'menu_name' => 'Dashboard Keuangan',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'keuangan',
                 'path' => '/dashboard/keuangan',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['sdm'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.sdm',
                 'menu_name' => 'Dashboard SDM',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'sdm',
                 'path' => '/dashboard/sdm',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['sekretariat'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.sekretariat',
                 'menu_name' => 'Dashboard Sekretariat',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'sekretariat',
                 'path' => '/dashboard/sekretariat',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
             [
-                'id_group' => 0,
-                'id_module' => 0,
-                'parent_id' => $parentMenus['logistik'],
-                'parent_sub_id' => null,
-                'parent_sub_parent_id' => null,
                 'code_name' => 'dashboard.logistik',
                 'menu_name' => 'Dashboard Logistik',
-                'menu_label' => 'Dashboard',
-                'sequence' => 0,
+                'parent_key' => 'logistik',
                 'path' => '/dashboard/logistik',
-                'icon' => 'bi-pie-chart',
-                'icon_type' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
         ];
 
@@ -167,16 +88,46 @@ class DashboardMenusSeeder extends Seeder
                 ->exists();
 
             if (!$exists) {
-                DB::table('base_menus')->insert($menu);
-                $this->command->info("Created menu: {$menu['menu_name']}");
+                // Determine parent ID
+                $parentId = $parentMenus[$menu['parent_key']] ?? null;
+
+                if ($parentId) {
+                    $insertedId = DB::table('base_menus')->insertGetId([
+                        'id_group' => 0,
+                        'id_module' => 0,
+                        'parent_id' => $parentId,
+                        'parent_sub_id' => null,
+                        'parent_sub_parent_id' => null,
+                        'code_name' => $menu['code_name'],
+                        'menu_name' => $menu['menu_name'],
+                        'menu_label' => 'Dashboard',
+                        'sequence' => 0, // Top of the list
+                        'path' => $menu['path'],
+                        'icon' => 'bi-pie-chart',
+                        'icon_type' => null,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+
+                    $this->command->info("Created menu: {$menu['menu_name']} (ID: $insertedId)");
+                } else {
+                    $this->command->error("Parent Not Found for: {$menu['menu_name']}");
+                }
             } else {
                 $this->command->warn("Menu already exists: {$menu['menu_name']}");
             }
         }
 
-        // Optionally assign view privilege to Super Admin (role_id = 1)
-        $viewFunctionId = DB::table('base_functions')->where('name', 'view')->value('id');
-        $superAdminRoleId = 1; // Adjust if different
+        // Assign view privilege to Super Admin (role_id = 1)
+        // Check BaseFunction table for 'view' function id. Usually 'View' or 'view'
+        $viewFunctionId = DB::table('base_functions')->where('function_name', 'View')->value('id');
+
+        // If not found with Capitalized, try lowercase
+        if (!$viewFunctionId) {
+             $viewFunctionId = DB::table('base_functions')->where('function_name', 'view')->value('id');
+        }
+
+        $superAdminRoleId = 1; // Standard ID for Super Admin
 
         if ($viewFunctionId) {
             $dashboardMenuIds = DB::table('base_menus')
@@ -184,17 +135,19 @@ class DashboardMenusSeeder extends Seeder
                 ->pluck('id');
 
             foreach ($dashboardMenuIds as $menuId) {
+                // Check using correct column names from BasePrivilege model
+                // id_roles, id_menu, id_function
                 $privilegeExists = DB::table('base_privileges')
-                    ->where('role_id', $superAdminRoleId)
-                    ->where('menu_id', $menuId)
-                    ->where('function_id', $viewFunctionId)
+                    ->where('id_roles', $superAdminRoleId)
+                    ->where('id_menu', $menuId)
+                    ->where('id_function', $viewFunctionId)
                     ->exists();
 
                 if (!$privilegeExists) {
                     DB::table('base_privileges')->insert([
-                        'role_id' => $superAdminRoleId,
-                        'menu_id' => $menuId,
-                        'function_id' => $viewFunctionId,
+                        'id_roles' => $superAdminRoleId,
+                        'id_menu'  => $menuId,
+                        'id_function' => $viewFunctionId,
                         'created_at' => $now,
                         'updated_at' => $now,
                     ]);
@@ -202,6 +155,8 @@ class DashboardMenusSeeder extends Seeder
             }
 
             $this->command->info("Assigned view privileges to Super Admin for dashboard menus");
+        } else {
+            $this->command->error("Function 'View' not found. Cannot assign privileges.");
         }
     }
 }
