@@ -117,12 +117,38 @@
                         </thead>
                         <tbody>
                             @foreach ($stats['recent_documents'] as $doc)
+                                @php
+                                    $routeName = '#';
+                                    $tablePrefixes = [
+                                        'akuntansi_' => 'akuntansi.',
+                                        'anggaran_' => 'anggaran.',
+                                        'hukumkepatuhan_' => 'hukum-kepatuhan.',
+                                        'investasi_' => 'investasi.',
+                                        'keuangan_' => 'keuangan.',
+                                        'logistiksarpen_' => 'logistik.',
+                                        'sdm_' => 'sdm.',
+                                        'sekretariat_' => 'sekretariat.',
+                                    ];
+
+                                    foreach ($tablePrefixes as $prefix => $routePrefix) {
+                                        if (str_starts_with($doc->table_name, $prefix)) {
+                                            $subModule = substr($doc->table_name, strlen($prefix));
+                                            $subModule = str_replace('_', '-', $subModule);
+                                            try {
+                                                $routeName = route($routePrefix . $subModule . '.preview', $doc->id);
+                                            } catch (\Exception $e) {
+                                                $routeName = '#';
+                                            }
+                                            break;
+                                        }
+                                    }
+                                @endphp
                                 <tr>
                                     <td>{{ $doc->sub_module }}</td>
                                     <td>{{ \Carbon\Carbon::parse($doc->created_at)->format('d M Y H:i') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($doc->updated_at)->diffForHumans() }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary">
+                                        <a href="{{ $routeName }}" class="btn btn-sm btn-primary">
                                             <i class="fas fa-eye"></i> Lihat
                                         </a>
                                     </td>

@@ -100,8 +100,8 @@
                                     if ($func->id == 1) {
                                         return false;
                                     }
-                                    // 2. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
-                                    if (in_array($menu->id, [1, 73, 74, 76, 69])) {
+                                    // 2. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69), and Dashboard Modules (91-98)
+                                    if (in_array($menu->id, [1, 73, 74, 76, 69, 91, 92, 93, 94, 95, 96, 97, 98])) {
                                         return false;
                                     }
                                     // 3. Hide Approval(7) for Parent Menus
@@ -164,8 +164,24 @@
                                                     if ($func->id == 1) {
                                                         return false;
                                                     }
-                                                    // 2. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69)
-                                                    if (in_array($child->id, [1, 73, 74, 76, 69])) {
+                                                    // 2. Hide ALL functions for Dashboard(1), My Documents(73), My Requests(74), Document Versions(76), Akses Dokumen(69), and Dashboard Modules (91-98)
+                                                    if (
+                                                        in_array($child->id, [
+                                                            1,
+                                                            73,
+                                                            74,
+                                                            76,
+                                                            69,
+                                                            91,
+                                                            92,
+                                                            93,
+                                                            94,
+                                                            95,
+                                                            96,
+                                                            97,
+                                                            98,
+                                                        ])
+                                                    ) {
                                                         return false;
                                                     }
                                                     // 3. Hide Approval(7) for all except Permintaan Akses(75)

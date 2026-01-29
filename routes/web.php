@@ -275,24 +275,45 @@ Route::middleware(['auth'])->group(function () {
     // MODULE: KEUANGAN
     // ======================
     Route::prefix('keuangan')->name('keuangan.')->group(function () {
+        Route::get('surat-bayar/excel/template', [\App\Http\Controllers\Keuangan\SuratBayarController::class, 'downloadTemplate'])->name('surat-bayar.template');
+        Route::get('surat-bayar/import', [\App\Http\Controllers\Keuangan\SuratBayarController::class, 'import'])->name('surat-bayar.import');
+        Route::post('surat-bayar/import', [\App\Http\Controllers\Keuangan\SuratBayarController::class, 'storeImport'])->name('surat-bayar.store-import');
         Route::resource('surat-bayar', \App\Http\Controllers\Keuangan\SuratBayarController::class);
         Route::get('surat-bayar/{id}/download', [\App\Http\Controllers\Keuangan\SuratBayarController::class, 'download'])->name('surat-bayar.download');
         Route::get('surat-bayar/{id}/preview', [\App\Http\Controllers\Keuangan\SuratBayarController::class, 'preview'])->name('surat-bayar.preview');
+        Route::get('spb/excel/template', [\App\Http\Controllers\Keuangan\SpbController::class, 'downloadTemplate'])->name('spb.template');
+        Route::get('spb/import', [\App\Http\Controllers\Keuangan\SpbController::class, 'import'])->name('spb.import');
+        Route::post('spb/import', [\App\Http\Controllers\Keuangan\SpbController::class, 'storeImport'])->name('spb.store-import');
         Route::resource('spb', \App\Http\Controllers\Keuangan\SpbController::class);
         Route::get('spb/{id}/download', [\App\Http\Controllers\Keuangan\SpbController::class, 'download'])->name('spb.download');
         Route::get('spb/{id}/preview', [\App\Http\Controllers\Keuangan\SpbController::class, 'preview'])->name('spb.preview');
+        Route::get('sppb/excel/template', [\App\Http\Controllers\Keuangan\SppbController::class, 'downloadTemplate'])->name('sppb.template');
+        Route::get('sppb/import', [\App\Http\Controllers\Keuangan\SppbController::class, 'import'])->name('sppb.import');
+        Route::post('sppb/import', [\App\Http\Controllers\Keuangan\SppbController::class, 'storeImport'])->name('sppb.store-import');
         Route::resource('sppb', \App\Http\Controllers\Keuangan\SppbController::class);
         Route::get('sppb/{id}/download', [\App\Http\Controllers\Keuangan\SppbController::class, 'download'])->name('sppb.download');
         Route::get('sppb/{id}/preview', [\App\Http\Controllers\Keuangan\SppbController::class, 'preview'])->name('sppb.preview');
+        Route::get('cashflow/excel/template', [\App\Http\Controllers\Keuangan\CashflowController::class, 'downloadTemplate'])->name('cashflow.template');
+        Route::get('cashflow/import', [\App\Http\Controllers\Keuangan\CashflowController::class, 'import'])->name('cashflow.import');
+        Route::post('cashflow/import', [\App\Http\Controllers\Keuangan\CashflowController::class, 'storeImport'])->name('cashflow.store-import');
         Route::resource('cashflow', \App\Http\Controllers\Keuangan\CashflowController::class);
         Route::get('cashflow/{id}/download', [\App\Http\Controllers\Keuangan\CashflowController::class, 'download'])->name('cashflow.download');
         Route::get('cashflow/{id}/preview', [\App\Http\Controllers\Keuangan\CashflowController::class, 'preview'])->name('cashflow.preview');
+        Route::get('penempatan/excel/template', [\App\Http\Controllers\Keuangan\PenempatanController::class, 'downloadTemplate'])->name('penempatan.template');
+        Route::get('penempatan/import', [\App\Http\Controllers\Keuangan\PenempatanController::class, 'import'])->name('penempatan.import');
+        Route::post('penempatan/import', [\App\Http\Controllers\Keuangan\PenempatanController::class, 'storeImport'])->name('penempatan.store-import');
         Route::resource('penempatan', \App\Http\Controllers\Keuangan\PenempatanController::class);
         Route::get('penempatan/{id}/download', [\App\Http\Controllers\Keuangan\PenempatanController::class, 'download'])->name('penempatan.download');
         Route::get('penempatan/{id}/preview', [\App\Http\Controllers\Keuangan\PenempatanController::class, 'preview'])->name('penempatan.preview');
+        Route::get('pemindahbukuan/excel/template', [\App\Http\Controllers\Keuangan\PemindahbukuanController::class, 'downloadTemplate'])->name('pemindahbukuan.template');
+        Route::get('pemindahbukuan/import', [\App\Http\Controllers\Keuangan\PemindahbukuanController::class, 'import'])->name('pemindahbukuan.import');
+        Route::post('pemindahbukuan/import', [\App\Http\Controllers\Keuangan\PemindahbukuanController::class, 'storeImport'])->name('pemindahbukuan.store-import');
         Route::resource('pemindahbukuan', \App\Http\Controllers\Keuangan\PemindahbukuanController::class);
         Route::get('pemindahbukuan/{id}/download', [\App\Http\Controllers\Keuangan\PemindahbukuanController::class, 'download'])->name('pemindahbukuan.download');
         Route::get('pemindahbukuan/{id}/preview', [\App\Http\Controllers\Keuangan\PemindahbukuanController::class, 'preview'])->name('pemindahbukuan.preview');
+        Route::get('pajak/excel/template', [\App\Http\Controllers\Keuangan\PajakController::class, 'downloadTemplate'])->name('pajak.template');
+        Route::get('pajak/import', [\App\Http\Controllers\Keuangan\PajakController::class, 'import'])->name('pajak.import');
+        Route::post('pajak/import', [\App\Http\Controllers\Keuangan\PajakController::class, 'storeImport'])->name('pajak.store-import');
         Route::resource('pajak', \App\Http\Controllers\Keuangan\PajakController::class);
         Route::get('pajak/{id}/download', [\App\Http\Controllers\Keuangan\PajakController::class, 'download'])->name('pajak.download');
         Route::get('pajak/{id}/preview', [\App\Http\Controllers\Keuangan\PajakController::class, 'preview'])->name('pajak.preview');
