@@ -27,6 +27,17 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
 
+    // Module Dashboards
+    Route::get('/dashboard/akuntansi', [App\Http\Controllers\Dashboard\DashboardAkuntansiController::class, 'index'])->name('dashboard.akuntansi');
+    Route::get('/dashboard/anggaran', [App\Http\Controllers\Dashboard\DashboardAnggaranController::class, 'index'])->name('dashboard.anggaran');
+    Route::get('/dashboard/hukum-kepatuhan', [App\Http\Controllers\Dashboard\DashboardHukumKepatuhanController::class, 'index'])->name('dashboard.hukum-kepatuhan');
+    Route::get('/dashboard/investasi', [App\Http\Controllers\Dashboard\DashboardInvestasiController::class, 'index'])->name('dashboard.investasi');
+    Route::get('/dashboard/keuangan', [App\Http\Controllers\Dashboard\DashboardKeuanganController::class, 'index'])->name('dashboard.keuangan');
+    Route::get('/dashboard/sdm', [App\Http\Controllers\Dashboard\DashboardSdmController::class, 'index'])->name('dashboard.sdm');
+    Route::get('/dashboard/sekretariat', [App\Http\Controllers\Dashboard\DashboardSekretariatController::class, 'index'])->name('dashboard.sekretariat');
+    Route::get('/dashboard/logistik', [App\Http\Controllers\Dashboard\DashboardLogistikController::class, 'index'])->name('dashboard.logistik');
+
+
     // User Profile
     Route::get('profile', [App\Http\Controllers\UserProfileController::class, 'index'])->name('profile.index');
     Route::get('profile/edit', [App\Http\Controllers\UserProfileController::class, 'edit'])->name('profile.edit');

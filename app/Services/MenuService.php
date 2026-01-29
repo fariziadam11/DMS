@@ -82,7 +82,10 @@ class MenuService
             }
 
             // Append .index for resource routes (heuristic: contains dot)
-            if (strpos($route, '.') !== false && !str_ends_with($route, '.index')) {
+            // Exception: dashboard routes don't need .index
+            if (strpos($route, '.') !== false &&
+                !str_ends_with($route, '.index') &&
+                !str_starts_with($route, 'dashboard.')) {
                 $route .= '.index';
             }
 
@@ -99,7 +102,11 @@ class MenuService
             if ($menu->children && $menu->children->count() > 0) {
                 foreach ($menu->children as $child) {
                      $childRoute = $child->code_name;
-                     if (strpos($childRoute, '.') !== false && !str_ends_with($childRoute, '.index') && $childRoute !== 'access.my-requests') {
+                     // Exception: dashboard routes and access.my-requests don't need .index
+                     if (strpos($childRoute, '.') !== false &&
+                         !str_ends_with($childRoute, '.index') &&
+                         $childRoute !== 'access.my-requests' &&
+                         !str_starts_with($childRoute, 'dashboard.')) {
                         $childRoute .= '.index';
                     }
 
