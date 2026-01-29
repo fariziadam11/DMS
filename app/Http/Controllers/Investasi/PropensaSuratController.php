@@ -16,6 +16,7 @@ class PropensaSuratController extends BaseDocumentController
     {
         return $request->validate([
             'id_divisi' => 'required|exists:master_divisi,id',
+            'type' => 'nullable|string|max:50',
             'judul' => 'nullable|string|max:255',
             'perihal' => 'nullable|string|max:255',
             'nomor' => 'nullable|string|max:100',
@@ -24,5 +25,20 @@ class PropensaSuratController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
             'lokasi' => 'nullable|string|max:255',
         ]);
+    }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'type' => 1,
+            'judul' => 2,
+            'perihal' => 3,
+            'nomor' => 4,
+            'tanggal' => 5,
+            'sifat_dokumen' => 6,
+        ];
     }
 }

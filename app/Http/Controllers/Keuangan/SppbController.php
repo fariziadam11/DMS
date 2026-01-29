@@ -61,4 +61,18 @@ class SppbController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor_sppb' => 1,
+            'tanggal_sppb' => 2,
+            'nominal' => 3,
+            'tujuan' => 4,
+            'dibuat' => 5,
+        ];
+    }
 }

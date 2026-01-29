@@ -26,4 +26,17 @@ class LaporanAuditKeuanganController extends BaseDocumentController
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'judul' => 1,
+            'tanggal' => 2,
+            'nama_kap' => 3,
+            'sifat_dokumen' => 4,
+        ];
+    }
 }

@@ -26,4 +26,20 @@ class AspurjabController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'nama' => 3,
+            'mulai' => 4,
+            'akhir' => 5,
+            'kategori' => 6,
+            'sifat_dokumen' => 7,
+        ];
+    }
 }

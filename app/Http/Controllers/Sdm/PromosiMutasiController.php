@@ -26,4 +26,18 @@ class PromosiMutasiController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nik' => 1,
+            'nama' => 2,
+            'perihal' => 3,
+            'tanggal' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

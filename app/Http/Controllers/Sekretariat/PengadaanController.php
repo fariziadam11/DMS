@@ -26,4 +26,20 @@ class PengadaanController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'kategori' => 3,
+            'perihal' => 4,
+            'tujuan' => 5,
+            'masa_akhir' => 6,
+            'sifat_dokumen' => 7,
+        ];
+    }
 }

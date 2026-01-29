@@ -25,4 +25,18 @@ class ComplianceCheckController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'perihal' => 2,
+            'tanggal' => 3,
+            'keterangan' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

@@ -25,4 +25,19 @@ class CapegPegrusController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nik' => 1,
+            'nama' => 2,
+            // 'status' => 3, // Status might be categorical, skip for now or verify values
+            'perihal' => 3,
+            'tanggal' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

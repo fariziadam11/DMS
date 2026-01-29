@@ -23,4 +23,16 @@ class RencanaKerjaTriwulanController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tahun' => 1,
+            'judul' => 2,
+            'sifat_dokumen' => 3,
+        ];
+    }
 }

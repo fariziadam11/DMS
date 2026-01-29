@@ -25,4 +25,18 @@ class MateriController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'periode' => 3,
+            'perihal' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

@@ -32,23 +32,6 @@
         </div>
     </div>
 
-    <!-- Division Overview Cards -->
-    <div class="row g-4 mb-4">
-        @foreach ($divisions as $division)
-            <div class="col-md-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h6 class="text-muted mb-2">{{ $division->nama_divisi }}</h6>
-                        <h3 class="mb-0">
-                            {{ $division->aturan_kebijakan_akuntansi_count + $division->jurnal_umum_count + $division->transaksi_investasi_count }}
-                        </h3>
-                        <small class="text-muted">dokumen</small>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-
     <!-- Document Statistics by Table -->
     <div class="card">
         <div class="card-header">
@@ -60,7 +43,6 @@
                     <tr>
                         <th>Modul</th>
                         <th class="text-center">Total Dokumen</th>
-                        <th class="text-center">Belum Assign</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -70,14 +52,7 @@
                             <td><strong>{{ $stat['name'] }}</strong></td>
                             <td class="text-center"><span class="badge bg-primary">{{ $stat['total'] }}</span></td>
                             <td class="text-center">
-                                @if ($stat['unassigned'] > 0)
-                                    <span class="badge bg-warning text-dark">{{ $stat['unassigned'] }}</span>
-                                @else
-                                    <span class="badge bg-success">0</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ route('admin.document-assignment.module', str_replace('_', '-', $stat['table'])) }}"
+                                <a href="{{ route('admin.document-assignment.module', $stat['module_slug']) }}"
                                     class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil"></i> Kelola
                                 </a>

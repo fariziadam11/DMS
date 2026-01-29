@@ -27,4 +27,23 @@ class SuratController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     * Maps Database Column => Excel Column Index (1-based)
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'kategori' => 3,
+            'perihal' => 4,
+            'dari' => 5,
+            'tujuan' => 6,
+            'disposisi' => 7,
+            'file_name' => 8, // Assuming file name text is in col 8
+            'sifat_dokumen' => 9,
+        ];
+    }
 }

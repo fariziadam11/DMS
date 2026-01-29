@@ -58,6 +58,7 @@ class FileAccessRequest extends Model
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
+    const STATUS_EXPIRED = 'expired';
 
     /**
      * Get the requester
@@ -94,9 +95,6 @@ class FileAccessRequest extends Model
     /**
      * Approve request
      */
-    /**
-     * Approve request
-     */
     public function approve($userId, $reason = null, $permissions = [])
     {
         $this->update([
@@ -106,9 +104,6 @@ class FileAccessRequest extends Model
             'responded_at' => now(),
             'response_reason' => $reason,
         ]);
-
-        // Create folder permission for user
-        // This would depend on the document type
     }
 
     /**
@@ -122,6 +117,26 @@ class FileAccessRequest extends Model
             'responded_at' => now(),
             'response_reason' => $reason,
         ]);
+    }
+
+    /**
+     * Revoke all access requests for a specific document
+     */
+    public static function revokeAccess($documentType, $documentId, $reason = 'Document updated')
+    {
+        // Find all approved requests for this document
+        $requests = self::where('document_type', $documentType)
+            ->where('document_id', $documentId)
+            ->where('status', self::STATUS_APPROVED)
+            ->get();
+
+        foreach ($requests as $request) {
+            $request->update([
+                'status' => self::STATUS_EXPIRED,
+                'response_reason' => $reason, // Update reason to explain expiration
+                'responded_at' => now(), // Meaning expired at
+            ]);
+        }
     }
 
     /**
@@ -157,6 +172,7 @@ class FileAccessRequest extends Model
             self::STATUS_PENDING => 'Menunggu',
             self::STATUS_APPROVED => 'Disetujui',
             self::STATUS_REJECTED => 'Ditolak',
+            self::STATUS_EXPIRED => 'Kadaluarsa',
         ];
         return $labels[$this->status] ?? $this->status;
     }
@@ -170,6 +186,7 @@ class FileAccessRequest extends Model
             self::STATUS_PENDING => 'badge-warning',
             self::STATUS_APPROVED => 'badge-success',
             self::STATUS_REJECTED => 'badge-danger',
+            self::STATUS_EXPIRED => 'badge-secondary',
         ];
         return $classes[$this->status] ?? 'badge-secondary';
     }

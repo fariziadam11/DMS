@@ -25,4 +25,18 @@ class PenghargaanController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nik' => 1,
+            'nama' => 2,
+            'perihal' => 3,
+            'tanggal' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

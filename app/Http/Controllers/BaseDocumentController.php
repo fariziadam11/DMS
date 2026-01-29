@@ -119,6 +119,13 @@ abstract class BaseDocumentController extends Controller
                     // Validate Request (treating as Update with ID to ignore unique checks)
                     $validated = $this->validateRequest($request, $existing->id);
 
+                    // Revoke existing access requests if document is Secret/Confidential
+                    if (isset($validated['file']) || $request->hasFile('file')) {
+                        if ($existing->isSecret()) {
+                            \App\Models\FileAccessRequest::revokeAccess($existing->getTable(), $existing->id, 'Dokumen diperbarui (V' . (($existing->version ?? 1) + 1) . ')');
+                        }
+                    }
+
                     $oldValues = $existing->toArray();
 
                     // Handle File Upload
@@ -242,6 +249,11 @@ abstract class BaseDocumentController extends Controller
 
             // Create new version
             $this->createDocumentVersion($record, $file, $request->get('change_notes'));
+
+            // Revoke existing access requests if document is Secret/Confidential
+            if ($record->isSecret()) {
+                \App\Models\FileAccessRequest::revokeAccess($record->getTable(), $record->id, 'Dokumen diperbarui (V' . ($record->version + 1) . ')');
+            }
         }
 
         $record->update($validated);
@@ -634,6 +646,112 @@ abstract class BaseDocumentController extends Controller
             'delete' => $check(4),
             'download' => $check(5),
         ];
+    }
+
+
+    /**
+     * Show import form
+     */
+    public function import()
+    {
+        $this->checkFunctionAccess(2); // Create permissions usually cover import
+
+        return view('common.import', [
+            'moduleName' => $this->moduleName,
+            'routePrefix' => $this->routePrefix,
+            'importColumns' => $this->getImportConfig(),
+        ]);
+    }
+
+    /**
+     * Store import data
+     */
+    public function storeImport(Request $request)
+    {
+        $this->checkFunctionAccess(2);
+
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls|max:10240',
+        ]);
+
+        $importer = new \App\Services\UniversalImporter();
+        $filePath = $request->file('file')->getRealPath();
+
+        // Define default values (like current division if filter active, or user id)
+        $defaults = [
+            'created_by' => auth()->id(),
+            'updated_by' => auth()->id(),
+        ];
+
+        // If Model has 'id_divisi', try to set it from defaults or context?
+        // For now, simpler to let importer handle mapped columns or nulls.
+        // But some tables REQUIRE id_divisi.
+        // We can pass a default id_divisi if available in request or accessible?
+        // Let's assume the Excel usually has it, or we pick the first accessible division?
+        // Ideally, user selects Division in UI, but existing flow doesn't show that.
+        // Dapen legacy just inserted whatever.
+
+        $result = $importer->import(
+            $filePath,
+            $this->model,
+            $this->getImportConfig(),
+            $defaults
+        );
+
+        return redirect()->route($this->routePrefix . '.import')
+            ->with('import_summary', $result);
+    }
+
+    /**
+     * Get Import Configuration (Override in Child Class)
+     * Returns ['db_column' => excel_column_index] (1-based)
+     */
+    protected function getImportConfig()
+    {
+        return [];
+    }
+
+    /**
+     * Download Import Template
+     */
+    public function downloadTemplate()
+    {
+        $this->checkFunctionAccess(2);
+
+        $config = $this->getImportConfig();
+        if (empty($config)) {
+            abort(404, 'Template not available');
+        }
+
+        // Create new Spreadsheet
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set Headers based on config keys
+        // Config is ['db_column' => index]
+        // We need to sort by index to ensure correct order
+        asort($config);
+
+        foreach ($config as $field => $index) {
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index);
+            $headerLabel = ucwords(str_replace('_', ' ', $field));
+
+            // Set Header
+            $sheet->setCellValue($columnLetter . '1', $headerLabel);
+
+            // Style Header
+            $sheet->getStyle($columnLetter . '1')->getFont()->setBold(true);
+            $sheet->getColumnDimension($columnLetter)->setAutoSize(true);
+        }
+
+        // Create Writer
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        $filename = 'template_import_' . Str::slug($this->moduleName) . '.xlsx';
+
+        return response()->streamDownload(function() use ($writer) {
+            $writer->save('php://output');
+        }, $filename);
     }
 
     /**

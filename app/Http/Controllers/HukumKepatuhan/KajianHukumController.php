@@ -24,4 +24,17 @@ class KajianHukumController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'judul' => 1,
+            'tanggal' => 2,
+            'keterangan' => 3,
+            'sifat_dokumen' => 4,
+        ];
+    }
 }

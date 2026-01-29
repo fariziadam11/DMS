@@ -24,4 +24,18 @@ class PolisAsuransiController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tahun' => 1,
+            'berlaku_mulai' => 2,
+            'berlaku_akhir' => 3,
+            'nilai' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

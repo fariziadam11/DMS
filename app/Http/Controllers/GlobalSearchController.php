@@ -364,7 +364,7 @@ class GlobalSearchController extends Controller
 
         $accessRequest = \App\Models\FileAccessRequest::create([
             'id_user' => auth()->id(),
-            'document_type' => $validated['document_type'],
+            'document_type' => $document->getTable(),
             'document_id' => $validated['document_id'],
             'id_divisi' => $document->id_divisi,
             'request_reason' => $validated['reason'],

@@ -18,6 +18,34 @@
                             <td>{{ $item->divisi->nama_divisi ?? '-' }}</td>
                         </tr>
                         <tr>
+                            <th>Nomor</th>
+                            <td>{{ $item->nomor ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal</th>
+                            <td>{{ $item->tanggal ? date('d/m/Y', strtotime($item->tanggal)) : '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Kategori</th>
+                            <td>{{ $item->kategori ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Perihal</th>
+                            <td>{{ $item->perihal ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Dari</th>
+                            <td>{{ $item->dari ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tujuan</th>
+                            <td>{{ $item->tujuan ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Disposisi</th>
+                            <td>{{ $item->disposisi ?? '-' }}</td>
+                        </tr>
+                        <tr>
                             <th>Sifat Dokumen</th>
                             <td>
                                 @if (($item->sifat_dokumen ?? '') == 'Rahasia')

@@ -25,4 +25,19 @@ class RemunerasiPedomanController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'periode' => 3,
+            'perihal' => 4,
+            'masa_akhir' => 5,
+            'sifat_dokumen' => 6,
+        ];
+    }
 }

@@ -24,4 +24,17 @@ class RarusController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tanggal' => 1,
+            'perihal' => 2,
+            'kategori' => 3,
+            'sifat_dokumen' => 4,
+        ];
+    }
 }

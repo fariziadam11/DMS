@@ -25,4 +25,18 @@ class SuratMasukController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'perihal' => 3,
+            'kategori' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

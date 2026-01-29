@@ -24,4 +24,18 @@ class RekonController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tanggal' => 1,
+            'ba' => 2,
+            'hasil' => 3,
+            'kategori' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

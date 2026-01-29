@@ -30,6 +30,21 @@ class TransaksiController extends BaseDocumentController
         ]);
     }
 
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tgl_transaksi' => 1,
+            'perihal' => 2,
+            'saham' => 3,
+            'broker' => 4,
+            'keterangan' => 5,
+            'sifat_dokumen' => 6,
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = $this->model::query();

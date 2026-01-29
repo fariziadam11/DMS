@@ -23,17 +23,13 @@
                     <td>{{ $record->nomor ?? '-' }}</td>
                 </tr>
                 <tr>
-                    <th width="200">Judul</th>
-                    <td>{{ $record->judul ?? '-' }}</td>
-                </tr>
-                <tr>
                     <th width="200">Divisi</th>
                     <td>{{ $record->divisi->nama_divisi ?? '-' }}</td>
                 </tr>
                 <tr>
                     <th>Sifat Dokumen</th>
                     <td><span
-                            class="badge bg-{{ ($record->sifat_dokumen ) == 'Rahasia' ? 'danger' : (($record->sifat_dokumen ) == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
+                            class="badge bg-{{ $record->sifat_dokumen == 'Rahasia' ? 'danger' : ($record->sifat_dokumen == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
                 @if ($permissions['download'])
@@ -67,9 +63,8 @@
                     <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
                 @elseif (request('source') == 'search')
-                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
-
+                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                        Kembali ke Pencarian</a>
                 @else
                     <a href="{{ route('hukum-kepatuhan.compliance-check.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali</a>

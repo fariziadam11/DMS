@@ -25,4 +25,18 @@ class AturanKebijakanController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'judul' => 2,
+            'perihal' => 3,
+            'tanggal' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

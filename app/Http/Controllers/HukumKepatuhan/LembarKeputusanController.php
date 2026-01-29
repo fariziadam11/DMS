@@ -23,4 +23,16 @@ class LembarKeputusanController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'perihal' => 1,
+            'keterangan' => 2,
+            'sifat_dokumen' => 3,
+        ];
+    }
 }

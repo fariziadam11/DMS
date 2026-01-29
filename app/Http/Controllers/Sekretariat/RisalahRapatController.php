@@ -27,4 +27,20 @@ class RisalahRapatController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'periode' => 3,
+            'kategori' => 4,
+            'perihal' => 5,
+            'peserta' => 6,
+            'sifat_dokumen' => 7,
+        ];
+    }
 }

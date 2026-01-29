@@ -15,21 +15,17 @@
         <div class="card-body">
             <table class="table table-bordered">
                 <tr>
-                    <th width="200">Tanggal</th>
-                    <td>{{ $record->tanggal ? date('d F Y', strtotime($record->tanggal)) : '-' }}</td>
-                </tr>
-                <tr>
-                    <th width="200">Judul</th>
-                    <td>{{ $record->judul ?? '-' }}</td>
-                </tr>
-                <tr>
                     <th width="200">Divisi</th>
                     <td>{{ $record->divisi->nama_divisi ?? '-' }}</td>
                 </tr>
                 <tr>
+                    <th width="200">Perihal</th>
+                    <td>{{ $record->perihal ?? '-' }}</td>
+                </tr>
+                <tr>
                     <th>Sifat Dokumen</th>
                     <td><span
-                            class="badge bg-{{ ($record->sifat_dokumen ) == 'Rahasia' ? 'danger' : (($record->sifat_dokumen ) == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
+                            class="badge bg-{{ $record->sifat_dokumen == 'Rahasia' ? 'danger' : ($record->sifat_dokumen == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
                 @if ($permissions['download'])
@@ -63,22 +59,22 @@
                     <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
                 @elseif (request('source') == 'search')
-                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
-
+                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                        Kembali ke Pencarian</a>
                 @else
                     <a href="{{ route('hukum-kepatuhan.executive-summary.index') }}" class="btn btn-outline-secondary"><i
-                        class="bi bi-arrow-left"></i> Kembali</a>
+                            class="bi bi-arrow-left"></i> Kembali</a>
                 @endif
                 <div>
                     @if ($permissions['edit'])
-                        <a href="{{ route('hukum-kepatuhan.executive-summary.edit', $record->id) }}" class="btn btn-warning"><i
-                            class="bi bi-pencil"></i> Edit</a>
+                        <a href="{{ route('hukum-kepatuhan.executive-summary.edit', $record->id) }}"
+                            class="btn btn-warning"><i class="bi bi-pencil"></i> Edit</a>
                     @endif
                     @if ($permissions['delete'])
                         <form action="{{ route('hukum-kepatuhan.executive-summary.destroy', $record->id) }}" method="POST"
-                        class="d-inline">@csrf @method('DELETE')<button class="btn btn-danger"><i class="bi bi-trash"></i>
-                            Hapus</button></form>
+                            class="d-inline">@csrf @method('DELETE')<button class="btn btn-danger"><i
+                                    class="bi bi-trash"></i>
+                                Hapus</button></form>
                     @endif
                 </div>
             </div>

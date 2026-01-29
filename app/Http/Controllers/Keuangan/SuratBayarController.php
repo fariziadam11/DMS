@@ -23,4 +23,15 @@ class SuratBayarController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor_surat_bayar' => 1,
+            'tanggal_surat_bayar' => 2,
+        ];
+    }
 }

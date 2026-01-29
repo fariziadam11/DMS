@@ -106,11 +106,12 @@
                                 </td>
                                 <td>
                                     @if ($doc->sifat_dokumen == 'Rahasia')
-                                        <span class="badge badge-secret"><i class="bi bi-lock"></i></span>
+                                        <span class="badge bg-danger"><i class="bi bi-lock me-1"></i>Rahasia</span>
                                     @elseif($doc->sifat_dokumen == 'Internal')
                                         <span class="badge bg-warning text-dark"><i
-                                            class="bi bi-shield-lock"></i></span>@else<span
-                                            class="badge badge-public"><i class="bi bi-unlock"></i></span>
+                                                class="bi bi-shield-lock me-1"></i>Internal</span>
+                                    @else
+                                        <span class="badge bg-success"><i class="bi bi-unlock me-1"></i>Umum</span>
                                     @endif
                                 </td>
                             </tr>

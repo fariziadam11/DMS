@@ -22,4 +22,16 @@ class VendorSatisfactionController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tahun' => 1,
+            'tanggal' => 2,
+            'sifat_dokumen' => 3,
+        ];
+    }
 }

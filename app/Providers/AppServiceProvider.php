@@ -116,7 +116,10 @@ class AppServiceProvider extends ServiceProvider
             'sekretariat_remunerasi_pedoman' => \App\Models\Sekretariat\RemunerasiPedoman::class,
             'sekretariat_risalah_rapat' => \App\Models\Sekretariat\RisalahRapat::class,
             'sekretariat_surat' => \App\Models\Sekretariat\Surat::class,
-            'sekretariat_surat' => \App\Models\Sekretariat\Surat::class,
+
+            // Legacy / Fallback (Investasi)
+            'surat' => \App\Models\Investasi\Surat::class,
+            'transaksi' => \App\Models\Investasi\Transaksi::class,
         ]);
 
         // View Composer for Header Notifications

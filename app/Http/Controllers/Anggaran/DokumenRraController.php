@@ -25,4 +25,18 @@ class DokumenRraController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tanggal' => 1,
+            'direktorat' => 2,
+            'nomor_nota' => 3,
+            'nomor_sukka' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

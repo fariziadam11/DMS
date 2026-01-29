@@ -25,4 +25,16 @@ class LaporanBulananController extends BaseDocumentController
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'judul' => 1,
+            'tanggal' => 2,
+            'sifat_dokumen' => 3,
+        ];
+    }
 }

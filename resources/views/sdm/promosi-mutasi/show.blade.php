@@ -31,7 +31,15 @@
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td>{{ $item->status ?? '-' }}</td>
+                            <td>
+                                @if ($item->status == 1)
+                                    <span class="badge bg-success">Aktif</span>
+                                @elseif ($item->status == 0)
+                                    <span class="badge bg-secondary">Tidak Aktif</span>
+                                @else
+                                    {{ $item->status ?? '-' }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Perihal</th>

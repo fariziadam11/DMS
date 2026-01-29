@@ -26,4 +26,19 @@ class PksController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'nama' => 2,
+            'mulai' => 3,
+            'akhir' => 4,
+            'kategori' => 5,
+            'sifat_dokumen' => 6,
+        ];
+    }
 }

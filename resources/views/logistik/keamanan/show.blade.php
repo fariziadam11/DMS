@@ -18,6 +18,18 @@
                             <td>{{ $item->divisi->nama_divisi ?? '-' }}</td>
                         </tr>
                         <tr>
+                            <th>Tahun</th>
+                            <td>{{ $item->tahun ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Bulan</th>
+                            <td>{{ $item->bulan ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nama Kegiatan</th>
+                            <td>{{ $item->nama_kegiatan ?? '-' }}</td>
+                        </tr>
+                        <tr>
                             <th>Sifat Dokumen</th>
                             <td>
                                 @if (($item->sifat_dokumen ?? '') == 'Rahasia')

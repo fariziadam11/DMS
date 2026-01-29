@@ -22,4 +22,15 @@ class ExecutiveSummaryController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'perihal' => 1,
+            'sifat_dokumen' => 2,
+        ];
+    }
 }

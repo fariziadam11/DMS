@@ -45,6 +45,10 @@ class MyDocumentsController extends Controller
         'investasi_propensa_surat' => \App\Models\Investasi\PropensaSurat::class,
         'investasi_propensa_transaksi' => \App\Models\Investasi\PropensaTransaksi::class,
 
+        // Legacy (Investasi)
+        'surat' => \App\Models\Investasi\Surat::class,
+        'transaksi' => \App\Models\Investasi\Transaksi::class,
+
         // Keuangan
         'keuangan_surat_bayar' => \App\Models\Keuangan\SuratBayar::class,
         'keuangan_spb' => \App\Models\Keuangan\Spb::class,
@@ -128,6 +132,10 @@ class MyDocumentsController extends Controller
         'investasi_perencanaan_transaksi' => 'investasi.perencanaan-transaksi.show',
         'investasi_propensa_surat' => 'investasi.propensa-surat.show',
         'investasi_propensa_transaksi' => 'investasi.propensa-transaksi.show',
+
+        // Legacy (Investasi)
+        'surat' => 'investasi.surat.show',
+        'transaksi' => 'investasi.transaksi.show',
 
         // Keuangan
         'keuangan_cashflow' => 'keuangan.cashflow.show',

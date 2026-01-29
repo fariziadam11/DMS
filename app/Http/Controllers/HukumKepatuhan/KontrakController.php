@@ -30,4 +30,23 @@ class KontrakController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'judul' => 2,
+            'tanggal' => 3,
+            'berlaku_awal' => 4,
+            'berlaku_akhir' => 5,
+            'jenis' => 6,
+            'pihak' => 7,
+            'pemilik' => 8,
+            'status' => 9,
+            'sifat_dokumen' => 10,
+        ];
+    }
 }

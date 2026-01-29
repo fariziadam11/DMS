@@ -23,4 +23,17 @@ class CleaningServiceController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tahun' => 1,
+            'bulan' => 2,
+            'nama_kegiatan' => 3,
+            'sifat_dokumen' => 4,
+        ];
+    }
 }

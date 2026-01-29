@@ -1,7 +1,8 @@
 @font-face {
     font-display: block;
     font-family: "bootstrap-icons";
-    src: url("../fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6")
+    src:
+        url("../fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6")
             format("woff2"),
         url("../fonts/bootstrap-icons.woff?dd67030699838ea613ee6dbda90effa6")
             format("woff");
@@ -112,7 +113,18 @@
 .bi-box-arrow-right::before {
     content: "\f235";
 }
-.bi-file-earmark-spreadsheet::before { content: "\f35f"; }
-.bi-currency-dollar::before { content: "\f2c6"; }
-.bi-clipboard-check::before { content: "\f28c"; }
-.bi-building::before { content: "\f23c"; }
+.bi-file-earmark-spreadsheet::before {
+    content: "\f35f";
+}
+.bi-currency-dollar::before {
+    content: "\f2c6";
+}
+.bi-clipboard-check::before {
+    content: "\f28c";
+}
+.bi-building::before {
+    content: "\f23c";
+}
+.bi-list::before {
+    content: "\f479";
+}

@@ -23,4 +23,17 @@ class ProcurementController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'no_drp' => 1,
+            'nama_kegiatan' => 2,
+            'direktorat' => 3,
+            'sifat_dokumen' => 4,
+        ];
+    }
 }

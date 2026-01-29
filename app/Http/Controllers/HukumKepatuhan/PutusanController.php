@@ -27,4 +27,20 @@ class PutusanController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'tanggal' => 2,
+            'klarifikasi' => 3,
+            'tingkat_pengadilan' => 4,
+            'status' => 5,
+            'pihak' => 6,
+            'sifat_dokumen' => 7,
+        ];
+    }
 }

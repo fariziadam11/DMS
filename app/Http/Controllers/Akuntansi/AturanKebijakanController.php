@@ -26,4 +26,17 @@ class AturanKebijakanController extends BaseDocumentController
             'file' => ($id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'judul' => 2,
+            'tanggal' => 3,
+            'sifat_dokumen' => 4,
+        ];
+    }
 }

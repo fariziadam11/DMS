@@ -26,4 +26,19 @@ class RegulasiInternalController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'nomor' => 1,
+            'judul' => 2,
+            'tanggal' => 3,
+            'inisiator' => 4,
+            'status' => 5,
+            'sifat_dokumen' => 6,
+        ];
+    }
 }

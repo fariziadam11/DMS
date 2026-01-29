@@ -30,4 +30,20 @@ class SuratController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tgl_surat' => 1,
+            'no_surat' => 2,
+            'no_agenda' => 3,
+            'perihal' => 4,
+            'nama_perusahaan' => 5,
+            'keterangan' => 6,
+            'sifat_dokumen' => 7,
+        ];
+    }
 }

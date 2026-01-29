@@ -24,4 +24,18 @@ class JaminanController extends BaseDocumentController
             'sifat_dokumen' => 'nullable|in:Umum,Internal,Rahasia'
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'jenis_jaminan' => 1,
+            'nomor_drp' => 2,
+            'nama_pengadaan' => 3,
+            'vendor' => 4,
+            'sifat_dokumen' => 5,
+        ];
+    }
 }

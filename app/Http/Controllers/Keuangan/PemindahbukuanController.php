@@ -24,4 +24,16 @@ class PemindahbukuanController extends BaseDocumentController
             'lokasi' => 'nullable|string|max:255',
         ]);
     }
+
+    /**
+     * Configuration for Excel Import
+     */
+    protected function getImportConfig()
+    {
+        return [
+            'tanggal' => 1,
+            'nominal' => 2,
+            'uraian' => 3,
+        ];
+    }
 }

@@ -2,11 +2,13 @@
 <div class="row">
     <div class="col-md-6 mb-3">
         <label class="form-label">Divisi</label>
-        @if(auth()->user()->isSuperAdmin())
+        @if (auth()->user()->isSuperAdmin())
             <select name="id_divisi" class="form-select">
                 <option value="">Pilih Divisi</option>
-                @foreach($divisions ?? [] as $divisi)
-                    <option value="{{ $divisi->id }}" {{ old('id_divisi', $record->id_divisi ?? '') == $divisi->id ? 'selected' : '' }}>{{ $divisi->nama_divisi }}</option>
+                @foreach ($divisions ?? [] as $divisi)
+                    <option value="{{ $divisi->id }}"
+                        {{ old('id_divisi', $record->id_divisi ?? '') == $divisi->id ? 'selected' : '' }}>
+                        {{ $divisi->nama_divisi }}</option>
                 @endforeach
             </select>
         @else
@@ -18,8 +20,10 @@
         <label class="form-label">Tipe </label>
         <select name="type" class="form-select @error('type') is-invalid @enderror">
             <option value="">Pilih Tipe</option>
-            <option value="1" {{ old('type', $record->type ?? '') == 1 ? 'selected' : '' }}>Tipe 1</option>
-            <option value="2" {{ old('type', $record->type ?? '') == 2 ? 'selected' : '' }}>Tipe 2</option>
+            <option value="Pembelian" {{ old('type', $record->type ?? '') == 'Pembelian' ? 'selected' : '' }}>Pembelian
+            </option>
+            <option value="Penjualan" {{ old('type', $record->type ?? '') == 'Penjualan' ? 'selected' : '' }}>Penjualan
+            </option>
         </select>
         @error('type')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -54,7 +58,9 @@
         <select name="sifat_dokumen" class="form-select">
             <option value="Umum"
                 {{ old('sifat_dokumen', $record->sifat_dokumen ?? 'Umum') == 'Umum' ? 'selected' : '' }}>Umum</option>
-            <option value="Internal" {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal</option>
+            <option value="Internal"
+                {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Internal' ? 'selected' : '' }}>Internal
+            </option>
             <option value="Rahasia"
                 {{ old('sifat_dokumen', $record->sifat_dokumen ?? '') == 'Rahasia' ? 'selected' : '' }}>Rahasia
             </option>
