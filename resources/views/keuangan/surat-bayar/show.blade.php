@@ -31,6 +31,10 @@
                             class="badge bg-{{ ($record->sifat_dokumen ) == 'Rahasia' ? 'danger' : (($record->sifat_dokumen ) == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
+                        <tr>
+                            <th>Versi</th>
+                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
+                        </tr>
                 @if ($permissions['download'])
                     <tr>
                         <th>File</th>

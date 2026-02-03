@@ -64,10 +64,10 @@
                                                 <button
                                                     onclick="previewFile('{{ route('logistik.user-satisfaction.preview', $item->id) }}', '{{ $item->file_name }}')"
                                                     class="btn btn-outline-primary" title="Preview"><i
-                                                        class="bi bi-eye"></i></button>
+                                                        class="bi bi-eye"></i> Preview</button>
                                                 <a href="{{ route('logistik.user-satisfaction.download', $item->id) }}"
                                                     class="btn btn-outline-success" title="Download"><i
-                                                        class="bi bi-download"></i></a>
+                                                        class="bi bi-download"></i> Download</a>
                                             </div>
                                         @else
                                             <button type="button" class="btn btn-sm btn-outline-warning"
@@ -86,12 +86,12 @@
                                         @if ($item->canPerformAction('read', auth()->id()))
                                             @if ($item->canPerformAction('read', auth()->id()))
                                                 <a href="{{ route('logistik.user-satisfaction.show', $item->id) }}"
-                                                    class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                                    class="btn btn-outline-primary"><i class="bi bi-eye"></i> Detail</a>
                                             @endif
                                         @endif
                                         @if ($permissions['edit'] && $item->canPerformAction('edit', auth()->id()))
                                             <a href="{{ route('logistik.user-satisfaction.edit', $item->id) }}"
-                                                class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                                class="btn btn-outline-warning"><i class="bi bi-pencil"></i> Edit</a>
                                         @endif
                                         @if ($permissions['delete'] && $item->canPerformAction('delete', auth()->id()))
                                             <form action="{{ route('logistik.user-satisfaction.destroy', $item->id) }}"
@@ -99,7 +99,7 @@
                                                 @csrf @method('DELETE')
                                                 <button class="btn btn-outline-danger"
                                                     onclick="return confirm('Apakah Anda yakin?')"><i
-                                                        class="bi bi-trash"></i></button>
+                                                        class="bi bi-trash"></i> Hapus</button>
                                             </form>
                                         @endif
                                     </div>

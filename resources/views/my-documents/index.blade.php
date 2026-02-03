@@ -64,12 +64,12 @@
                                         @if ($doc['url'])
                                             <div class="btn-group btn-group-sm">
                                     <a href="{{ $doc['url'] }}" class="btn btn-primary">
-                                                    <i class="bi bi-eye"></i>
+                                                    <i class="bi bi-eye"></i> Detail
                                                 </a>
                                                 @if (!empty($doc['has_download_permission']) && !empty($doc['download_url']))
                                                     <a href="{{ $doc['download_url'] }}" class="btn btn-success"
                                                         title="Download">
-                                                        <i class="bi bi-download"></i>
+                                                        <i class="bi bi-download"></i> Download
                                                     </a>
                                                 @endif
                                 </div>

@@ -69,10 +69,10 @@
                                                 <button
                                                     onclick="previewFile('{{ route('sekretariat.materi.preview', $item->id) }}', '{{ $item->file_name }}')"
                                                     class="btn btn-outline-primary" title="Preview"><i
-                                                        class="bi bi-eye"></i></button><a
+                                                        class="bi bi-eye"></i> Preview</button><a
                                                     href="{{ route('sekretariat.materi.download', $item->id) }}"
                                                     class="btn btn-outline-success" title="Download"><i
-                                                        class="bi bi-download"></i></a>
+                                                        class="bi bi-download"></i> Download</a>
                                             </div>
                                         @else
                                             <button type="button" class="btn btn-sm btn-outline-warning"
@@ -91,17 +91,17 @@
                                         @if ($item->canPerformAction('read', auth()->id()))
                                             @if ($item->canPerformAction('read', auth()->id()))
                                                 <a href="{{ route('sekretariat.materi.show', $item->id) }}"
-                                                    class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                                    class="btn btn-outline-primary"><i class="bi bi-eye"></i> Detail</a>
                                             @endif
                                         @endif
                                         @if ($permissions['edit'] && $item->canPerformAction('edit', auth()->id()))
                                             <a href="{{ route('sekretariat.materi.edit', $item->id) }}"
-                                                class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                                class="btn btn-outline-warning"><i class="bi bi-pencil"></i> Edit</a>
                                         @endif
                                         @if ($permissions['delete'] && $item->canPerformAction('delete', auth()->id()))
                                             <form action="{{ route('sekretariat.materi.destroy', $item->id) }}"
                                                 method="POST" class="d-inline">@csrf @method('DELETE')<button
-                                                    class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                                    class="btn btn-outline-danger"><i class="bi bi-trash"></i> Hapus</button>
                                             </form>
                                         @endif
                                     </div>

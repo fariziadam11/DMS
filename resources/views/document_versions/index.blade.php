@@ -96,7 +96,7 @@
                                 @if ($canDownload)
                                     <a href="{{ route('document-versions.download', $ver->id) }}"
                                         class="btn btn-sm btn-primary">
-                                        <i class="bi bi-download"></i>
+                                        <i class="bi bi-download"></i> Download
                                     </a>
                                 @else
                                     <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"

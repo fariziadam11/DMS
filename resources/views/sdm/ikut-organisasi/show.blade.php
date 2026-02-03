@@ -58,6 +58,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <th>Versi</th>
+                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
+                        </tr>
+                        <tr>
                             <th>File Dokumen</th>
                             <td>
                                 @if ($item->file_name)

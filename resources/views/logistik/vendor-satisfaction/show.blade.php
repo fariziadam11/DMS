@@ -37,6 +37,10 @@
                                 @endif
                             </td>
                         </tr>
+                        <tr>
+                            <th>Versi</th>
+                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
+                        </tr>
                         @if ($permissions['download'])
                             <tr>
                                 <th>File Dokumen</th>

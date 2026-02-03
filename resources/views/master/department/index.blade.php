@@ -42,12 +42,12 @@
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ route('master.department.show', $item->id) }}"
-                                            class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                            class="btn btn-outline-primary"><i class="bi bi-eye"></i> Detail</a>
                                         <a href="{{ route('master.department.edit', $item->id) }}"
-                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                            class="btn btn-outline-warning"><i class="bi bi-pencil"></i> Edit</a>
                                         <form action="{{ route('master.department.destroy', $item->id) }}" method="POST"
                                             class="d-inline">@csrf @method('DELETE')<button
-                                                class="btn btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                                                class="btn btn-outline-danger"><i class="bi bi-trash"></i> Hapus</button></form>
                                     </div>
                                 </td>
                             </tr>

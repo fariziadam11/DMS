@@ -64,11 +64,11 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('admin.menus.edit', $menu) }}" class="btn btn-outline-warning"><i
-                                            class="bi bi-pencil"></i></a>
+                                            class="bi bi-pencil"></i> Edit</a>
                                     <form action="{{ route('admin.menus.destroy', $menu) }}" method="POST"
                                         class="d-inline" onsubmit="return confirm('Yakin hapus menu ini?')">
                                         @csrf @method('DELETE')
-                                        <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        <button class="btn btn-outline-danger"><i class="bi bi-trash"></i> Hapus</button>
                                     </form>
                                 </div>
                             </td>

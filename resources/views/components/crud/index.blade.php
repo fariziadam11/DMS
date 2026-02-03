@@ -98,16 +98,16 @@
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ route(str_replace('.index', '.show', request()->route()->getName()), $item->id) }}"
                                             class="btn btn-outline-primary" title="Lihat">
-                                            <i class="bi bi-eye"></i>
+                                            <i class="bi bi-eye"></i> Detail
                                         </a>
                                         <a href="{{ route(str_replace('.index', '.edit', request()->route()->getName()), $item->id) }}"
                                             class="btn btn-outline-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-pencil"></i> Edit
                                         </a>
                                         @if ($item->file)
                                             <a href="{{ route(str_replace('.index', '.download', request()->route()->getName()), $item->id) }}"
                                                 class="btn btn-outline-success" title="Download">
-                                                <i class="bi bi-download"></i>
+                                                <i class="bi bi-download"></i> Download
                                             </a>
                                         @endif
                                         <form
@@ -116,7 +116,7 @@
                                             onsubmit="return confirm('Yakin hapus data ini?')">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger" title="Hapus">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="bi bi-trash"></i> Hapus
                                             </button>
                                         </form>
                                     </div>

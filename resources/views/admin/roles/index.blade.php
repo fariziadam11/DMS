@@ -63,13 +63,13 @@
                                     </a>
                                     <a href="{{ route('admin.roles.edit', $role) }}" class="btn btn-outline-warning"
                                         title="Edit">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil"></i> Edit
                                     </a>
                                     <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="d-inline"
                                         onsubmit="return confirm('Yakin hapus role ini?')">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-outline-danger" title="Hapus"><i
-                                                class="bi bi-trash"></i></button>
+                                                class="bi bi-trash"></i> Hapus</button>
                                     </form>
                                 </div>
                             </td>

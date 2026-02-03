@@ -91,14 +91,14 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-outline-primary"><i
-                                            class="bi bi-eye"></i></a>
+                                            class="bi bi-eye"></i> Detail</a>
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-outline-warning"><i
-                                            class="bi bi-pencil"></i></a>
+                                            class="bi bi-pencil"></i> Edit</a>
                                     @if ($user->id !== auth()->id())
                                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                             class="d-inline">@csrf
                                             @method('DELETE')<button class="btn btn-outline-danger"><i
-                                                    class="bi bi-trash"></i></button></form>
+                                                    class="bi bi-trash"></i> Hapus</button></form>
                                     @endif
                                 </div>
                             </td>
