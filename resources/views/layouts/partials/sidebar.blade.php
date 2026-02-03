@@ -1,9 +1,12 @@
 <!-- Dynamic Sidebar -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <div>
-            <h5>DMS Dapen</h5>
-            <small>Document Management System</small>
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('favicon.png') }}" alt="Logo" width="32" height="32">
+            <div>
+                <h5 class="mb-0">DMS Dapentel</h5>
+                <small>Document Management System</small>
+            </div>
         </div>
     </div>
 
