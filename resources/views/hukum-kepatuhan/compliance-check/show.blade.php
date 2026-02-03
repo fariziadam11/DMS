@@ -37,9 +37,11 @@
                         <th>File</th>
                         <td>
                             @if ($record->file_name)
-                                <button
+                                @if($permissions['preview'] ?? false)
+                                            <button
                                     onclick="previewFile('{{ route('hukum-kepatuhan.compliance-check.preview', $record->id) }}', '{{ $record->file_name }}')"
-                                    class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> Preview</button> <a
+                                    class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> Preview</button>
+                                            @endif <a
                                     href="{{ route('hukum-kepatuhan.compliance-check.download', $record->id) }}"
                                     class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Download</a>
                             @else

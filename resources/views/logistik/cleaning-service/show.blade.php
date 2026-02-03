@@ -47,10 +47,12 @@
                                 <td>
                                     @if ($item->file_name)
                                         <div class="btn-group btn-group-sm">
+                                            @if($permissions['preview'] ?? false)
                                             <button
                                                 onclick="previewFile('{{ route('logistik.cleaning-service.preview', $item->id) }}', '{{ $item->file_name }}')"
                                                 class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i>
                                                 Preview</button>
+                                            @endif
                                             <a href="{{ route('logistik.cleaning-service.download', $item->id) }}"
                                                 class="btn btn-success" title="Download"><i class="bi bi-download"></i>
                                                 Download</a>

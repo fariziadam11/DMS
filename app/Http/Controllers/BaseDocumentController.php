@@ -198,6 +198,25 @@ abstract class BaseDocumentController extends Controller
              $permissions['download'] = true;
         }
 
+        // Define Preview Permission Logic
+        // Default: False
+        $permissions['preview'] = false;
+
+        $user = auth()->user();
+        if ($user) {
+            // Simplified: If they have Internal Access, they can preview.
+            // If they rely ONLY on Request, they CANNOT preview (per User Request).
+
+            // Internal = Super Admin OR Creator OR Division Member
+            $isSuper = $user->isSuperAdmin();
+            $isCreator = $record->created_by == $user->id;
+            $isDivisionMember = $user->hasDivisionAccess($record->id_divisi);
+
+            if ($isSuper || $isCreator || $isDivisionMember) {
+                 $permissions['preview'] = true;
+            }
+        }
+
         return view($this->viewPath . '.show', [
             'record' => $record,
             'item' => $record, // Alias for backward compatibility
@@ -379,51 +398,47 @@ abstract class BaseDocumentController extends Controller
     {
         $record = $this->model::findOrFail($id);
 
-        // Same logic as download for permissions
         $user = auth()->user();
-        $hasSpecificPermission = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
+
+        // 1. Check Specific Access Request (Highest Priority)
+        // We need to fetch the request to check limits, not just existence.
+        $accessRequest = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
             ->where('document_id', $record->id)
             ->where('id_user', $user->id)
             ->where('status', 'approved')
-            ->whereJsonContains('permissions', 'download') // Preview usually requires download rights or at least read?
-            // User asked for "download button missing", implying preview might work with just read?
-            // But preview usually serves the file content.
-            // If strictly "View" (Read), maybe preview is allowed but download not?
-            // "View" permission implies seeing metadata + previewing content usually.
-            // "Download" implies saving raw file.
-            // Let's assume Preview requires 'read' (View) OR 'download'.
-            // If user has 'read', allow preview?
-            // User Prompt said: "Anda tidak memiliki hak akses untuk mengunduh file pada menu ini." which is error from download button.
-            // Preview button usually uses `preview` route.
-            // Let's allow preview if 'read' permission exists.
-            ->exists();
+            ->first();
 
-        // Check read permission specific
-        $hasReadPermission = \App\Models\FileAccessRequest::where('document_type', $record->getTable())
-            ->where('document_id', $record->id)
-            ->where('id_user', $user->id)
-            ->where('status', 'approved')
-            ->whereJsonContains('permissions', 'read')
-            ->exists();
+        $allowedByRequest = false;
 
-        if ($hasSpecificPermission || $hasReadPermission) {
+        if ($accessRequest) {
+            // Check Limits
+            if ($accessRequest->isExpired()) {
+                 abort(403, 'Akses Anda untuk dokumen ini telah kadaluarsa.');
+            }
+            if ($accessRequest->isDownloadLimitReached()) {
+                 abort(403, 'Batas unduhan/preview untuk dokumen ini telah habis.');
+            }
+
+            // Check if has 'read' or 'download' permission
+            // Assuming Preview requires at least Read.
+            // But if strict, maybe 'download' implied?
+            // User said "limits apply", so probably treated same as download.
+            // Let's verify if they have 'read' OR 'download'.
+            if ($accessRequest->hasPermission('read') || $accessRequest->hasPermission('download')) {
+                $allowedByRequest = true;
+            }
+        }
+
+        if ($allowedByRequest) {
              // Allow
-             // No RBAC check needed if specific permission exists
         } elseif ($record->userHasFileAccess($user->id)) {
              // Allow based on model policy (Umum, Internal+Div)
-             // We do NOT check checkFunctionAccess(5) here because "Umum" implies public access
-             // and usually overrides module-level restriction for basic file viewing.
+             // But WAIT, if they have an EXPIRED request, should that override General access?
+             // Usually General/Division access is permanent. Request is for OUTSIDERS.
+             // So if $record->userHasFileAccess returns true, it means they are div member or it's public.
+             // We should allow.
         } else {
-             // Fallback
-             // Previewing might be considered 'download' in terms of function access (5)?
-             // Or 'read' (1 - View Index/Show)?
-             // Usually previewing the PDF is part of 'View'.
-             // Let's check 'View' access (Show).
-             // But existing code called checkFunctionAccess(5) for preview.
-             // Let's keep it 5 for consistency UNLESS granular override.
-
-             // If RBAC check fails but we want to allow, we handle it.
-             // If no granular, we enforce RBAC.
+             // Fallback to strict RBAC
              $this->checkFunctionAccess(5);
              $this->authorizeAccess($record, 'download');
         }
@@ -567,31 +582,49 @@ abstract class BaseDocumentController extends Controller
 
         if ($accessRequest) {
             // Check limits (Time & Download Count)
-            if (!$accessRequest->isValid()) {
-                 // If expired/limit reached, this specific request is no longer valid.
-                 // We simply stop checking this request and let it fall through to denial.
-                 // Optionally we could abort specific message here if we know this was the only way they had access.
-                 // But for now, let it fall through.
+
+            // 1. Check Expiry (Time) - Strict for EVERYTHING
+            if ($accessRequest->isExpired()) {
+                 // If expired, invalid for ALL actions (view, download, etc)
+                 // Let it fall through to denial or continue?
+                 // Existing logic: if invalid, we fell through.
             } else {
-                // Map controller actions to permission keys
-                $permissionMap = [
-                    'read' => 'read',
-                    'view' => 'read', // Alias
-                    'download' => 'download',
-                    'write' => 'edit',
-                    'edit' => 'edit', // Alias
-                    'delete' => 'delete',
-                ];
+                // Not expired.
 
-                $requiredPermission = $permissionMap[$action] ?? $action;
+                // 2. Check Download Limit
+                $limitReached = $accessRequest->isDownloadLimitReached();
 
-                if ($accessRequest->hasPermission($requiredPermission)) {
-                    return true;
-                }
+                // Logic:
+                // "valid_till habis -> gabisa view/download" (Handled by isExpired above)
+                // "batas download habis -> gabisa download/preview TAPI bisa view (show)"
 
-                // Helpful error message for granular denial
-                if ($action !== 'read') { // Don't abort for read, let it fall through or generic 403
-                     abort(403, 'Anda tidak memiliki izin ' . strtoupper($requiredPermission) . ' untuk dokumen ini.');
+                if ($limitReached && $action !== 'read') {
+                     // If limit reached, ONLY 'read' (Show Page) is allowed.
+                     // Download/Preview/Edit etc are blocked.
+                     // Fall through to denial.
+                } else {
+                    // Either limit NOT reached OR action is 'read' (which ignores limit)
+
+                    // Map controller actions to permission keys
+                    $permissionMap = [
+                        'read' => 'read',
+                        'view' => 'read', // Alias
+                        'download' => 'download',
+                        'write' => 'edit',
+                        'edit' => 'edit', // Alias
+                        'delete' => 'delete',
+                    ];
+
+                    $requiredPermission = $permissionMap[$action] ?? $action;
+
+                    if ($accessRequest->hasPermission($requiredPermission)) {
+                        return true;
+                    }
+
+                    // Helpful error message for granular denial
+                    if ($action !== 'read') { // Don't abort for read, let it fall through or generic 403
+                         abort(403, 'Anda tidak memiliki izin ' . strtoupper($requiredPermission) . ' untuk dokumen ini.');
+                    }
                 }
             }
         }
@@ -602,10 +635,21 @@ abstract class BaseDocumentController extends Controller
              $message = $record->isSecret()
                 ? 'Dokumen ini bersifat rahasia. Anda perlu meminta akses terlebih dahulu.'
                 : 'Anda tidak memiliki akses ke dokumen ini.';
+
+             // If they had a request but it was invalid/expired/limit reached (and we fell through),
+             // maybe provide better message?
+             if ($accessRequest && $accessRequest->isExpired()) {
+                 $message = 'Akses Anda untuk dokumen ini telah kadaluarsa.';
+             }
+
              abort(403, $message);
         }
 
         // For other actions, if we reached here, access is denied
+        if ($accessRequest && $accessRequest->isDownloadLimitReached() && $action !== 'read') {
+             abort(403, 'Batas unduhan/preview untuk dokumen ini telah habis.');
+        }
+
         abort(403, 'Anda tidak memiliki akses untuk melakukan aksi ini.');
     }
 

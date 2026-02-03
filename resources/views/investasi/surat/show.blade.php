@@ -50,9 +50,11 @@
                         <td>
                             @if ($record->file_name)
                                 <div class="btn-group btn-group-sm">
-                                    <button
+                                    @if($permissions['preview'] ?? false)
+                                            <button
                                         onclick="previewFile('{{ route('investasi.surat.preview', $record->id) }}', '{{ $record->file_name }}')"
                                         class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i> Preview</button>
+                                            @endif
                                     <a href="{{ route('investasi.surat.download', $record->id) }}" class="btn btn-success"
                                         title="Download"><i class="bi bi-download"></i> Download</a>
                                 </div>

@@ -162,7 +162,7 @@ trait HasDocumentFeatures
                 ->where('status', 'approved')
                 ->first();
 
-            if ($request && $request->hasPermission($action)) {
+            if ($request && $request->hasPermission($action) && !$request->isExpired()) {
                 return true;
             }
 
@@ -184,7 +184,7 @@ trait HasDocumentFeatures
                      ->where('status', 'approved')
                      ->first();
 
-                 if ($request && $request->hasPermission($action)) {
+                 if ($request && $request->hasPermission($action) && !$request->isExpired()) {
                      return true;
                  }
                  return false;

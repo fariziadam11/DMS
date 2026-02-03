@@ -200,18 +200,38 @@ class FileAccessRequest extends Model
             return false;
         }
 
-        // Check Time Limit
-        if ($this->valid_till && now()->gt($this->valid_till)) {
+        if ($this->isExpired()) {
             return false;
         }
 
-        // Check Download Limit
-        if ($this->download_limit && $this->download_count >= $this->download_limit) {
-            // Strict check: if count equals or exceeds limit, invalid.
+        if ($this->isDownloadLimitReached()) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Check if request is expired
+     */
+    public function isExpired()
+    {
+        return $this->valid_till && now()->gt($this->valid_till);
+    }
+
+    /**
+     * Check if download limit is reached
+     */
+    public function isDownloadLimitReached()
+    {
+        // Limit 0 or null implies unlimited in some systems, but here
+        // usually if set, it is strict. If null, maybe unlimited?
+        // Logic says: "jika batas download sudah mencapai batas".
+        // If download_limit is null, assume unlimited.
+        if ($this->download_limit && $this->download_count >= $this->download_limit) {
+            return true;
+        }
+        return false;
     }
 
     /**

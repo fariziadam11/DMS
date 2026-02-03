@@ -127,12 +127,10 @@
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox"
                                                                     name="permissions[]" value="read"
-                                                                    id="perm_read_{{ $req->id }}" checked
-                                                                    onclick="return false;">
+                                                                    id="perm_read_{{ $req->id }}" checked>
                                                                 <label class="form-check-label"
                                                                     for="perm_read_{{ $req->id }}">
-                                                                    View (Melihat Data) <span
-                                                                        class="text-muted text-xs ms-1">*Wajib</span>
+                                                                    View (Melihat Detail Data)
                                                                 </label>
                                                             </div>
                                                             <div class="form-check">

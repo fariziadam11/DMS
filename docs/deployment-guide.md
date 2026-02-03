@@ -122,7 +122,8 @@ Sesuaikan baris berikut:
 APP_NAME="DAPEN DMS"
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://domain-anda.com
+APP_URL=http://your-server-ip
+# Contoh: APP_URL=http://103.11.22.33
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -138,16 +139,25 @@ FILESYSTEM_DISK=public
 ### Generate Key & Migrate
 
 ```bash
+# Import Database dari SQL Dump
+# (Gunakan ini jika Anda sudah punya file backup full database, misal: dump-dapennew-202601292146.sql)
+# Sesuaikan nama file .sql dengan file yang Anda miliki
+sudo mysql -u dapen_user -p dapen_dms < database/migrations/dump-dapennew-202601292146.sql
+
+# JIKA Import SQL sukses, Anda TIDAK PERLU jalankan migrate & seed di bawah ini.
+# Lewati langkah migrate & seed jika sudah import SQL.
+
+# --- OPSI ALTERNATIF (Fresh Install) ---
 # Generate App Key
 php artisan key:generate
 
-# Migrasi Database
-php artisan migrate --force
+# Migrasi Database (Hanya jika TIDAK pakai dump SQL)
+# php artisan migrate --force
 
-# Seed Data Awal & Menu Dashboard
-php artisan db:seed --class=InitialDataSeeder
-php artisan db:seed --class=MenuSeeder
-php artisan db:seed --class=DashboardMenusSeeder
+# Seed Data Awal (Hanya jika TIDAK pakai dump SQL)
+# php artisan db:seed --class=InitialDataSeeder
+# php artisan db:seed --class=MenuSeeder
+# php artisan db:seed --class=DashboardMenusSeeder
 ```
 
 ### Storage Link
@@ -173,7 +183,8 @@ isi dengan konfigurasi berikut:
 ```nginx
 server {
     listen 80;
-    server_name domain-anda.com www.domain-anda.com;
+    server_name your-server-ip;
+    # Atau gunakan server_name _; jika hanya ada satu website di server ini
 
     # Root mengarah ke folder public Laravel
     root /var/www/dapennew/public;
