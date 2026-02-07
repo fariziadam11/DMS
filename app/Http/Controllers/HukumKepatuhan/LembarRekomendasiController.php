@@ -11,6 +11,7 @@ class LembarRekomendasiController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.lembar-rekomendasi';
     protected $routePrefix = 'hukum-kepatuhan.lembar-rekomendasi';
     protected $moduleName = 'Lembar Rekomendasi';
+    protected $storagePath = 'documents/hukum-kepatuhan/lembar-rekomendasi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

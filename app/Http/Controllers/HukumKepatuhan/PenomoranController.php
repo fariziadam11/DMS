@@ -11,6 +11,7 @@ class PenomoranController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.penomoran';
     protected $routePrefix = 'hukum-kepatuhan.penomoran';
     protected $moduleName = 'Penomoran';
+    protected $storagePath = 'documents/hukum-kepatuhan/penomoran';
 
     protected function validateRequest(Request $request, $id = null): array
     {

@@ -11,6 +11,7 @@ class PajakController extends BaseDocumentController
     protected $viewPath = 'keuangan.pajak';
     protected $routePrefix = 'keuangan.pajak';
     protected $moduleName = 'Pajak';
+    protected $storagePath = 'documents/keuangan/pajak';
 
     protected function validateRequest(Request $request, $id = null): array
     {

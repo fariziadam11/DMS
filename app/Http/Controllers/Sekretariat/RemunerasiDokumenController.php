@@ -11,6 +11,7 @@ class RemunerasiDokumenController extends BaseDocumentController
     protected $viewPath = 'sekretariat.remunerasi-dokumen';
     protected $routePrefix = 'sekretariat.remunerasi-dokumen';
     protected $moduleName = 'Remunerasi Dokumen';
+    protected $storagePath = 'documents/sekretariat/remunerasi-dokumen';
 
     protected function validateRequest(Request $request, $id = null): array
     {

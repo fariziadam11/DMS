@@ -11,6 +11,7 @@ class PelaporanPrbcController extends BaseDocumentController
     protected $viewPath = 'logistik.pelaporan-prbc';
     protected $routePrefix = 'logistik.pelaporan-prbc';
     protected $moduleName = 'Pelaporan PRBC';
+    protected $storagePath = 'documents/logistik/pelaporan-prbc';
 
     protected function validateRequest(Request $request, $id = null): array
     {

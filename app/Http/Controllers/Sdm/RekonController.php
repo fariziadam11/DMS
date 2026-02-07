@@ -11,6 +11,7 @@ class RekonController extends BaseDocumentController
     protected $viewPath = 'sdm.rekon';
     protected $routePrefix = 'sdm.rekon';
     protected $moduleName = 'Rekon';
+    protected $storagePath = 'documents/sdm/rekon';
 
     protected function validateRequest(Request $request, $id = null): array
     {

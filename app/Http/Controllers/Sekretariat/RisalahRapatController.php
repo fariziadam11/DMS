@@ -11,6 +11,7 @@ class RisalahRapatController extends BaseDocumentController
     protected $viewPath = 'sekretariat.risalah-rapat';
     protected $routePrefix = 'sekretariat.risalah-rapat';
     protected $moduleName = 'Risalah Rapat';
+    protected $storagePath = 'documents/sekretariat/risalah-rapat';
 
     protected function validateRequest(Request $request, $id = null): array
     {

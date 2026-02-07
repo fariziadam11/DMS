@@ -11,6 +11,7 @@ class RegulasiInternalController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.regulasi-internal';
     protected $routePrefix = 'hukum-kepatuhan.regulasi-internal';
     protected $moduleName = 'Regulasi Internal';
+    protected $storagePath = 'documents/hukum-kepatuhan/regulasi-internal';
 
     protected function validateRequest(Request $request, $id = null): array
     {

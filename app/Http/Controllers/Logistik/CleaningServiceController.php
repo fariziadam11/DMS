@@ -11,6 +11,7 @@ class CleaningServiceController extends BaseDocumentController
     protected $viewPath = 'logistik.cleaning-service';
     protected $routePrefix = 'logistik.cleaning-service';
     protected $moduleName = 'Cleaning Service';
+    protected $storagePath = 'documents/logistik/cleaning-service';
 
     protected function validateRequest(Request $request, $id = null): array
     {

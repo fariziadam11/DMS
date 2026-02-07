@@ -11,6 +11,7 @@ class AturanKebijakanController extends BaseDocumentController
     protected $viewPath = 'anggaran.aturan-kebijakan';
     protected $routePrefix = 'anggaran.aturan-kebijakan';
     protected $moduleName = 'Aturan Kebijakan';
+    protected $storagePath = 'documents/anggaran/aturan-kebijakan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

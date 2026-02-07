@@ -11,6 +11,7 @@ class LaporanController extends BaseDocumentController
     protected $viewPath = 'sekretariat.laporan';
     protected $routePrefix = 'sekretariat.laporan';
     protected $moduleName = 'Laporan';
+    protected $storagePath = 'documents/sekretariat/laporan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

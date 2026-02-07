@@ -11,6 +11,7 @@ class PerencanaanTransaksiController extends BaseDocumentController
     protected $viewPath = 'investasi.perencanaan-transaksi';
     protected $routePrefix = 'investasi.perencanaan-transaksi';
     protected $moduleName = 'Perencanaan Transaksi';
+    protected $storagePath = 'documents/investasi/perencanaan-transaksi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

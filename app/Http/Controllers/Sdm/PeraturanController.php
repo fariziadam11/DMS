@@ -11,6 +11,7 @@ class PeraturanController extends BaseDocumentController
     protected $viewPath = 'sdm.peraturan';
     protected $routePrefix = 'sdm.peraturan';
     protected $moduleName = 'Peraturan';
+    protected $storagePath = 'documents/sdm/peraturan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

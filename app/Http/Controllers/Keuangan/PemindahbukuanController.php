@@ -11,6 +11,7 @@ class PemindahbukuanController extends BaseDocumentController
     protected $viewPath = 'keuangan.pemindahbukuan';
     protected $routePrefix = 'keuangan.pemindahbukuan';
     protected $moduleName = 'Pemindahbukuan';
+    protected $storagePath = 'documents/keuangan/pemindahbukuan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

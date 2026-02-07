@@ -11,6 +11,7 @@ class PutusanController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.putusan';
     protected $routePrefix = 'hukum-kepatuhan.putusan';
     protected $moduleName = 'Putusan';
+    protected $storagePath = 'documents/hukum-kepatuhan/putusan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

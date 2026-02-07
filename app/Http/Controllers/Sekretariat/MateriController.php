@@ -11,6 +11,7 @@ class MateriController extends BaseDocumentController
     protected $viewPath = 'sekretariat.materi';
     protected $routePrefix = 'sekretariat.materi';
     protected $moduleName = 'Materi';
+    protected $storagePath = 'documents/sekretariat/materi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

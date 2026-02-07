@@ -11,6 +11,7 @@ class VendorSatisfactionController extends BaseDocumentController
     protected $viewPath = 'logistik.vendor-satisfaction';
     protected $routePrefix = 'logistik.vendor-satisfaction';
     protected $moduleName = 'Vendor Satisfaction';
+    protected $storagePath = 'documents/logistik/vendor-satisfaction';
 
     protected function validateRequest(Request $request, $id = null): array
     {

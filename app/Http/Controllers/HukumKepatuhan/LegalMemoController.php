@@ -11,6 +11,7 @@ class LegalMemoController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.legal-memo';
     protected $routePrefix = 'hukum-kepatuhan.legal-memo';
     protected $moduleName = 'Legal Memo';
+    protected $storagePath = 'documents/hukum-kepatuhan/legal-memo';
 
     protected function validateRequest(Request $request, $id = null): array
     {

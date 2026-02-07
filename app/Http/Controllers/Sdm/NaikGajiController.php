@@ -11,6 +11,7 @@ class NaikGajiController extends BaseDocumentController
     protected $viewPath = 'sdm.naik-gaji';
     protected $routePrefix = 'sdm.naik-gaji';
     protected $moduleName = 'Naik Gaji';
+    protected $storagePath = 'documents/sdm/naik-gaji';
 
     protected function validateRequest(Request $request, $id = null): array
     {

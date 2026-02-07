@@ -11,6 +11,7 @@ class KajianHukumController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.kajian-hukum';
     protected $routePrefix = 'hukum-kepatuhan.kajian-hukum';
     protected $moduleName = 'Kajian Hukum';
+    protected $storagePath = 'documents/hukum-kepatuhan/kajian-hukum';
 
     protected function validateRequest(Request $request, $id = null): array
     {

@@ -11,6 +11,7 @@ class ExecutiveSummaryController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.executive-summary';
     protected $routePrefix = 'hukum-kepatuhan.executive-summary';
     protected $moduleName = 'Executive Summary';
+    protected $storagePath = 'documents/hukum-kepatuhan/executive-summary';
 
     protected function validateRequest(Request $request, $id = null): array
     {

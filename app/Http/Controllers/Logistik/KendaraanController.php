@@ -11,6 +11,7 @@ class KendaraanController extends BaseDocumentController
     protected $viewPath = 'logistik.kendaraan';
     protected $routePrefix = 'logistik.kendaraan';
     protected $moduleName = 'Kendaraan';
+    protected $storagePath = 'documents/logistik/kendaraan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

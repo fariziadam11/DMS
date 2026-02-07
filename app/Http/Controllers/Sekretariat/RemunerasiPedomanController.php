@@ -11,6 +11,7 @@ class RemunerasiPedomanController extends BaseDocumentController
     protected $viewPath = 'sekretariat.remunerasi-pedoman';
     protected $routePrefix = 'sekretariat.remunerasi-pedoman';
     protected $moduleName = 'Remunerasi Pedoman';
+    protected $storagePath = 'documents/sekretariat/remunerasi-pedoman';
 
     protected function validateRequest(Request $request, $id = null): array
     {

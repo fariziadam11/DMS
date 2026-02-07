@@ -11,6 +11,7 @@ class PropensaTransaksiController extends BaseDocumentController
     protected $viewPath = 'investasi.propensa-transaksi';
     protected $routePrefix = 'investasi.propensa-transaksi';
     protected $moduleName = 'Propensa Transaksi';
+    protected $storagePath = 'documents/investasi/propensa-transaksi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

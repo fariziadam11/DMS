@@ -11,6 +11,7 @@ class ProcurementController extends BaseDocumentController
     protected $viewPath = 'logistik.procurement';
     protected $routePrefix = 'logistik.procurement';
     protected $moduleName = 'Procurement';
+    protected $storagePath = 'documents/logistik/procurement';
 
     protected function validateRequest(Request $request, $id = null): array
     {

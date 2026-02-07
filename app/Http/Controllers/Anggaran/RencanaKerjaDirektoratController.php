@@ -11,6 +11,7 @@ class RencanaKerjaDirektoratController extends BaseDocumentController
     protected $viewPath = 'anggaran.rencana-kerja-direktorat';
     protected $routePrefix = 'anggaran.rencana-kerja-direktorat';
     protected $moduleName = 'Rencana Kerja Direktorat';
+    protected $storagePath = 'documents/anggaran/rencana-kerja-direktorat';
 
     protected function validateRequest(Request $request, $id = null): array
     {

@@ -11,6 +11,7 @@ class KeamananController extends BaseDocumentController
     protected $viewPath = 'logistik.keamanan';
     protected $routePrefix = 'logistik.keamanan';
     protected $moduleName = 'Keamanan';
+    protected $storagePath = 'documents/logistik/keamanan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

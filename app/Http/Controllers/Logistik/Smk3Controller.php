@@ -11,6 +11,7 @@ class Smk3Controller extends BaseDocumentController
     protected $viewPath = 'logistik.smk3';
     protected $routePrefix = 'logistik.smk3';
     protected $moduleName = 'SMK3';
+    protected $storagePath = 'documents/logistik/smk3';
 
     protected function validateRequest(Request $request, $id = null): array
     {

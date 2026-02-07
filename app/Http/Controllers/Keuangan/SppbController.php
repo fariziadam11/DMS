@@ -13,6 +13,7 @@ class SppbController extends BaseDocumentController
     protected $viewPath = 'keuangan.sppb';
     protected $routePrefix = 'keuangan.sppb';
     protected $moduleName = 'SPPB';
+    protected $storagePath = 'documents/keuangan/sppb';
     protected $withRelations = ['divisi', 'suratBayar', 'spb'];
 
     public function create()

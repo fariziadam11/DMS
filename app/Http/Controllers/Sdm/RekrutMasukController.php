@@ -11,6 +11,7 @@ class RekrutMasukController extends BaseDocumentController
     protected $viewPath = 'sdm.rekrut-masuk';
     protected $routePrefix = 'sdm.rekrut-masuk';
     protected $moduleName = 'Rekrut Masuk';
+    protected $storagePath = 'documents/sdm/rekrut-masuk';
 
     protected function validateRequest(Request $request, $id = null): array
     {

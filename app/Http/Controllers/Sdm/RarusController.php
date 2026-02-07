@@ -11,6 +11,7 @@ class RarusController extends BaseDocumentController
     protected $viewPath = 'sdm.rarus';
     protected $routePrefix = 'sdm.rarus';
     protected $moduleName = 'Rarus';
+    protected $storagePath = 'documents/sdm/rarus';
 
     protected function validateRequest(Request $request, $id = null): array
     {

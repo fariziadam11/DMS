@@ -11,6 +11,7 @@ class DokumenRraController extends BaseDocumentController
     protected $viewPath = 'anggaran.dokumen-rra';
     protected $routePrefix = 'anggaran.dokumen-rra';
     protected $moduleName = 'Dokumen RRA';
+    protected $storagePath = 'documents/anggaran/dokumen-rra';
 
     protected function validateRequest(Request $request, $id = null): array
     {

@@ -11,6 +11,7 @@ class LembarKeputusanController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.lembar-keputusan';
     protected $routePrefix = 'hukum-kepatuhan.lembar-keputusan';
     protected $moduleName = 'Lembar Keputusan';
+    protected $storagePath = 'documents/hukum-kepatuhan/lembar-keputusan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

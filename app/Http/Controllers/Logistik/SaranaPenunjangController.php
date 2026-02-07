@@ -11,6 +11,7 @@ class SaranaPenunjangController extends BaseDocumentController
     protected $viewPath = 'logistik.sarana-penunjang';
     protected $routePrefix = 'logistik.sarana-penunjang';
     protected $moduleName = 'Sarana Penunjang';
+    protected $storagePath = 'documents/logistik/sarana-penunjang';
 
     protected function validateRequest(Request $request, $id = null): array
     {

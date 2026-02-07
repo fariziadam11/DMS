@@ -11,6 +11,7 @@ class PolisAsuransiController extends BaseDocumentController
     protected $viewPath = 'logistik.polis-asuransi';
     protected $routePrefix = 'logistik.polis-asuransi';
     protected $moduleName = 'Polis Asuransi';
+    protected $storagePath = 'documents/logistik/polis-asuransi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

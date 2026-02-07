@@ -11,6 +11,7 @@ class CapegPegrusController extends BaseDocumentController
     protected $viewPath = 'sdm.capeg-pegrus';
     protected $routePrefix = 'sdm.capeg-pegrus';
     protected $moduleName = 'Capeg Pegrus';
+    protected $storagePath = 'documents/sdm/capeg-pegrus';
 
     protected function validateRequest(Request $request, $id = null): array
     {

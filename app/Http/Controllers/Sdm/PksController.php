@@ -11,6 +11,7 @@ class PksController extends BaseDocumentController
     protected $viewPath = 'sdm.pks';
     protected $routePrefix = 'sdm.pks';
     protected $moduleName = 'Pks';
+    protected $storagePath = 'documents/sdm/pks';
 
     protected function validateRequest(Request $request, $id = null): array
     {

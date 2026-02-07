@@ -11,6 +11,7 @@ class AspurjabController extends BaseDocumentController
     protected $viewPath = 'sdm.aspurjab';
     protected $routePrefix = 'sdm.aspurjab';
     protected $moduleName = 'Aspurjab';
+    protected $storagePath = 'documents/sdm/aspurjab';
 
     protected function validateRequest(Request $request, $id = null): array
     {

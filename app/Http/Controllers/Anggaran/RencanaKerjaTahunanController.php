@@ -11,6 +11,7 @@ class RencanaKerjaTahunanController extends BaseDocumentController
     protected $viewPath = 'anggaran.rencana-kerja-tahunan';
     protected $routePrefix = 'anggaran.rencana-kerja-tahunan';
     protected $moduleName = 'Rencana Kerja Tahunan';
+    protected $storagePath = 'documents/anggaran/rencana-kerja-tahunan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

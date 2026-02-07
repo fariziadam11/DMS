@@ -11,6 +11,7 @@ class CashflowController extends BaseDocumentController
     protected $viewPath = 'keuangan.cashflow';
     protected $routePrefix = 'keuangan.cashflow';
     protected $moduleName = 'Cashflow';
+    protected $storagePath = 'documents/keuangan/cashflow';
 
     protected function validateRequest(Request $request, $id = null): array
     {

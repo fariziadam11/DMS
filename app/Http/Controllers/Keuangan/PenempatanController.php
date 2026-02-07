@@ -11,6 +11,7 @@ class PenempatanController extends BaseDocumentController
     protected $viewPath = 'keuangan.penempatan';
     protected $routePrefix = 'keuangan.penempatan';
     protected $moduleName = 'Penempatan';
+    protected $storagePath = 'documents/keuangan/penempatan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

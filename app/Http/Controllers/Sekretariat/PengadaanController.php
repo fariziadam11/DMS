@@ -11,6 +11,7 @@ class PengadaanController extends BaseDocumentController
     protected $viewPath = 'sekretariat.pengadaan';
     protected $routePrefix = 'sekretariat.pengadaan';
     protected $moduleName = 'Pengadaan';
+    protected $storagePath = 'documents/sekretariat/pengadaan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

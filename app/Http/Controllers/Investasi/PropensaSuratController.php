@@ -11,6 +11,7 @@ class PropensaSuratController extends BaseDocumentController
     protected $viewPath = 'investasi.propensa-surat';
     protected $routePrefix = 'investasi.propensa-surat';
     protected $moduleName = 'Propensa Surat';
+    protected $storagePath = 'documents/investasi/propensa-surat';
 
     protected function validateRequest(Request $request, $id = null): array
     {

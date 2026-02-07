@@ -11,6 +11,7 @@ class PromosiMutasiController extends BaseDocumentController
     protected $viewPath = 'sdm.promosi-mutasi';
     protected $routePrefix = 'sdm.promosi-mutasi';
     protected $moduleName = 'Promosi Mutasi';
+    protected $storagePath = 'documents/sdm/promosi-mutasi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

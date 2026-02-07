@@ -11,6 +11,7 @@ class SuratController extends BaseDocumentController
     protected $viewPath = 'investasi.surat';
     protected $routePrefix = 'investasi.surat';
     protected $moduleName = 'Investasi - Surat';
+    protected $storagePath = 'documents/investasi/surat';
 
     protected function validateRequest(Request $request, $id = null): array
     {

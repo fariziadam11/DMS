@@ -11,6 +11,7 @@ class IkutOrganisasiController extends BaseDocumentController
     protected $viewPath = 'sdm.ikut-organisasi';
     protected $routePrefix = 'sdm.ikut-organisasi';
     protected $moduleName = 'Ikut Organisasi';
+    protected $storagePath = 'documents/sdm/ikut-organisasi';
 
     protected function validateRequest(Request $request, $id = null): array
     {

@@ -11,6 +11,7 @@ class UserSatisfactionController extends BaseDocumentController
     protected $viewPath = 'logistik.user-satisfaction';
     protected $routePrefix = 'logistik.user-satisfaction';
     protected $moduleName = 'User Satisfaction';
+    protected $storagePath = 'documents/logistik/user-satisfaction';
 
     protected function validateRequest(Request $request, $id = null): array
     {

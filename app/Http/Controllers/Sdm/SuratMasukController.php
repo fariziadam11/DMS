@@ -11,6 +11,7 @@ class SuratMasukController extends BaseDocumentController
     protected $viewPath = 'sdm.surat-masuk';
     protected $routePrefix = 'sdm.surat-masuk';
     protected $moduleName = 'Surat Masuk';
+    protected $storagePath = 'documents/sdm/surat-masuk';
 
     protected function validateRequest(Request $request, $id = null): array
     {

@@ -11,6 +11,7 @@ class JaminanController extends BaseDocumentController
     protected $viewPath = 'logistik.jaminan';
     protected $routePrefix = 'logistik.jaminan';
     protected $moduleName = 'Jaminan';
+    protected $storagePath = 'documents/logistik/jaminan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

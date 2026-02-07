@@ -11,6 +11,7 @@ class PenghargaanController extends BaseDocumentController
     protected $viewPath = 'sdm.penghargaan';
     protected $routePrefix = 'sdm.penghargaan';
     protected $moduleName = 'Penghargaan';
+    protected $storagePath = 'documents/sdm/penghargaan';
 
     protected function validateRequest(Request $request, $id = null): array
     {

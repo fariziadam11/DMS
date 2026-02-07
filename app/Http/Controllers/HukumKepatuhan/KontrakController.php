@@ -11,6 +11,7 @@ class KontrakController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.kontrak';
     protected $routePrefix = 'hukum-kepatuhan.kontrak';
     protected $moduleName = 'Kontrak';
+    protected $storagePath = 'documents/hukum-kepatuhan/kontrak';
 
     protected function validateRequest(Request $request, $id = null): array
     {

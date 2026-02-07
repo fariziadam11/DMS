@@ -11,6 +11,7 @@ class LaporanPrbcController extends BaseDocumentController
     protected $viewPath = 'anggaran.laporan-prbc';
     protected $routePrefix = 'anggaran.laporan-prbc';
     protected $moduleName = 'Laporan PRBC';
+    protected $storagePath = 'documents/anggaran/laporan-prbc';
 
     protected function validateRequest(Request $request, $id = null): array
     {

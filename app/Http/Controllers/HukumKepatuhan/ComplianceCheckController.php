@@ -11,6 +11,7 @@ class ComplianceCheckController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.compliance-check';
     protected $routePrefix = 'hukum-kepatuhan.compliance-check';
     protected $moduleName = 'Compliance Check';
+    protected $storagePath = 'documents/hukum-kepatuhan/compliance-check';
 
     protected function validateRequest(Request $request, $id = null): array
     {

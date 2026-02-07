@@ -12,6 +12,7 @@ class SpbController extends BaseDocumentController
     protected $viewPath = 'keuangan.spb';
     protected $routePrefix = 'keuangan.spb';
     protected $moduleName = 'SPB';
+    protected $storagePath = 'documents/keuangan/spb';
 
     public function create()
     {

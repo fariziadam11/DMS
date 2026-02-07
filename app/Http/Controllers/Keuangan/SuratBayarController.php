@@ -11,6 +11,7 @@ class SuratBayarController extends BaseDocumentController
     protected $viewPath = 'keuangan.surat-bayar';
     protected $routePrefix = 'keuangan.surat-bayar';
     protected $moduleName = 'Surat Bayar';
+    protected $storagePath = 'documents/keuangan/surat-bayar';
 
     protected function validateRequest(Request $request, $id = null): array
     {

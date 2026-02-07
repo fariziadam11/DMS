@@ -11,6 +11,7 @@ class RegulasiExternalController extends BaseDocumentController
     protected $viewPath = 'hukum-kepatuhan.regulasi-external';
     protected $routePrefix = 'hukum-kepatuhan.regulasi-external';
     protected $moduleName = 'Regulasi External';
+    protected $storagePath = 'documents/hukum-kepatuhan/regulasi-external';
 
     protected function validateRequest(Request $request, $id = null): array
     {

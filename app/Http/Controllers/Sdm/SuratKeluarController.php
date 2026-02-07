@@ -11,6 +11,7 @@ class SuratKeluarController extends BaseDocumentController
     protected $viewPath = 'sdm.surat-keluar';
     protected $routePrefix = 'sdm.surat-keluar';
     protected $moduleName = 'Surat Keluar';
+    protected $storagePath = 'documents/sdm/surat-keluar';
 
     protected function validateRequest(Request $request, $id = null): array
     {
