@@ -256,6 +256,11 @@ trait HasDocumentFeatures
             foreach ($searchableFields as $field) {
                 $q->orWhere($field, 'like', '%' . $search . '%');
             }
+
+            // Also search by tag name
+            $q->orWhereHas('tags', function ($tagQuery) use ($search) {
+                $tagQuery->where('name', 'like', '%' . $search . '%');
+            });
         });
     }
 
@@ -291,5 +296,79 @@ trait HasDocumentFeatures
             'created_at' => $this->created_at,
             'file_url' => $this->file_url,
         ];
+    }
+
+    /**
+     * Get tags for this document (polymorphic many-to-many)
+     */
+    public function tags()
+    {
+        return $this->morphToMany(
+            \App\Models\Tag::class,
+            'document',
+            'document_tags',
+            'document_id',
+            'tag_id',
+            'id',
+            'id'
+        )->withPivot('tagged_by', 'created_at');
+    }
+
+    /**
+     * Attach tag to document
+     */
+    public function attachTag($tagId)
+    {
+        if (!$this->tags()->where('tag_id', $tagId)->exists()) {
+            $this->tags()->attach($tagId, [
+                'tagged_by' => auth()->id(),
+                'created_at' => now(),
+                'document_type' => $this->getTable()
+            ]);
+        }
+    }
+
+    /**
+     * Detach tag from document
+     */
+    public function detachTag($tagId)
+    {
+        $this->tags()->detach($tagId);
+    }
+
+    /**
+     * Sync tags for document
+     */
+    public function syncTags(array $tagIds)
+    {
+        $syncData = [];
+        foreach ($tagIds as $tagId) {
+            $syncData[$tagId] = [
+                'tagged_by' => auth()->id(),
+                'created_at' => now(),
+                'document_type' => $this->getTable()
+            ];
+        }
+        $this->tags()->sync($syncData);
+    }
+
+    /**
+     * Scope: Filter by tag ID
+     */
+    public function scopeByTag($query, $tagId)
+    {
+        return $query->whereHas('tags', function($q) use ($tagId) {
+            $q->where('tags.id', $tagId);
+        });
+    }
+
+    /**
+     * Scope: Filter by tag slug
+     */
+    public function scopeByTagSlug($query, $tagSlug)
+    {
+        return $query->whereHas('tags', function($q) use ($tagSlug) {
+            $q->where('tags.slug', $tagSlug);
+        });
     }
 }

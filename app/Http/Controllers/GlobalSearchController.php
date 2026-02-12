@@ -106,6 +106,7 @@ class GlobalSearchController extends Controller
         $divisiFilter = $request->get('divisi');
         $classificationFilter = $request->get('classification');
         $moduleFilter = $request->get('module');
+        $tagFilter = $request->get('tag'); // NEW: Tag filter
 
         $results = [];
         $user = auth()->user();
@@ -115,11 +116,16 @@ class GlobalSearchController extends Controller
             ? \App\Models\MasterDivisi::pluck('id')->toArray()
             : $user->getAccessibleDivisions()->pluck('id')->toArray();
 
-        if (strlen($query) >= 2) {
+        if (strlen($query) >= 2 || $tagFilter) { // Allow search by tag only
             foreach ($this->searchableModels as $tableName => $modelClass) {
                 if (!class_exists($modelClass)) continue;
 
                 $modelQuery = $modelClass::query();
+
+                // Apply tag filter (NEW)
+                if ($tagFilter) {
+                    $modelQuery->byTagSlug($tagFilter);
+                }
 
                 // Check if the module/table name matches the query
                 // e.g. "investasi" matches "investasi_surat"
@@ -155,7 +161,7 @@ class GlobalSearchController extends Controller
                 });
 
                 // Get results
-                $items = $modelQuery->with('divisi')
+                $items = $modelQuery->with(['divisi', 'tags']) // Include tags
                     ->orderBy('created_at', 'desc')
                     ->limit(10)
                     ->get();
@@ -193,6 +199,7 @@ class GlobalSearchController extends Controller
                         'has_access' => $hasAccess,
                         'is_secret' => $item->isSecret(),
                         'url' => $hasAccess ? $this->getViewUrl($tableName, $item->id) : null,
+                        'tags' => $item->tags, // NEW: Include tags in results
                     ];
                 }
             }
@@ -207,6 +214,9 @@ class GlobalSearchController extends Controller
             ? MasterDivisi::all()
             : $user->getAccessibleDivisions();
 
+        // Get all tags for filter dropdown (NEW)
+        $tags = \App\Models\Tag::orderBy('name')->get();
+
         if ($request->ajax()) {
             return response()->json([
                 'results' => $results,
@@ -220,6 +230,8 @@ class GlobalSearchController extends Controller
             'divisions' => $divisions,
             'selectedDivisi' => $divisiFilter,
             'selectedClassification' => $classificationFilter,
+            'tags' => $tags, // NEW
+            'selectedTag' => $tagFilter, // NEW
         ]);
     }
 
@@ -379,6 +391,43 @@ class GlobalSearchController extends Controller
             ['document' => $validated['document_type'] . ' #' . $validated['document_id']]
         );
 
+        // Send email notification to division admins/approvers
+        $this->notifyApprovers($accessRequest);
+
         return back()->with('success', 'Permintaan akses telah dikirim ke admin divisi.');
+    }
+
+    /**
+     * Notify division admins/approvers about new access request
+     */
+    protected function notifyApprovers($accessRequest)
+    {
+        // Get users who can approve this request
+        // 1. Super Admins
+        // 2. Users with division admin role for this division
+        // 3. Users with approval privilege for access.index menu
+
+        $approvers = \App\Models\User::query()
+            ->where('is_active', true)
+            ->where(function($query) use ($accessRequest) {
+                // Super Admins
+                $query->whereHas('roles', function($q) {
+                    $q->where('roles_name', 'Super Admin')
+                      ->orWhere('access_scope', 'global');
+                })
+                // Division admins for this specific division
+                ->orWhere(function($q) use ($accessRequest) {
+                    $q->whereHas('roles', function($roleQuery) use ($accessRequest) {
+                        $roleQuery->where('id_divisi', $accessRequest->id_divisi)
+                                  ->where('access_scope', 'division');
+                    });
+                });
+            })
+            ->get();
+
+        // Send notification to each approver
+        foreach ($approvers as $approver) {
+            $approver->notify(new \App\Notifications\FileAccessRequestedNotification($accessRequest));
+        }
     }
 }

@@ -31,26 +31,28 @@
                 <tr>
                     <th>Sifat Dokumen</th>
                     <td><span
-                            class="badge bg-{{ ($record->sifat_dokumen ) == 'Rahasia' ? 'danger' : (($record->sifat_dokumen ) == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
+                            class="badge bg-{{ $record->sifat_dokumen == 'Rahasia' ? 'danger' : ($record->sifat_dokumen == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
-                        <tr>
-                            <th>Versi</th>
-                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
-                        </tr>
+                <tr>
+                    <th>Versi</th>
+                    <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span>
+                    </td>
+                </tr>
                 @if ($permissions['download'])
                     <tr>
                         <th>File</th>
                         <td>
                             @if ($record->file_name)
                                 <div class="btn-group btn-group-sm">
-                                    @if($permissions['preview'] ?? false)
-                                            <button
-                                        onclick="previewFile('{{ route('keuangan.cashflow.preview', $record->id) }}', '{{ $record->file_name }}')"
-                                        class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i> Preview</button>
-                                            @endif
-                                    <a href="{{ route('keuangan.cashflow.download', $record->id) }}" class="btn btn-success"
-                                        title="Download"><i class="bi bi-download"></i> Download</a>
+                                    @if ($permissions['preview'] ?? false)
+                                        <button
+                                            onclick="previewFile('{{ route('keuangan.cashflow.preview', $record->id) }}', '{{ $record->file_name }}')"
+                                            class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i>
+                                            Preview</button>
+                                    @endif
+                                    <a href="{{ route('keuangan.cashflow.download', $record->id) }}"
+                                        class="btn btn-success" title="Download"><i class="bi bi-download"></i> Download</a>
                                 </div>
                             @else
                                 -
@@ -73,17 +75,16 @@
                     <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
                 @elseif (request('source') == 'search')
-                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
-
+                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                        Kembali ke Pencarian</a>
                 @else
                     <a href="{{ route('keuangan.cashflow.index') }}" class="btn btn-outline-secondary"><i
-                        class="bi bi-arrow-left"></i> Kembali</a>
+                            class="bi bi-arrow-left"></i> Kembali</a>
                 @endif
                 <div>
                     @if ($permissions['edit'])
                         <a href="{{ route('keuangan.cashflow.edit', $record->id) }}" class="btn btn-warning"><i
-                            class="bi bi-pencil"></i> Edit</a>
+                                class="bi bi-pencil"></i> Edit</a>
                     @endif
                     <form action="{{ route('keuangan.cashflow.destroy', $record->id) }}" method="POST" class="d-inline">
                         @csrf @method('DELETE')<button class="btn btn-danger"><i class="bi bi-trash"></i> Hapus</button>
@@ -92,4 +93,13 @@
             </div>
         </div>
     </div>
+
+    {{-- Document Tags Section --}}
+    @include('components.document-tags', [
+        'record' => $record,
+        'allTags' => $allTags,
+        'module' => 'keuangan',
+        'submodule' => 'cashflow',
+        'permissions' => $permissions,
+    ])
 @endsection

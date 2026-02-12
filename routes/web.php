@@ -70,12 +70,38 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [\App\Http\Controllers\MyRequestController::class, 'index'])->name('index');
     });
 
+    // Document Tagging Routes (Generic for all modules)
+    Route::post('/{module}/{submodule}/{id}/tags/attach', function($module, $submodule, $id) {
+        $controllerClass = "\\App\\Http\\Controllers\\" . ucfirst(Str::camel($module)) . "\\" . ucfirst(Str::camel($submodule)) . "Controller";
+        if (class_exists($controllerClass)) {
+            return app($controllerClass)->attachTag(request(), $id);
+        }
+        abort(404);
+    })->name('documents.tags.attach');
+
+    Route::delete('/{module}/{submodule}/{id}/tags/{tagId}', function($module, $submodule, $id, $tagId) {
+        $controllerClass = "\\App\\Http\\Controllers\\" . ucfirst(Str::camel($module)) . "\\" . ucfirst(Str::camel($submodule)) . "Controller";
+        if (class_exists($controllerClass)) {
+            return app($controllerClass)->detachTag($id, $tagId);
+        }
+        abort(404);
+    })->name('documents.tags.detach');
+
     // Master Data
     Route::prefix('master')->name('master.')->group(function () {
         Route::resource('divisi', DivisiController::class);
         Route::resource('department', DepartmentController::class);
         Route::resource('jabatan', JabatanController::class);
         Route::get('jabatan/departments/{divisi}', [JabatanController::class, 'getDepartmentsByDivision'])->name('jabatan.departments');
+
+        // Tag Management
+        Route::prefix('tags')->name('tags.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\TagController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\TagController::class, 'store'])->name('store');
+            Route::put('/{id}', [\App\Http\Controllers\TagController::class, 'update'])->name('update');
+            Route::delete('/{id}', [\App\Http\Controllers\TagController::class, 'destroy'])->name('destroy');
+            Route::get('/{slug}', [\App\Http\Controllers\TagController::class, 'show'])->name('show');
+        });
     });
 
     // ======================

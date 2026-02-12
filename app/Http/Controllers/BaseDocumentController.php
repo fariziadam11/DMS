@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
 use App\Models\DocumentVersion;
+use App\Services\FtpStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -223,6 +224,7 @@ abstract class BaseDocumentController extends Controller
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'permissions' => $permissions,
+            'allTags' => \App\Models\Tag::orderBy('name')->get(), // For tag selection
         ]);
     }
 
@@ -295,6 +297,13 @@ abstract class BaseDocumentController extends Controller
         $this->authorizeAccess($record, 'delete');
 
         $oldValues = $record->toArray();
+
+        // Delete file from both local and FTP storage
+        if ($record->file) {
+            $ftpService = new FtpStorageService();
+            $ftpService->deleteFile($this->storagePath . '/' . $record->file);
+        }
+
         $record->delete();
 
         // Audit log
@@ -495,7 +504,11 @@ abstract class BaseDocumentController extends Controller
     protected function handleFileUpload($file)
     {
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $file->storeAs($this->storagePath, $filename);
+
+        // Use FTP service for dual storage (local + FTP)
+        $ftpService = new FtpStorageService();
+        $ftpService->storeFile($file, $this->storagePath, $filename);
+
         return $filename;
     }
 
@@ -505,7 +518,10 @@ abstract class BaseDocumentController extends Controller
     protected function createDocumentVersion($record, $file, $notes = null)
     {
         $versionFilename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('versions', $versionFilename);
+
+        // Use FTP service for dual storage (local + FTP)
+        $ftpService = new FtpStorageService();
+        $ftpService->storeFile($file, 'versions', $versionFilename);
 
         DocumentVersion::createVersion(
             $record->getTable(),
@@ -842,5 +858,35 @@ abstract class BaseDocumentController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Attach tag to document
+     */
+    public function attachTag(Request $request, $id)
+    {
+        $record = $this->model::findOrFail($id);
+        $this->authorizeAccess($record, 'write');
+
+        $validated = $request->validate([
+            'tag_id' => 'required|exists:tags,id'
+        ]);
+
+        $record->attachTag($validated['tag_id']);
+
+        return back()->with('success', 'Tag berhasil ditambahkan.');
+    }
+
+    /**
+     * Detach tag from document
+     */
+    public function detachTag($id, $tagId)
+    {
+        $record = $this->model::findOrFail($id);
+        $this->authorizeAccess($record, 'write');
+
+        $record->detachTag($tagId);
+
+        return back()->with('success', 'Tag berhasil dihapus.');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\UsersProfile;
 use App\Models\MasterDivisi;
 use App\Models\MasterDepartment;
+use App\Services\FtpStorageService;
 use Illuminate\Support\Facades\Storage;
 
 class UserProfileController extends Controller
@@ -76,23 +77,34 @@ class UserProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Delete old photo
+            // Delete old photo from both local and FTP
             if ($profile->photo) {
-                Storage::delete('public/profiles/' . $profile->photo);
+                $ftpService = new FtpStorageService();
+                $ftpService->deleteFile('public/profiles/' . $profile->photo);
             }
 
             $filename = time() . '_photo_' . $user->id . '.' . $request->photo->extension();
-            $request->photo->storeAs('public/profiles', $filename);
+
+            // Use FTP service for dual storage (local + FTP)
+            $ftpService = new FtpStorageService();
+            $ftpService->storeFile($request->photo, 'public/profiles', $filename);
+
             $validated['photo'] = $filename;
         }
 
         if ($request->hasFile('signature_file')) {
-             if ($profile->signature_file) {
-                Storage::delete('public/signatures/' . $profile->signature_file);
+            // Delete old signature from both local and FTP
+            if ($profile->signature_file) {
+                $ftpService = new FtpStorageService();
+                $ftpService->deleteFile('public/signatures/' . $profile->signature_file);
             }
 
             $filename = time() . '_sign_' . $user->id . '.' . $request->signature_file->extension();
-            $request->signature_file->storeAs('public/signatures', $filename);
+
+            // Use FTP service for dual storage (local + FTP)
+            $ftpService = new FtpStorageService();
+            $ftpService->storeFile($request->signature_file, 'public/signatures', $filename);
+
             $validated['signature_file'] = $filename;
         }
 

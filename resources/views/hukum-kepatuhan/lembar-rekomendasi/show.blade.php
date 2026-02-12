@@ -30,21 +30,23 @@
                             class="badge bg-{{ $record->sifat_dokumen == 'Rahasia' ? 'danger' : ($record->sifat_dokumen == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
-                        <tr>
-                            <th>Versi</th>
-                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
-                        </tr>
+                <tr>
+                    <th>Versi</th>
+                    <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span>
+                    </td>
+                </tr>
                 @if ($permissions['download'])
                     <tr>
                         <th>File</th>
                         <td>
                             @if ($record->file_name)
                                 <div class="btn-group btn-group-sm">
-                                    @if($permissions['preview'] ?? false)
-                                            <button
-                                        onclick="previewFile('{{ route('hukum-kepatuhan.lembar-rekomendasi.preview', $record->id) }}', '{{ $record->file_name }}')"
-                                        class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i> Preview</button>
-                                            @endif
+                                    @if ($permissions['preview'] ?? false)
+                                        <button
+                                            onclick="previewFile('{{ route('hukum-kepatuhan.lembar-rekomendasi.preview', $record->id) }}', '{{ $record->file_name }}')"
+                                            class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i>
+                                            Preview</button>
+                                    @endif
                                     <a href="{{ route('hukum-kepatuhan.lembar-rekomendasi.download', $record->id) }}"
                                         class="btn btn-success" title="Download"><i class="bi bi-download"></i> Download</a>
                                 </div>
@@ -88,4 +90,13 @@
             </div>
         </div>
     </div>
+
+    {{-- Document Tags Section --}}
+    @include('components.document-tags', [
+        'record' => $record,
+        'allTags' => $allTags,
+        'module' => 'hukum-kepatuhan',
+        'submodule' => 'lembar-rekomendasi',
+        'permissions' => $permissions,
+    ])
 @endsection

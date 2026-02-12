@@ -39,24 +39,26 @@
                 <tr>
                     <th>Sifat Dokumen</th>
                     <td><span
-                            class="badge bg-{{ ($record->sifat_dokumen ) == 'Rahasia' ? 'danger' : (($record->sifat_dokumen ) == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
+                            class="badge bg-{{ $record->sifat_dokumen == 'Rahasia' ? 'danger' : ($record->sifat_dokumen == 'Internal' ? 'warning' : 'success') }}">{{ $record->sifat_dokumen ?? 'Umum' }}</span>
                     </td>
                 </tr>
-                        <tr>
-                            <th>Versi</th>
-                            <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span></td>
-                        </tr>
+                <tr>
+                    <th>Versi</th>
+                    <td><span class="badge bg-light text-dark border border-secondary">V{{ $item->version ?? '1' }}</span>
+                    </td>
+                </tr>
                 @if ($permissions['download'])
                     <tr>
                         <th>File</th>
                         <td>
                             @if ($record->file_name)
                                 <div class="btn-group btn-group-sm">
-                                    @if($permissions['preview'] ?? false)
-                                            <button
-                                        onclick="previewFile('{{ route('keuangan.sppb.preview', $record->id) }}', '{{ $record->file_name }}')"
-                                        class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i> Preview</button>
-                                            @endif
+                                    @if ($permissions['preview'] ?? false)
+                                        <button
+                                            onclick="previewFile('{{ route('keuangan.sppb.preview', $record->id) }}', '{{ $record->file_name }}')"
+                                            class="btn btn-primary" title="Preview"><i class="bi bi-eye"></i>
+                                            Preview</button>
+                                    @endif
                                     <a href="{{ route('keuangan.sppb.download', $record->id) }}" class="btn btn-success"
                                         title="Download"><i class="bi bi-download"></i> Download</a>
                                 </div>
@@ -81,9 +83,8 @@
                     <a href="{{ route('my-documents.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali ke Dokumen Saya</a>
                 @elseif (request('source') == 'search')
-                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i
-                            class="bi bi-arrow-left"></i> Kembali ke Pencarian</a>
-
+                    <a href="{{ route('search') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>
+                        Kembali ke Pencarian</a>
                 @else
                     <a href="{{ route('keuangan.sppb.index') }}" class="btn btn-outline-secondary"><i
                             class="bi bi-arrow-left"></i> Kembali</a>
@@ -99,4 +100,13 @@
             </div>
         </div>
     </div>
+
+    {{-- Document Tags Section --}}
+    @include('components.document-tags', [
+        'record' => $record,
+        'allTags' => $allTags,
+        'module' => 'keuangan',
+        'submodule' => 'sppb',
+        'permissions' => $permissions,
+    ])
 @endsection

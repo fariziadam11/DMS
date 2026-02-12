@@ -81,6 +81,9 @@ class AccessController extends Controller
             ['status' => 'approved', 'permissions' => $permissions]
         );
 
+        // Send email notification to requester
+        $accessRequest->requester->notify(new \App\Notifications\FileAccessApprovedNotification($accessRequest));
+
         return back()->with('success', 'Permintaan akses disetujui.');
     }
 
@@ -107,6 +110,9 @@ class AccessController extends Controller
             null,
             ['status' => 'rejected', 'reason' => $validated['reason']]
         );
+
+        // Send email notification to requester
+        $accessRequest->requester->notify(new \App\Notifications\FileAccessRejectedNotification($accessRequest));
 
         return back()->with('success', 'Permintaan akses ditolak.');
     }

@@ -41,6 +41,17 @@
                         </option>
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tag</label>
+                    <select name="tag" class="form-select form-select-lg">
+                        <option value="">Semua Tag</option>
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->slug }}" {{ $selectedTag == $tag->slug ? 'selected' : '' }}>
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary btn-lg w-100">
                         <i class="bi bi-search me-1"></i> Cari
@@ -68,6 +79,7 @@
                                     <th>Divisi</th>
                                     <th>Tanggal</th>
                                     <th>Klasifikasi</th>
+                                    <th>Tags</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -102,6 +114,19 @@
                                             @else
                                                 <span class="badge badge-public"><i
                                                         class="bi bi-unlock me-1"></i>Umum</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if (isset($result['tags']))
+                                                @foreach ($result['tags'] as $tag)
+                                                    <a href="{{ route('search', ['tag' => $tag->slug]) }}"
+                                                        class="text-decoration-none">
+                                                        <span class="badge me-1"
+                                                            style="background-color: {{ $tag->color }}">
+                                                            {{ $tag->name }}
+                                                        </span>
+                                                    </a>
+                                                @endforeach
                                             @endif
                                         </td>
                                         <td>
