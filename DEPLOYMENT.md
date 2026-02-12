@@ -1,75 +1,72 @@
-# Deployment Guide - FTP Dual Storage
+# Deployment Guide - FTP Dual Storage Update
 
-## Files yang Berubah
+## Overview
 
-Berikut adalah file-file yang dimodifikasi untuk implementasi FTP dual storage:
+Panduan ini adalah **supplement** untuk [`docs/deployment-guide.md`](file:///c:/laragon/www/dapennew/docs/deployment-guide.md) yang fokus pada deployment **FTP Dual Storage** feature.
+
+Untuk deployment server dari awal, ikuti panduan utama di `docs/deployment-guide.md` terlebih dahulu.
+
+---
+
+## Files yang Berubah (FTP Implementation)
 
 ### 1. Configuration Files
 
-- `.env` - Tambah konfigurasi FTP
+- `.env` - Tambah konfigurasi FTP (8 baris baru)
 - `config/filesystems.php` - Tambah FTP disk configuration
 
 ### 2. New Service
 
-- `app/Services/FtpStorageService.php` - Service untuk handle dual storage (NEW)
+- `app/Services/FtpStorageService.php` - **NEW FILE** (257 lines)
 
 ### 3. Modified Controllers
 
-- `app/Http/Controllers/BaseDocumentController.php` - Integrasi FTP untuk dokumen
-- `app/Http/Controllers/UserProfileController.php` - Integrasi FTP untuk profil
+- `app/Http/Controllers/BaseDocumentController.php` - Integrasi FTP
+- `app/Http/Controllers/UserProfileController.php` - Integrasi FTP
 
-### 4. Test Files (Optional - tidak perlu di-deploy)
+### 4. Test Script (Optional)
 
-- `test_ftp_native.php` - Script untuk test FTP connection
+- `test_ftp_native.php` - Script test FTP connection
 
 ---
 
-## Langkah Deployment ke Server Production
+## Deployment ke Server Production
 
-### Step 1: Backup Server Production
+### Step 1: Pull Latest Changes
 
 ```bash
 # SSH ke server production
 ssh user@your-server.com
+cd /var/www/dapennew
 
-# Backup database
-mysqldump -u root -p dapennew > backup_dapennew_$(date +%Y%m%d).sql
-
-# Backup files
-tar -czf backup_files_$(date +%Y%m%d).tar.gz /path/to/dapennew
-```
-
-### Step 2: Push Changes ke Git Repository
-
-```bash
-# Di local development (Windows)
-git add .
-git commit -m "Implement FTP dual storage for file uploads"
-git push origin main
-```
-
-### Step 3: Pull Changes di Server Production
-
-```bash
-# SSH ke server production
-cd /path/to/dapennew
-
-# Pull latest changes
+# Pull changes dari git
 git pull origin main
-
-# Atau jika ada conflict, stash dulu
-git stash
-git pull origin main
-git stash pop
 ```
 
-### Step 4: Update Configuration di Server
+### Step 2: Install PHP FTP Extension
 
 ```bash
-# Edit .env di server production
+# Ubuntu/Debian
+sudo apt-get install php8.1-ftp -y
+
+# Verify installation
+php -m | grep ftp
+
+# Restart PHP-FPM
+sudo systemctl restart php8.1-fpm
+```
+
+### Step 3: Update Environment Configuration
+
+```bash
+# Edit .env
 nano .env
+```
 
-# Tambahkan konfigurasi FTP (di akhir file):
+Tambahkan di akhir file `.env`:
+
+```ini
+# FTP Configuration
 FTP_HOST=10.15.2.56
 FTP_USERNAME=Administrator
 FTP_PASSWORD=D@pentel@151
@@ -80,64 +77,27 @@ FTP_SSL=false
 FTP_TIMEOUT=30
 ```
 
-### Step 5: Enable PHP FTP Extension (Jika Belum)
+### Step 4: Clear Cache
 
 ```bash
-# Ubuntu/Debian
-sudo apt-get install php-ftp
-
-# CentOS/RHEL
-sudo yum install php-ftp
-
-# Atau edit php.ini
-sudo nano /etc/php/8.x/fpm/php.ini
-# Uncomment: extension=ftp
-
-# Restart PHP-FPM
-sudo systemctl restart php8.x-fpm
-
-# Restart web server
-sudo systemctl restart nginx
-# atau
-sudo systemctl restart apache2
-```
-
-### Step 6: Clear Cache
-
-```bash
-cd /path/to/dapennew
-
 # Clear all cache
-php artisan cache:clear
 php artisan config:clear
+php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
-# Optimize
+# Re-cache untuk production
 php artisan config:cache
 php artisan route:cache
+php artisan view:cache
 ```
 
-### Step 7: Set Permissions
+### Step 5: Test FTP Connection
 
 ```bash
-# Set proper permissions untuk storage
-sudo chown -R www-data:www-data storage
-sudo chmod -R 775 storage
+# Upload test script (jika belum ada)
+# Atau sudah ada dari git pull
 
-# Set permissions untuk bootstrap/cache
-sudo chown -R www-data:www-data bootstrap/cache
-sudo chmod -R 775 bootstrap/cache
-```
-
-### Step 8: Test FTP Connection di Server
-
-```bash
-# Upload test script ke server
-scp test_ftp_native.php user@server:/path/to/dapennew/
-
-# SSH ke server dan test
-cd /path/to/dapennew
 php test_ftp_native.php
 ```
 
@@ -160,110 +120,268 @@ php test_ftp_native.php
 4. Testing FTP login...
    ✓ FTP login successful!
 
+5. Testing file upload to FTP...
+   ✓ File uploaded successfully
+
 ... (all tests pass)
 
 === All Tests Completed Successfully! ===
 ```
 
-### Step 9: Monitor Logs
+### Step 6: Set Permissions (Jika Perlu)
 
 ```bash
-# Monitor Laravel logs untuk FTP activity
+# Pastikan storage writable
+sudo chown -R www-data:www-data /var/www/dapennew/storage
+sudo chmod -R 775 /var/www/dapennew/storage
+```
+
+### Step 7: Monitor Logs
+
+```bash
+# Monitor FTP activity
 tail -f storage/logs/laravel.log | grep FTP
-
-# Test upload dokumen dari browser
-# Cek log untuk konfirmasi upload FTP
 ```
 
-### Step 10: Verify FTP Server
+### Step 8: Test Upload via Browser
 
-Gunakan FTP client untuk verify:
+1. Login ke aplikasi DMS
+2. Upload dokumen baru
+3. Verify:
+    - File ada di `storage/app/documents/[module]/`
+    - File ada di FTP server `/documents/[module]/`
+    - Log menunjukkan "File uploaded to FTP successfully"
 
-- Host: `10.15.2.56`
-- User: `Administrator`
-- Password: `D@pentel@151`
+---
 
-Cek struktur folder:
+## Struktur Folder di FTP Server
 
 ```
-/
+/ (FTP Root)
 ├── documents/
-│   ├── sekretariat/
-│   ├── sdm/
 │   ├── akuntansi/
-│   └── ... (modul lainnya)
+│   │   ├── aturan-kebijakan/
+│   │   ├── jurnal-umum/
+│   │   └── laporan-bulanan/
+│   ├── anggaran/
+│   │   ├── aturan-kebijakan/
+│   │   ├── dokumen-rra/
+│   │   └── rencana-kerja-tahunan/
+│   ├── hukum-kepatuhan/
+│   ├── investasi/
+│   ├── keuangan/
+│   ├── logistik/
+│   ├── sdm/
+│   └── sekretariat/
 ├── versions/
+│   └── (all document versions)
 └── public/
     ├── profiles/
+    │   └── (user profile photos)
     └── signatures/
+        └── (user signatures)
 ```
-
----
-
-## Rollback Plan (Jika Ada Masalah)
-
-### Jika FTP Bermasalah
-
-FTP failure **TIDAK akan crash aplikasi**. File tetap tersimpan di local storage. Untuk disable FTP sementara:
-
-```bash
-# Edit .env
-nano .env
-
-# Hapus atau comment FTP_HOST
-# FTP_HOST=10.15.2.56
-
-# Clear config cache
-php artisan config:clear
-```
-
-### Jika Perlu Rollback Complete
-
-```bash
-# Restore dari backup
-git reset --hard HEAD~1
-php artisan config:clear
-php artisan cache:clear
-
-# Restore database jika perlu
-mysql -u root -p dapennew < backup_dapennew_YYYYMMDD.sql
-```
-
----
-
-## Checklist Deployment
-
-- [ ] Backup database production
-- [ ] Backup files production
-- [ ] Push changes ke git repository
-- [ ] Pull changes di server production
-- [ ] Update `.env` dengan FTP credentials
-- [ ] Enable PHP FTP extension
-- [ ] Clear all cache
-- [ ] Set proper permissions
-- [ ] Test FTP connection (`php test_ftp_native.php`)
-- [ ] Test upload dokumen via browser
-- [ ] Monitor logs untuk konfirmasi FTP upload
-- [ ] Verify files di FTP server
-- [ ] Remove `test_ftp_native.php` dari production (optional)
 
 ---
 
 ## Troubleshooting
 
-| Issue                         | Solution                                            |
-| ----------------------------- | --------------------------------------------------- |
-| `PHP FTP extension not found` | Install php-ftp: `sudo apt-get install php-ftp`     |
-| `FTP connection timeout`      | Cek firewall, pastikan port 21 terbuka              |
-| `Permission denied on FTP`    | Cek credentials dan permission folder di FTP server |
-| `Files not uploading to FTP`  | Cek `storage/logs/laravel.log` untuk error detail   |
-| `Config not updating`         | Run `php artisan config:clear`                      |
+### 1. PHP FTP Extension Not Found
+
+```bash
+# Install extension
+sudo apt-get install php8.1-ftp -y
+
+# Verify
+php -m | grep ftp
+
+# Restart PHP-FPM
+sudo systemctl restart php8.1-fpm
+```
+
+### 2. FTP Connection Timeout
+
+```bash
+# Check firewall
+sudo ufw status
+
+# Allow FTP port if needed
+sudo ufw allow 21/tcp
+
+# Test connection from server
+telnet 10.15.2.56 21
+```
+
+### 3. FTP Upload Failed (Permission Denied)
+
+- Cek permission folder di FTP server
+- Pastikan user `Administrator` punya write access
+- Cek log: `tail -f storage/logs/laravel.log | grep FTP`
+
+### 4. Files Not Uploading to FTP
+
+```bash
+# Check logs
+tail -f storage/logs/laravel.log | grep -i ftp
+
+# Common issues:
+# - FTP_HOST not set in .env
+# - PHP FTP extension not installed
+# - FTP server unreachable
+# - Wrong credentials
+```
+
+### 5. Config Not Updating
+
+```bash
+# Clear config cache
+php artisan config:clear
+
+# Verify FTP config loaded
+php artisan tinker
+>>> env('FTP_HOST')
+=> "10.15.2.56"
+```
 
 ---
 
-## Notes
+## Rollback Plan
 
-- **Zero Downtime**: Deployment ini tidak memerlukan downtime
-- **Backward Compatible**: File lama tetap bisa diakses
-- **Safe Deployment**: FTP failure tidak akan crash aplikasi
-- **No Database Changes**: Tidak ada migrasi database yang diperlukan
+### Disable FTP Temporarily
+
+Jika FTP bermasalah, aplikasi **tetap berjalan normal** (files tersimpan di local storage).
+
+Untuk disable FTP sementara:
+
+```bash
+# Edit .env
+nano .env
+
+# Comment atau hapus FTP_HOST
+# FTP_HOST=10.15.2.56
+
+# Clear cache
+php artisan config:clear
+```
+
+### Rollback Complete
+
+```bash
+# Rollback ke commit sebelumnya
+git log --oneline -5
+git reset --hard <commit-hash-sebelum-ftp>
+
+# Clear cache
+php artisan config:clear
+php artisan cache:clear
+
+# Restart services
+sudo systemctl restart php8.1-fpm nginx
+```
+
+---
+
+## Monitoring & Maintenance
+
+### Check FTP Upload Success Rate
+
+```bash
+# Count successful uploads
+grep "File uploaded to FTP successfully" storage/logs/laravel.log | wc -l
+
+# Count failed uploads
+grep "FTP upload failed" storage/logs/laravel.log | wc -l
+```
+
+### Verify Files on FTP Server
+
+Gunakan FTP client (FileZilla/WinSCP):
+
+- Host: `10.15.2.56`
+- User: `Administrator`
+- Password: `D@pentel@151`
+- Port: `21`
+
+### Cleanup Test Files
+
+```bash
+# Remove test script dari production (optional)
+rm test_ftp_native.php
+```
+
+---
+
+## Deployment Checklist
+
+- [ ] Pull latest changes (`git pull origin main`)
+- [ ] Install PHP FTP extension (`sudo apt-get install php8.1-ftp`)
+- [ ] Update `.env` dengan FTP credentials
+- [ ] Clear all cache (`php artisan config:clear`)
+- [ ] Test FTP connection (`php test_ftp_native.php`)
+- [ ] Set proper permissions untuk storage
+- [ ] Test upload via browser
+- [ ] Monitor logs untuk konfirmasi FTP upload
+- [ ] Verify files di FTP server
+- [ ] Remove test script (optional)
+
+---
+
+## Performance Notes
+
+- FTP upload bersifat **synchronous** (blocking)
+- Waktu upload tergantung ukuran file dan network speed
+- Untuk file besar (>10MB), pertimbangkan queue/background job di masa depan
+- FTP failure **tidak akan crash aplikasi** - file tetap tersimpan di local
+
+---
+
+## Security Notes
+
+- FTP credentials disimpan di `.env` (tidak di-commit ke git)
+- Pastikan `.env` permission: `chmod 600 .env`
+- Gunakan FTP_SSL=true jika FTP server support FTPS
+- Pertimbangkan SFTP untuk keamanan lebih baik (requires different implementation)
+
+---
+
+## Next Steps (Optional Improvements)
+
+### 1. Background Job untuk FTP Upload
+
+Untuk performa lebih baik:
+
+```php
+// Di FtpStorageService.php
+dispatch(new UploadToFtpJob($localPath, $ftpPath));
+```
+
+### 2. Retry Mechanism
+
+Tambahkan retry untuk FTP upload yang gagal:
+
+```php
+for ($i = 0; $i < 3; $i++) {
+    if ($this->uploadToFtpNative($path)) {
+        break;
+    }
+    sleep(2);
+}
+```
+
+### 3. FTP Sync Command
+
+Buat artisan command untuk sync file lama ke FTP:
+
+```bash
+php artisan ftp:sync
+```
+
+---
+
+## Support
+
+Untuk issue atau pertanyaan, cek:
+
+- Laravel logs: `storage/logs/laravel.log`
+- Nginx logs: `/var/log/nginx/error.log`
+- PHP-FPM logs: `/var/log/php8.1-fpm.log`
