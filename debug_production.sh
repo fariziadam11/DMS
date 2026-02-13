@@ -6,7 +6,7 @@
 echo "=== Debugging Production Error 500 ==="
 echo ""
 
-echo "1. Checking Laravel Logs..."
+echo "1. Checking Laravel Logs..."-
 echo "---"
 tail -50 storage/logs/laravel.log
 echo ""

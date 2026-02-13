@@ -18,7 +18,7 @@
             </tr>
             <tr>
                 <td style="padding: 5px 0; color: #64748b;">Divisi</td>
-                <td style="padding: 5px 0; color: #1e293b;">{{ $accessRequest->divisi->divisi_name ?? '-' }}</td>
+                <td style="padding: 5px 0; color: #1e293b;">{{ $accessRequest->divisi?->nama_divisi ?? '-' }}</td>
             </tr>
             <tr>
                 <td style="padding: 5px 0; color: #64748b;">Email</td>
@@ -30,7 +30,7 @@
     <div class="info-box info-box-warning">
         <p class="info-label">Alasan Permintaan</p>
         <p class="info-value" style="margin: 5px 0 0 0;">
-            {{ $accessRequest->reason ?? 'Tidak ada alasan yang diberikan' }}
+            {{ $accessRequest->request_reason ?? 'Tidak ada alasan yang diberikan' }}
         </p>
     </div>
 
