@@ -429,14 +429,22 @@ class GlobalSearchController extends Controller
                       ->orWhere('access_scope', 'global');
                 })
                 // Division admins for this specific division
-                ->orWhere(function($q) use ($accessRequest) {
-                    $q->whereHas('roles', function($roleQuery) use ($accessRequest) {
-                        $roleQuery->where('id_divisi', $accessRequest->id_divisi)
-                                  ->where('access_scope', 'division');
-                    });
+            // AND must have access to the 'access.index' menu (Request Access)
+            // This prevents Staff (who have division scope but no menu access) from being approvers
+            ->orWhere(function($q) use ($accessRequest) {
+                $q->whereHas('roles', function($roleQuery) use ($accessRequest) {
+                    $roleQuery->where('id_divisi', $accessRequest->id_divisi)
+                              ->where('access_scope', 'division')
+                              // Check if role has access to 'access.index' menu (ID 75)
+                              ->whereHas('privileges', function($privQuery) {
+                                  $privQuery->whereHas('menu', function($menuQuery) {
+                                      $menuQuery->where('code_name', 'access.index');
+                                  });
+                              });
                 });
-            })
-            ->get();
+            });
+        })
+        ->get();
 
         // Send notification to each approver
         foreach ($approvers as $approver) {
