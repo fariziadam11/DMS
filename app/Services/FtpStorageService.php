@@ -86,24 +86,36 @@ class FtpStorageService
                 return false;
             }
 
-            // Get local file full path
-            $localFullPath = storage_path('app/' . $localPath);
-
             // Create remote directory if needed
             $remotePath = '/' . $localPath;
             $remoteDir = dirname($remotePath);
             $this->createFtpDirectory($conn, $remoteDir);
 
-            // Upload file
-            $result = ftp_put($conn, $remotePath, $localFullPath, FTP_BINARY);
+            // Get file content from Storage (more reliable than reading from disk)
+            $fileContent = Storage::get($localPath);
+
+            // Create temporary stream from content
+            $stream = fopen('php://temp', 'r+');
+            fwrite($stream, $fileContent);
+            rewind($stream);
+
+            // Upload file using stream (more reliable than ftp_put with file path)
+            $result = ftp_fput($conn, $remotePath, $stream, FTP_BINARY);
+
+            // Close stream
+            fclose($stream);
 
             if ($result) {
                 Log::info("File uploaded to FTP successfully", [
                     'local_path' => $localPath,
-                    'ftp_path' => $remotePath
+                    'ftp_path' => $remotePath,
+                    'file_size' => strlen($fileContent)
                 ]);
             } else {
-                Log::warning("FTP upload failed", ['path' => $remotePath]);
+                Log::warning("FTP upload failed", [
+                    'path' => $remotePath,
+                    'file_size' => strlen($fileContent)
+                ]);
             }
 
             // Close connection
