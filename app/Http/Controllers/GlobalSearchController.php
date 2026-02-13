@@ -383,6 +383,9 @@ class GlobalSearchController extends Controller
             'status' => 'pending',
         ]);
 
+        // Eager load relationships for email template
+        $accessRequest->load(['requester', 'divisi']);
+
         \App\Models\AuditLog::log(
             'request_access',
             'file_access_requests',
@@ -392,7 +395,17 @@ class GlobalSearchController extends Controller
         );
 
         // Send email notification to division admins/approvers
-        $this->notifyApprovers($accessRequest);
+        // Wrap in try-catch to prevent 500 error if email fails
+        try {
+            $this->notifyApprovers($accessRequest);
+        } catch (\Exception $e) {
+            // Log the error but don't fail the request
+            \Log::error('Failed to send access request notification: ' . $e->getMessage(), [
+                'access_request_id' => $accessRequest->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
 
         return back()->with('success', 'Permintaan akses telah dikirim ke admin divisi.');
     }
