@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class Smk3Controller extends BaseDocumentController
 {
-    protected $model = \App\Models\Logistik\SMK3::class;
+    protected $model = \App\Models\Logistik\Smk3::class;
     protected $viewPath = 'logistik.smk3';
     protected $routePrefix = 'logistik.smk3';
     protected $moduleName = 'SMK3';
