@@ -25,12 +25,40 @@ class FtpStorageService
      */
     public function storeFile($file, string $path, string $filename): string
     {
+        Log::info("FTP Service: Starting file upload", [
+            'path' => $path,
+            'filename' => $filename,
+            'ftp_enabled' => $this->ftpEnabled
+        ]);
+
         // 1. Store to local storage (primary)
-        $file->storeAs($path, $filename);
+        $storedPath = $file->storeAs($path, $filename);
+
+        Log::info("FTP Service: File stored to local storage", [
+            'stored_path' => $storedPath,
+            'full_path' => $path . '/' . $filename
+        ]);
 
         // 2. Store to FTP (backup/mirror) - non-blocking
         if ($this->ftpEnabled) {
-            $this->uploadToFtpNative($path . '/' . $filename);
+            $fullPath = $path . '/' . $filename;
+
+            // Verify file exists in storage before FTP upload
+            if (Storage::exists($fullPath)) {
+                Log::info("FTP Service: File verified in storage, uploading to FTP", [
+                    'path' => $fullPath,
+                    'size' => Storage::size($fullPath)
+                ]);
+
+                $this->uploadToFtpNative($fullPath);
+            } else {
+                Log::error("FTP Service: File not found in storage after storeAs", [
+                    'path' => $fullPath,
+                    'stored_path' => $storedPath
+                ]);
+            }
+        } else {
+            Log::info("FTP Service: FTP disabled, skipping FTP upload");
         }
 
         return $filename;
@@ -68,6 +96,8 @@ class FtpStorageService
     private function uploadToFtpNative(string $localPath): bool
     {
         try {
+            Log::info("FTP Upload: Starting", ['path' => $localPath]);
+
             // Check if FTP is configured
             if (!env('FTP_HOST')) {
                 Log::info("FTP not configured, skipping FTP upload");
@@ -76,28 +106,53 @@ class FtpStorageService
 
             // Get file content from local storage
             if (!Storage::exists($localPath)) {
-                Log::warning("Local file not found for FTP upload", ['path' => $localPath]);
+                Log::error("FTP Upload: Local file not found", [
+                    'path' => $localPath,
+                    'storage_path' => storage_path('app/' . $localPath)
+                ]);
                 return false;
             }
+
+            Log::info("FTP Upload: File found in storage", [
+                'path' => $localPath,
+                'size' => Storage::size($localPath)
+            ]);
 
             // Connect to FTP
             $conn = $this->connectFtp();
             if (!$conn) {
+                Log::error("FTP Upload: Connection failed");
                 return false;
             }
+
+            Log::info("FTP Upload: Connected successfully");
 
             // Create remote directory if needed
             $remotePath = '/' . $localPath;
             $remoteDir = dirname($remotePath);
+
+            Log::info("FTP Upload: Creating remote directory", [
+                'remote_dir' => $remoteDir,
+                'remote_path' => $remotePath
+            ]);
+
             $this->createFtpDirectory($conn, $remoteDir);
 
             // Get file content from Storage (more reliable than reading from disk)
             $fileContent = Storage::get($localPath);
 
+            Log::info("FTP Upload: File content read", [
+                'size' => strlen($fileContent)
+            ]);
+
             // Create temporary stream from content
             $stream = fopen('php://temp', 'r+');
             fwrite($stream, $fileContent);
             rewind($stream);
+
+            Log::info("FTP Upload: Stream created, uploading...", [
+                'remote_path' => $remotePath
+            ]);
 
             // Upload file using stream (more reliable than ftp_put with file path)
             $result = ftp_fput($conn, $remotePath, $stream, FTP_BINARY);
@@ -112,7 +167,7 @@ class FtpStorageService
                     'file_size' => strlen($fileContent)
                 ]);
             } else {
-                Log::warning("FTP upload failed", [
+                Log::error("FTP upload failed - ftp_fput returned false", [
                     'path' => $remotePath,
                     'file_size' => strlen($fileContent)
                 ]);
@@ -125,7 +180,7 @@ class FtpStorageService
 
         } catch (\Exception $e) {
             // Log error but don't throw - FTP failure shouldn't break the application
-            Log::error("FTP upload failed", [
+            Log::error("FTP upload exception", [
                 'local_path' => $localPath,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
