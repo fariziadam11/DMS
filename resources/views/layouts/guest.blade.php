@@ -14,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #f8fafc;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -24,7 +24,7 @@
         .auth-card {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             padding: 40px;
             width: 100%;
             max-width: 420px;
@@ -54,12 +54,12 @@
         }
 
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #2563eb;
             border: none;
             padding: 12px;
             border-radius: 8px;
@@ -67,7 +67,7 @@
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            background-color: #1d4ed8;
         }
 
         .form-label {
@@ -80,7 +80,7 @@
 <body>
     <div class="auth-card">
         <div class="auth-logo">
-            <h2>🗂️ DMS Dapen</h2>
+            <h2>DMS Dapen</h2>
             <p>Document Management System</p>
         </div>
 
