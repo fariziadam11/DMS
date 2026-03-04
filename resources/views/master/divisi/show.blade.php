@@ -11,7 +11,7 @@
     <table class="table table-bordered">
         <tr><th width="200">Kode Divisi</th><td><span class="badge bg-primary">{{ $record->kode_divisi }}</span></td></tr>
         <tr><th>Nama Divisi</th><td><strong>{{ $record->nama_divisi }}</strong></td></tr>
-        <tr><th>Module</th><td>{{ $record->module->module_name ?? '-' }}</td></tr>
+        <tr><th>Department</th><td>{{ $record->department->nama_department ?? '-' }}</td></tr>
         <tr><th>Deskripsi</th><td>{{ $record->description ?? '-' }}</td></tr>
         <tr><th>Dibuat</th><td>{{ $record->created_at ? $record->created_at->format('d F Y H:i') : '-' }}</td></tr>
         <tr><th>Diupdate</th><td>{{ $record->updated_at ? $record->updated_at->format('d F Y H:i') : '-' }}</td></tr>

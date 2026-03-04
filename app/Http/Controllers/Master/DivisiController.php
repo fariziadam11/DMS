@@ -31,7 +31,9 @@ class DivisiController extends Controller
         $routePrefix = 'master.divisi';
         $moduleName = 'Master Divisi';
 
-        return view('master.divisi.index', compact('data', 'routePrefix', 'moduleName'));
+        $permissions = $this->getPermissions();
+
+        return view('master.divisi.index', compact('data', 'routePrefix', 'moduleName', 'permissions'));
     }
 
     public function create()
@@ -65,7 +67,8 @@ class DivisiController extends Controller
         $record = MasterDivisi::with(['module', 'department', 'jabatans', 'roles'])->findOrFail($id);
         $routePrefix = 'master.divisi';
         $moduleName = 'Master Divisi';
-        return view('master.divisi.show', compact('record', 'routePrefix', 'moduleName'));
+        $permissions = $this->getPermissions();
+        return view('master.divisi.show', compact('record', 'routePrefix', 'moduleName', 'permissions'));
     }
 
     public function edit($id)
@@ -106,5 +109,28 @@ class DivisiController extends Controller
 
         return redirect()->route('master.divisi.index')
             ->with('success', 'Divisi berhasil dihapus.');
+    }
+
+    protected function getPermissions()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return ['create' => false, 'edit' => false, 'delete' => false];
+        }
+
+        if ($user->isSuperAdmin()) {
+            return ['create' => true, 'edit' => true, 'delete' => true];
+        }
+
+        $menu = \App\Models\BaseMenu::where('code_name', 'master.divisi')->first();
+        if (!$menu) {
+            return ['create' => true, 'edit' => true, 'delete' => true];
+        }
+
+        return [
+            'create' => $user->hasMenuFunction($menu->id, 2),
+            'edit' => $user->hasMenuFunction($menu->id, 3),
+            'delete' => $user->hasMenuFunction($menu->id, 4),
+        ];
     }
 }

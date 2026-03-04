@@ -30,7 +30,9 @@ class DepartmentController extends Controller
         $routePrefix = 'master.department';
         $moduleName = 'Master Department';
 
-        return view('master.department.index', compact('data', 'routePrefix', 'moduleName'));
+        $permissions = $this->getPermissions();
+
+        return view('master.department.index', compact('data', 'routePrefix', 'moduleName', 'permissions'));
     }
 
     public function create()
@@ -60,7 +62,8 @@ class DepartmentController extends Controller
         $record = MasterDepartment::with('divisions')->findOrFail($id);
         $routePrefix = 'master.department';
         $moduleName = 'Master Department';
-        return view('master.department.show', compact('record', 'routePrefix', 'moduleName'));
+        $permissions = $this->getPermissions();
+        return view('master.department.show', compact('record', 'routePrefix', 'moduleName', 'permissions'));
     }
 
     public function edit($id)
@@ -97,5 +100,28 @@ class DepartmentController extends Controller
 
         return redirect()->route('master.department.index')
             ->with('success', 'Department berhasil dihapus.');
+    }
+
+    protected function getPermissions()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return ['create' => false, 'edit' => false, 'delete' => false];
+        }
+
+        if ($user->isSuperAdmin()) {
+            return ['create' => true, 'edit' => true, 'delete' => true];
+        }
+
+        $menu = \App\Models\BaseMenu::where('code_name', 'master.department')->first();
+        if (!$menu) {
+            return ['create' => true, 'edit' => true, 'delete' => true];
+        }
+
+        return [
+            'create' => $user->hasMenuFunction($menu->id, 2),
+            'edit' => $user->hasMenuFunction($menu->id, 3),
+            'delete' => $user->hasMenuFunction($menu->id, 4),
+        ];
     }
 }
